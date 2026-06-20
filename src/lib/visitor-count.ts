@@ -1,45 +1,72 @@
 import fs from "fs/promises";
 import path from "path";
+import { prisma } from "@/lib/prisma";
 
+const VISITOR_COUNT_KEY = "visitor_count";
 const COUNT_FILE = path.join(process.cwd(), "data/visitor-count.json");
+const MAX_COUNT = 999_999_999;
 
 interface VisitorCountData {
   count: number;
 }
 
-async function ensureCountFile(): Promise<void> {
+async function readLegacyFileCount(): Promise<number> {
   try {
-    await fs.access(COUNT_FILE);
+    const raw = await fs.readFile(COUNT_FILE, "utf-8");
+    const parsed = JSON.parse(raw) as VisitorCountData;
+
+    return Number.isFinite(parsed.count)
+      ? Math.max(0, Math.floor(parsed.count))
+      : 0;
   } catch {
-    await fs.mkdir(path.dirname(COUNT_FILE), { recursive: true });
-    await fs.writeFile(COUNT_FILE, JSON.stringify({ count: 0 }, null, 2));
+    return 0;
   }
 }
 
-async function readCountFile(): Promise<VisitorCountData> {
-  await ensureCountFile();
-  const raw = await fs.readFile(COUNT_FILE, "utf-8");
-  const parsed = JSON.parse(raw) as VisitorCountData;
+async function ensureVisitorMetricSeeded(): Promise<number> {
+  const existing = await prisma.siteMetric.findUnique({
+    where: { key: VISITOR_COUNT_KEY },
+  });
 
-  return {
-    count: Number.isFinite(parsed.count) ? Math.max(0, Math.floor(parsed.count)) : 0,
-  };
+  if (existing) {
+    return existing.value;
+  }
+
+  const legacyCount = await readLegacyFileCount();
+
+  const created = await prisma.siteMetric.create({
+    data: {
+      key: VISITOR_COUNT_KEY,
+      value: legacyCount,
+    },
+  });
+
+  return created.value;
 }
 
 export async function getVisitorCount(): Promise<number> {
-  const data = await readCountFile();
-  return data.count;
+  const metric = await prisma.siteMetric.findUnique({
+    where: { key: VISITOR_COUNT_KEY },
+  });
+
+  if (metric) {
+    return metric.value;
+  }
+
+  return ensureVisitorMetricSeeded();
 }
 
 export async function incrementVisitorCount(): Promise<number> {
-  const data = await readCountFile();
-  const nextCount = Math.min(data.count + 1, 999_999_999);
+  await ensureVisitorMetricSeeded();
 
-  await fs.writeFile(
-    COUNT_FILE,
-    JSON.stringify({ count: nextCount }, null, 2),
-    "utf-8",
-  );
+  const metric = await prisma.siteMetric.update({
+    where: { key: VISITOR_COUNT_KEY },
+    data: {
+      value: {
+        increment: 1,
+      },
+    },
+  });
 
-  return nextCount;
+  return Math.min(metric.value, MAX_COUNT);
 }

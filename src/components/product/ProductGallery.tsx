@@ -1,8 +1,10 @@
 "use client";
 
+import { useIsClient } from "@/hooks/use-is-client";
 import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 interface ProductGalleryProps {
   images: string[];
@@ -10,11 +12,13 @@ interface ProductGalleryProps {
 }
 
 export function ProductGallery({ images, title }: ProductGalleryProps) {
+  const isClient = useIsClient();
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [isZooming, setIsZooming] = useState(false);
   const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 });
   const stageRef = useRef<HTMLButtonElement>(null);
+  const scrollLockRef = useRef(0);
 
   const activeImage = images[activeIndex] ?? images[0];
   const hasMultiple = images.length > 1;
@@ -68,14 +72,96 @@ export function ProductGallery({ images, title }: ProductGalleryProps) {
       }
     }
 
-    document.body.style.overflow = "hidden";
+    scrollLockRef.current = window.scrollY;
+    const { style } = document.body;
+    const previousOverflow = style.overflow;
+    const previousPosition = style.position;
+    const previousTop = style.top;
+    const previousWidth = style.width;
+
+    style.overflow = "hidden";
+    style.position = "fixed";
+    style.top = `-${scrollLockRef.current}px`;
+    style.width = "100%";
+
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.body.style.overflow = "";
+      style.overflow = previousOverflow;
+      style.position = previousPosition;
+      style.top = previousTop;
+      style.width = previousWidth;
+      window.scrollTo(0, scrollLockRef.current);
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [closeLightbox, hasMultiple, lightboxOpen, showNext, showPrevious]);
+
+  const lightbox = lightboxOpen ? (
+    <div
+      className="product-lightbox"
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${title} image viewer`}
+      onClick={closeLightbox}
+    >
+      <button
+        type="button"
+        className="product-lightbox-close"
+        onClick={closeLightbox}
+        aria-label="Close image viewer"
+      >
+        <X className="h-5 w-5" strokeWidth={1.5} />
+      </button>
+
+      {hasMultiple && (
+        <>
+          <button
+            type="button"
+            className="product-lightbox-nav product-lightbox-nav--prev"
+            onClick={(event) => {
+              event.stopPropagation();
+              showPrevious();
+            }}
+            aria-label="Previous image"
+          >
+            <ChevronLeft className="h-5 w-5" strokeWidth={1.5} />
+          </button>
+
+          <button
+            type="button"
+            className="product-lightbox-nav product-lightbox-nav--next"
+            onClick={(event) => {
+              event.stopPropagation();
+              showNext();
+            }}
+            aria-label="Next image"
+          >
+            <ChevronRight className="h-5 w-5" strokeWidth={1.5} />
+          </button>
+        </>
+      )}
+
+      <div
+        className="product-lightbox-panel"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <Image
+          src={activeImage}
+          alt={title}
+          fill
+          sizes="100vw"
+          className="product-lightbox-image"
+          priority
+        />
+      </div>
+
+      {hasMultiple && (
+        <p className="product-lightbox-counter">
+          {activeIndex + 1} / {images.length}
+        </p>
+      )}
+    </div>
+  ) : null;
 
   return (
     <>
@@ -88,7 +174,7 @@ export function ProductGallery({ images, title }: ProductGalleryProps) {
           onMouseEnter={() => setIsZooming(true)}
           onMouseLeave={() => setIsZooming(false)}
           onMouseMove={handleStageMouseMove}
-          aria-label={`View ${title} — click to enlarge`}
+          aria-label={`View ${title} — tap to enlarge`}
         >
           <Image
             src={activeImage}
@@ -104,7 +190,7 @@ export function ProductGallery({ images, title }: ProductGalleryProps) {
 
           <span className="product-gallery-zoom-hint">
             <ZoomIn className="product-gallery-zoom-icon" strokeWidth={1.5} />
-            Click to enlarge
+            Tap to enlarge
           </span>
         </button>
 
@@ -135,72 +221,7 @@ export function ProductGallery({ images, title }: ProductGalleryProps) {
         )}
       </div>
 
-      {lightboxOpen && (
-        <div
-          className="product-lightbox"
-          role="dialog"
-          aria-modal="true"
-          aria-label={`${title} image viewer`}
-          onClick={closeLightbox}
-        >
-          <button
-            type="button"
-            className="product-lightbox-close"
-            onClick={closeLightbox}
-            aria-label="Close image viewer"
-          >
-            <X className="h-5 w-5" strokeWidth={1.5} />
-          </button>
-
-          {hasMultiple && (
-            <>
-              <button
-                type="button"
-                className="product-lightbox-nav product-lightbox-nav--prev"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  showPrevious();
-                }}
-                aria-label="Previous image"
-              >
-                <ChevronLeft className="h-5 w-5" strokeWidth={1.5} />
-              </button>
-
-              <button
-                type="button"
-                className="product-lightbox-nav product-lightbox-nav--next"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  showNext();
-                }}
-                aria-label="Next image"
-              >
-                <ChevronRight className="h-5 w-5" strokeWidth={1.5} />
-              </button>
-            </>
-          )}
-
-          <div
-            className="product-lightbox-panel"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <Image
-              src={activeImage}
-              alt={title}
-              fill
-              sizes="90vw"
-              className="product-lightbox-image"
-              priority
-            />
-          </div>
-
-          {hasMultiple && (
-            <p className="product-lightbox-counter">
-              {activeIndex + 1} / {images.length}
-            </p>
-          )}
-        </div>
-      )}
+      {isClient && lightbox ? createPortal(lightbox, document.body) : null}
     </>
   );
 }

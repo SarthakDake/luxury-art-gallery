@@ -1,6 +1,5 @@
 "use client";
 
-import { useIsClient } from "@/hooks/use-is-client";
 import Link from "next/link";
 import { Home } from "lucide-react";
 
@@ -14,8 +13,6 @@ interface BreadcrumbsProps {
 }
 
 export function Breadcrumbs({ items }: BreadcrumbsProps) {
-  const mounted = useIsClient();
-
   return (
     <nav aria-label="Breadcrumb" className="breadcrumbs">
       <ol className="breadcrumbs-list">
@@ -33,14 +30,18 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
 
               {item.href && !isLast ? (
                 <Link href={item.href} className="breadcrumbs-link">
-                  {isHome && mounted ? (
-                    <Home
-                      className="breadcrumbs-home-icon"
-                      strokeWidth={1.5}
-                      aria-hidden
-                    />
-                  ) : null}
-                  {item.label}
+                  {isHome ? (
+                    <>
+                      <Home
+                        className="breadcrumbs-home-icon"
+                        strokeWidth={1.5}
+                        aria-hidden
+                      />
+                      <span className="sr-only">{item.label}</span>
+                    </>
+                  ) : (
+                    item.label
+                  )}
                 </Link>
               ) : (
                 <span
