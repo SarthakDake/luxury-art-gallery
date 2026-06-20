@@ -15,7 +15,7 @@ export default function AboutPage() {
 
   return (
     <>
-      <div className="site-container page-shell pb-0">
+      <div className="site-container page-shell page-section-end">
         <Breadcrumbs
           items={[
             { label: "Home", href: "/" },

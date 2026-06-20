@@ -16,15 +16,16 @@ export function HeaderActions() {
 
       <Link
         href="/cart"
-        aria-label={`Cart, ${itemCount} items`}
+        aria-label={hydrated ? `Cart, ${itemCount} items` : "Cart"}
         className="icon-btn relative"
+        suppressHydrationWarning
       >
         <ShoppingBag className="h-[18px] w-[18px]" strokeWidth={1.5} />
-        {itemCount > 0 && (
+        {hydrated && itemCount > 0 ? (
           <span className="absolute right-2 top-2 flex h-4 min-w-4 items-center justify-center bg-[var(--foreground)] px-1 text-[10px] font-medium text-[var(--background)]">
             {itemCount}
           </span>
-        )}
+        ) : null}
       </Link>
     </div>
   );

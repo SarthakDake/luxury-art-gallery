@@ -1,19 +1,25 @@
 "use client";
 
+import { useMounted } from "@/hooks/use-mounted";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { LogIn, User } from "lucide-react";
 import Link from "next/link";
 
+function AuthActionsPlaceholder() {
+  return (
+    <span
+      className="icon-btn auth-actions-placeholder"
+      aria-hidden="true"
+    />
+  );
+}
+
 export function AuthActions() {
+  const mounted = useMounted();
   const { data: session, status } = useSession();
 
-  if (status === "loading") {
-    return (
-      <span
-        className="icon-btn auth-actions-placeholder"
-        aria-hidden="true"
-      />
-    );
+  if (!mounted || status === "loading") {
+    return <AuthActionsPlaceholder />;
   }
 
   if (session?.user) {
@@ -48,9 +54,10 @@ export function SignOutButton({ className }: { className?: string }) {
 }
 
 export function MobileAuthActions({ onNavigate }: { onNavigate?: () => void }) {
+  const mounted = useMounted();
   const { data: session, status } = useSession();
 
-  if (status === "loading") {
+  if (!mounted || status === "loading") {
     return null;
   }
 

@@ -138,7 +138,7 @@ function ArtworkDetailContent({ artwork }: { artwork: Artwork }) {
           />
         </div>
 
-        <div className="site-container pt-6 lg:pt-8">
+        <div className="site-container product-detail-body pt-6 lg:pt-8">
           <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-2 lg:gap-16 xl:gap-20">
             <div className="sticky-below-header w-full">
               <ProductGallery images={galleryImages} title={artwork.title} />

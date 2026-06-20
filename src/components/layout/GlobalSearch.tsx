@@ -20,6 +20,8 @@ export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState(false);
 
+  const hasQuery = query.length > 0;
+
   const results = useMemo(() => {
     const trimmed = query.trim().toLowerCase();
     if (!trimmed) return [];
@@ -75,6 +77,12 @@ export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
     setMobileExpanded(false);
   }
 
+  function clearQuery() {
+    setQuery("");
+    setIsOpen(false);
+    inputRef.current?.focus();
+  }
+
   const resultsPanel =
     isOpen && query.trim() ? (
       <div className="search-results-panel">
@@ -104,15 +112,20 @@ export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
     ) : null;
 
   const searchInput = (
-    <div className="search-input-wrap">
-      <Search
-        className="search-input-icon"
-        strokeWidth={1.5}
-        aria-hidden
-      />
+    <div
+      className={`search-input-wrap${hasQuery ? " search-input-wrap--has-value" : ""}`}
+    >
+      <span className="search-input-leading" aria-hidden="true">
+        <Search className="search-input-icon" strokeWidth={1.5} />
+      </span>
+
       <input
         ref={inputRef}
-        type="search"
+        type="text"
+        inputMode="search"
+        enterKeyHint="search"
+        autoComplete="off"
+        spellCheck={false}
         value={query}
         onChange={(event) => {
           setQuery(event.target.value);
@@ -121,8 +134,19 @@ export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
         onFocus={() => setIsOpen(true)}
         placeholder="Search works"
         aria-label="Search artworks"
-        className="input-field search-input"
+        className="search-input"
       />
+
+      <button
+        type="button"
+        aria-label="Clear search"
+        className="search-input-clear"
+        onMouseDown={(event) => event.preventDefault()}
+        onClick={clearQuery}
+        tabIndex={hasQuery ? 0 : -1}
+      >
+        <X className="h-4 w-4" strokeWidth={1.5} />
+      </button>
     </div>
   );
 
@@ -186,10 +210,7 @@ export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
   }
 
   return (
-    <div
-      ref={containerRef}
-      className="relative hidden w-full max-w-[200px] xl:block"
-    >
+    <div ref={containerRef} className="header-search hidden xl:block">
       {searchInput}
       {isOpen && query.trim() ? (
         <div className="search-dropdown">{resultsPanel}</div>

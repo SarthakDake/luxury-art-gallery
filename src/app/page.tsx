@@ -57,7 +57,7 @@ export default function Home() {
         </div>
       </section>
 
-      <Reveal as="section" variant="slide-up" className="site-container py-16 lg:py-20">
+      <Reveal as="section" variant="slide-up" className="site-container content-band content-band--compact">
         <TrustBadges />
       </Reveal>
 
@@ -76,7 +76,7 @@ export default function Home() {
         </div>
       </Reveal>
 
-      <Reveal as="section" variant="slide-up" className="site-container section-block">
+      <Reveal as="section" variant="slide-up" className="site-container section-block section-divider-top">
         <div className="section-header mb-10">
           <div className="section-header-copy">
             <p className="eyebrow">Featured Collection</p>

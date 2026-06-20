@@ -126,7 +126,7 @@ function ShopFilters({ categoryParam }: { categoryParam: string | null }) {
 
   return (
     <div>
-      <div className="site-container page-shell pb-0">
+      <div className="site-container page-shell page-section-end">
         <Breadcrumbs
           items={[
             { label: "Home", href: "/" },
@@ -150,7 +150,7 @@ function ShopFilters({ categoryParam }: { categoryParam: string | null }) {
         </Reveal>
       </div>
 
-      <div className="surface-section section-block pt-0">
+      <div className="surface-section section-block">
         <div className="site-container">
           <button
             type="button"
@@ -162,7 +162,7 @@ function ShopFilters({ categoryParam }: { categoryParam: string | null }) {
             {filtersOpen ? "Hide Filters" : "Show Filters"}
           </button>
 
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-12">
+          <div className="shop-catalog-grid">
             <div
               className={`transition-all duration-300 lg:block ${
                 filtersOpen

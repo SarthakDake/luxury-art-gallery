@@ -1,10 +1,10 @@
 "use client";
 
-import { useIsClient } from "@/hooks/use-is-client";
 import { MobileAuthActions } from "./AuthActions";
 import { GlobalSearch } from "./GlobalSearch";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useMounted } from "@/hooks/use-mounted";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -19,8 +19,9 @@ const navLinks = [
 export function MobileNav() {
   const pathname = usePathname();
   const { theme, setTheme, resolvedTheme } = useTheme();
+  const mounted = useMounted();
   const [open, setOpen] = useState(false);
-  const mounted = useIsClient();
+
   const isDark = mounted && (resolvedTheme ?? theme) === "dark";
 
   useEffect(() => {
@@ -95,19 +96,23 @@ export function MobileNav() {
                 <button
                   type="button"
                   role="switch"
-                  aria-checked={isDark}
+                  aria-checked={mounted ? isDark : false}
                   aria-label="Toggle dark mode"
                   onClick={() => setTheme(isDark ? "light" : "dark")}
                   className="mobile-nav-theme-btn"
                 >
-                  {mounted ? (
-                    isDark ? (
+                  <span className="mobile-nav-theme-icon" aria-hidden>
+                    {!mounted ? (
+                      <Sun className="h-4 w-4 opacity-0" strokeWidth={1.5} />
+                    ) : isDark ? (
                       <Moon className="h-4 w-4" strokeWidth={1.5} />
                     ) : (
                       <Sun className="h-4 w-4" strokeWidth={1.5} />
-                    )
-                  ) : null}
-                  <span>{isDark ? "Dark mode" : "Light mode"}</span>
+                    )}
+                  </span>
+                  <span>
+                    {!mounted ? "Theme" : isDark ? "Dark mode" : "Light mode"}
+                  </span>
                 </button>
               </div>
 

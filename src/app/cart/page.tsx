@@ -318,7 +318,7 @@ function CartPageContent() {
           </p>
         </Reveal>
 
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-16">
+        <div className="cart-layout">
           <Reveal as="section" variant="slide-up" aria-labelledby="cart-items-heading">
             <h2 id="cart-items-heading" className="eyebrow mb-6">
               Selected Works
