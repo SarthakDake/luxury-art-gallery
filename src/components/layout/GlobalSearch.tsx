@@ -1,11 +1,15 @@
 "use client";
 
-import artworks from "@/data/artworks.json";
+import artworksData from "@/data/artworks.json";
+import { searchArtworks } from "@/lib/artwork-search";
+import type { Artwork } from "@/types/artwork";
 import { Search, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useIsClient } from "@/hooks/use-is-client";
+
+const artworks = artworksData as Artwork[];
 
 interface GlobalSearchProps {
   variant?: "inline" | "mobile" | "drawer";
@@ -25,16 +29,7 @@ export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
 
   const hasQuery = query.length > 0;
 
-  const results = useMemo(() => {
-    const trimmed = query.trim().toLowerCase();
-    if (!trimmed) return [];
-
-    return artworks.filter(
-      (artwork) =>
-        artwork.title.toLowerCase().includes(trimmed) ||
-        artwork.material.toLowerCase().includes(trimmed),
-    );
-  }, [query]);
+  const results = useMemo(() => searchArtworks(artworks, query), [query]);
 
   useEffect(() => {
     if (variant === "mobile") return;
@@ -121,7 +116,7 @@ export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
                     {artwork.title}
                   </span>
                   <span className="text-xs text-[var(--muted)]">
-                    {artwork.material}
+                    {artwork.category}
                   </span>
                 </button>
               </li>

@@ -1776,6 +1776,26 @@
     color: var(--muted);
   }
 
+  .subcategory-filter {
+    padding-top: 0.25rem;
+  }
+
+  .subcategory-pills-scroll {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+  }
+
+  .filter-helper-text {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+
+  .filter-section-disabled .filter-helper-text {
+    margin-top: -0.25rem;
+  }
+
   .field-label {
     font-size: 0.6875rem;
     font-weight: 500;

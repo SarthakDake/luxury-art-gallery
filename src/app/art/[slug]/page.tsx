@@ -77,7 +77,7 @@ function ArtworkDetailContent({ artwork }: { artwork: Artwork }) {
     {
       id: "description",
       title: "Description & Details",
-      content: `${artwork.description}\n\nDimensions: ${dimensionsLine}\n\nMaterial: ${artwork.material}\n\nPackage Content: ${artwork.title}`,
+      content: `${artwork.description}\n\nCategory: ${artwork.category}\nSubcategory: ${artwork.subcategory}\nDimensions: ${dimensionsLine}\nMaterial: ${artwork.material}\n\nPackage Content: ${artwork.title}`,
     },
     {
       id: "care",
@@ -150,7 +150,9 @@ function ArtworkDetailContent({ artwork }: { artwork: Artwork }) {
             >
               <div className="space-y-4">
                 <div className="flex flex-wrap items-center gap-3">
-                  <p className="eyebrow">{artwork.category}</p>
+                  <p className="eyebrow">
+                    {artwork.category} | {artwork.subcategory}
+                  </p>
                   {!artwork.inStock && (
                     <span className="stock-badge stock-badge-sold">
                       Sold Out

@@ -11,6 +11,7 @@ export interface Artwork {
   imageUrl: string;
   galleryImages?: string[];
   category: string;
+  subcategory: string;
   material: string;
   inStock: boolean;
   description: string;
