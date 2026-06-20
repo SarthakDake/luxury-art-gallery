@@ -6,6 +6,7 @@ import { Header } from "@/components/layout/Header";
 import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
 import { PageNavigationProvider } from "@/components/motion/PageNavigationProvider";
 import { ScrollRevealProvider } from "@/components/motion/ScrollRevealProvider";
+import { SessionProvider } from "@/components/providers/session-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import "./globals.css";
 
@@ -37,17 +38,22 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${dmSans.variable} ${cormorant.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col font-[family-name:var(--font-sans)]">
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          <ScrollRevealProvider>
-            <AnnouncementBar />
-            <Header />
-            <main className="main-content flex-1">
-              <PageNavigationProvider>{children}</PageNavigationProvider>
-            </main>
-            <Footer />
-          </ScrollRevealProvider>
-        </ThemeProvider>
+      <body
+        suppressHydrationWarning
+        className="flex min-h-full flex-col font-[family-name:var(--font-sans)]"
+      >
+        <SessionProvider>
+          <ThemeProvider attribute="class" defaultTheme="light">
+            <ScrollRevealProvider>
+              <AnnouncementBar />
+              <Header />
+              <main className="main-content flex-1">
+                <PageNavigationProvider>{children}</PageNavigationProvider>
+              </main>
+              <Footer />
+            </ScrollRevealProvider>
+          </ThemeProvider>
+        </SessionProvider>
         <WhatsAppButton />
       </body>
     </html>

@@ -1,6 +1,7 @@
 "use client";
 
 import config from "@/data/config.json";
+import { useIsClient } from "@/hooks/use-is-client";
 import { Eye } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -41,9 +42,11 @@ function useCountUp(target: number, duration = 1200): number {
 
 export function VisitorCounter() {
   const [count, setCount] = useState<number | null>(null);
-  const animatedCount = useCountUp(count ?? 0);
+  const isClient = useIsClient();
+  const animatedCount = useCountUp(isClient && count !== null ? count : 0);
 
   useEffect(() => {
+    if (!isClient) return;
     let cancelled = false;
 
     async function trackVisit() {
@@ -88,7 +91,7 @@ export function VisitorCounter() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [isClient]);
 
   const label =
     count === 1
@@ -101,7 +104,7 @@ export function VisitorCounter() {
       <span className="footer-visitor-stat">
         <Eye className="footer-visitor-icon" strokeWidth={1.5} aria-hidden />
         <span className="footer-visitor-count">
-          {count === null ? "—" : formatCount(animatedCount)}
+          {!isClient || count === null ? "—" : formatCount(animatedCount)}
         </span>
         <span className="footer-visitor-label">{label}</span>
       </span>

@@ -11,6 +11,7 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  serverExternalPackages: ["@phonepe-pg/pg-sdk-node"],
   async headers() {
     return [
       {

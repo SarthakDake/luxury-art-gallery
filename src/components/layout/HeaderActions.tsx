@@ -1,13 +1,14 @@
 "use client";
 
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import { selectCartItemCount, useCartStore } from "@/lib/store";
+import { selectCartItemCount, useCartHydrated, useCartStore } from "@/lib/store";
 import { ShoppingBag } from "lucide-react";
 import Link from "next/link";
 
 export function HeaderActions() {
+  const hydrated = useCartHydrated();
   const items = useCartStore((state) => state.items);
-  const itemCount = selectCartItemCount(items);
+  const itemCount = hydrated ? selectCartItemCount(items) : 0;
 
   return (
     <div className="flex items-center">

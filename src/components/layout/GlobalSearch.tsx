@@ -147,7 +147,7 @@ export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
   return (
     <div
       ref={containerRef}
-      className="relative hidden w-full max-w-[220px] md:block"
+      className="relative hidden w-full max-w-[200px] xl:block"
     >
       {searchInput}
       {isOpen && query.trim() && (

@@ -1,6 +1,7 @@
 "use client";
 
 import { useIsClient } from "@/hooks/use-is-client";
+import { MobileAuthActions } from "./AuthActions";
 import { GlobalSearch } from "./GlobalSearch";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -86,6 +87,7 @@ export function MobileNav() {
                     </li>
                   );
                 })}
+                <MobileAuthActions onNavigate={closeMenu} />
               </ul>
 
               <div className="mobile-nav-theme">

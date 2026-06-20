@@ -1,5 +1,6 @@
 import config from "@/data/config.json";
 import Link from "next/link";
+import { AuthActions } from "./AuthActions";
 import { GlobalSearch } from "./GlobalSearch";
 import { HeaderActions } from "./HeaderActions";
 import { MobileNav } from "./MobileNav";
@@ -36,7 +37,10 @@ export function Header() {
         <div className="header-actions">
           <GlobalSearch variant="inline" />
           <GlobalSearch variant="mobile" />
-          <HeaderActions />
+          <div className="header-actions-toolbar">
+            <HeaderActions />
+            <AuthActions />
+          </div>
         </div>
       </div>
     </header>

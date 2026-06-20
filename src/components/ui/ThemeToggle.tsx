@@ -22,13 +22,17 @@ export function ThemeToggle({ className = "icon-btn" }: ThemeToggleProps) {
       onClick={() => setTheme(isDark ? "light" : "dark")}
       className={className}
     >
-      {mounted ? (
-        isDark ? (
-          <Moon className="h-[18px] w-[18px]" strokeWidth={1.5} />
+      <span className="inline-flex h-[18px] w-[18px] items-center justify-center">
+        {mounted ? (
+          isDark ? (
+            <Moon className="h-[18px] w-[18px]" strokeWidth={1.5} />
+          ) : (
+            <Sun className="h-[18px] w-[18px]" strokeWidth={1.5} />
+          )
         ) : (
-          <Sun className="h-[18px] w-[18px]" strokeWidth={1.5} />
-        )
-      ) : null}
+          <Sun className="h-[18px] w-[18px] opacity-0" strokeWidth={1.5} />
+        )}
+      </span>
     </button>
   );
 }

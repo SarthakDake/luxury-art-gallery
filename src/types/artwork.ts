@@ -39,12 +39,10 @@ export function getStartingPrice(artwork: Artwork): number {
 }
 
 export function formatPrice(price: number): string {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(price);
+  const rounded = Math.round(price);
+  const formatted = rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+  return `₹${formatted}`;
 }
 
 export function formatPriceFrom(artwork: Artwork): string {
