@@ -4,12 +4,15 @@ import artworks from "@/data/artworks.json";
 import { Search, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { useIsClient } from "@/hooks/use-is-client";
 
 interface GlobalSearchProps {
   variant?: "inline" | "mobile" | "drawer";
 }
 
 export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
+  const isClient = useIsClient();
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -29,15 +32,14 @@ export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
   }, [query]);
 
   useEffect(() => {
+    if (variant === "mobile") return;
+
     function handleClickOutside(event: MouseEvent) {
       if (
         containerRef.current &&
         !containerRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
-        if (variant === "mobile") {
-          setMobileExpanded(false);
-        }
       }
     }
 
@@ -46,9 +48,18 @@ export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
   }, [variant]);
 
   useEffect(() => {
-    if (mobileExpanded && inputRef.current) {
+    if (!mobileExpanded) return;
+
+    if (inputRef.current) {
       inputRef.current.focus();
     }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
   }, [mobileExpanded]);
 
   function handleSelect(slug: string) {
@@ -58,9 +69,15 @@ export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
     router.push(`/art/${slug}`, { scroll: false });
   }
 
+  function closeMobileSearch() {
+    setQuery("");
+    setIsOpen(false);
+    setMobileExpanded(false);
+  }
+
   const resultsPanel =
     isOpen && query.trim() ? (
-      <div className="mt-2 border border-[var(--border)] bg-[var(--background)] shadow-lg">
+      <div className="search-results-panel">
         {results.length > 0 ? (
           <ul className="search-results-list max-h-72 overflow-y-auto py-1">
             {results.map((artwork) => (
@@ -87,10 +104,11 @@ export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
     ) : null;
 
   const searchInput = (
-    <div className="relative">
+    <div className="search-input-wrap">
       <Search
-        className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted)]"
+        className="search-input-icon"
         strokeWidth={1.5}
+        aria-hidden
       />
       <input
         ref={inputRef}
@@ -103,14 +121,14 @@ export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
         onFocus={() => setIsOpen(true)}
         placeholder="Search works"
         aria-label="Search artworks"
-        className="input-field pl-10 text-sm"
+        className="input-field search-input"
       />
     </div>
   );
 
   if (variant === "drawer") {
     return (
-      <div ref={containerRef} className="relative w-full">
+      <div ref={containerRef} className="search-drawer">
         {searchInput}
         {resultsPanel}
       </div>
@@ -118,14 +136,42 @@ export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
   }
 
   if (variant === "mobile") {
+    const mobilePanel =
+      mobileExpanded && isClient ? (
+        <>
+          <button
+            type="button"
+            aria-label="Close search overlay"
+            className="mobile-search-overlay"
+            onClick={closeMobileSearch}
+          />
+          <div ref={containerRef} className="mobile-search-panel">
+            <div className="site-container mobile-search-panel-inner">
+              <div className="mobile-search-panel-row">
+                {searchInput}
+                <button
+                  type="button"
+                  aria-label="Close search"
+                  onClick={closeMobileSearch}
+                  className="icon-btn mobile-search-close"
+                >
+                  <X className="h-[18px] w-[18px]" strokeWidth={1.5} />
+                </button>
+              </div>
+              {resultsPanel}
+            </div>
+          </div>
+        </>
+      ) : null;
+
     return (
-      <div ref={containerRef} className="relative md:hidden">
+      <>
         <button
           type="button"
           aria-label="Search artworks"
           aria-expanded={mobileExpanded}
           onClick={() => setMobileExpanded((expanded) => !expanded)}
-          className="icon-btn"
+          className="icon-btn xl:hidden"
         >
           {mobileExpanded ? (
             <X className="h-[18px] w-[18px]" strokeWidth={1.5} />
@@ -134,13 +180,8 @@ export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
           )}
         </button>
 
-        {mobileExpanded && (
-          <div className="search-dropdown">
-            {searchInput}
-            {resultsPanel}
-          </div>
-        )}
-      </div>
+        {isClient && mobilePanel ? createPortal(mobilePanel, document.body) : null}
+      </>
     );
   }
 
@@ -150,11 +191,9 @@ export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
       className="relative hidden w-full max-w-[200px] xl:block"
     >
       {searchInput}
-      {isOpen && query.trim() && (
-        <div className="search-dropdown">
-          {resultsPanel}
-        </div>
-      )}
+      {isOpen && query.trim() ? (
+        <div className="search-dropdown">{resultsPanel}</div>
+      ) : null}
     </div>
   );
 }
