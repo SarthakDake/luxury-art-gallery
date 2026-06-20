@@ -50,7 +50,7 @@ Without Upstash, rate limits use in-memory storage and are **not reliable** on V
 1. Import the repo → framework preset **Next.js**.
 2. Add env vars under **Settings → Environment Variables** (Production + Preview as needed).
 3. Ensure `DATABASE_URL` is available at **build time** (same env scope as Production).
-4. Deploy — the build script runs `prisma migrate deploy` automatically when `VERCEL=1` and `DATABASE_URL` is set.
+4. Deploy — the build script runs migrations automatically when `VERCEL=1` and `DATABASE_URL` is set. If the database was previously synced with `db push`, the build will **baseline** migration history (Prisma P3005) and apply any pending migrations.
 5. Sign in with Google using `ADMIN_EMAIL`, or run locally:
    ```bash
    DATABASE_URL="…" ADMIN_EMAIL="you@gmail.com" npm run db:promote-admin
@@ -84,9 +84,10 @@ npm run build:local
 | Symptom | Fix |
 |---------|-----|
 | Profile/login crashes after sign-in | Production DB missing columns — run `npm run db:deploy` |
+| Build fails with **P3005** (schema not empty) | Database was created with `db push`. Redeploy — the build auto-baselines. Or run manually: `DATABASE_URL="…" npm run db:baseline` |
 | Google OAuth redirect error | Add exact callback URL in Google Console; set `NEXTAUTH_URL` |
 | Rate limits feel inconsistent | Add Upstash Redis env vars |
-| `migrate deploy` fails on existing DB | Baseline with `npx prisma migrate resolve --applied <migration_name>`, then redeploy |
+| `migrate deploy` fails on existing DB | Run `npm run db:baseline` once against production |
 
 ## Local development
 
