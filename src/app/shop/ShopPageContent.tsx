@@ -208,7 +208,7 @@ function ShopFilters({
 
   return (
     <div>
-      <div className="site-container page-shell page-section-end">
+      <div className="site-container page-shell page-section-end shop-page-shell">
         <Breadcrumbs
           items={[
             { label: "Home", href: "/" },
@@ -216,7 +216,7 @@ function ShopFilters({
           ]}
         />
 
-        <Reveal as="header" variant="slide-up" className="mb-10 space-y-4">
+        <Reveal as="header" variant="slide-up" className="mb-6 space-y-3">
           <h1 className="page-title">All Arts</h1>
           <p className="body-text max-w-2xl">
             Original paintings and sculptures. Refine by category, subcategory,
@@ -224,7 +224,7 @@ function ShopFilters({
           </p>
         </Reveal>
 
-        <Reveal variant="slide-up" className="mb-8">
+        <Reveal variant="slide-up" className="mb-6">
           <CategoryPills
             activeCategory={activeCategoryPill}
             onSelect={handleCategoryPillSelect}
@@ -232,19 +232,17 @@ function ShopFilters({
         </Reveal>
 
         {availableSubcategories.length > 0 ? (
-          <Reveal variant="slide-up" className="mb-12">
+          <Reveal variant="slide-up">
             <SubcategoryPills
               selectedCategories={selectedCategories}
               activeSubcategory={activeSubcategoryPill}
               onSelect={handleSubcategoryPillSelect}
             />
           </Reveal>
-        ) : (
-          <div className="mb-12" />
-        )}
+        ) : null}
       </div>
 
-      <div className="surface-section section-block">
+      <div className="surface-section section-block shop-catalog-block">
         <div className="site-container">
           <button
             type="button"
@@ -267,27 +265,27 @@ function ShopFilters({
               {filterSidebar}
             </div>
 
-            <Reveal variant="slide-up">
-              <p className="mb-8 meta-text">
+            <div>
+              <p className="mb-6 meta-text">
                 {filteredArtworks.length}{" "}
                 {filteredArtworks.length === 1 ? "work" : "works"}
               </p>
 
               {filteredArtworks.length > 0 ? (
-                <div className="product-grid" data-reveal-stagger>
+                <div className="product-grid shop-product-grid" data-reveal-stagger>
                   {filteredArtworks.map((artwork) => (
                     <ProductCard key={artwork.id} artwork={artwork} reveal />
                   ))}
                 </div>
               ) : (
-                <div className="card-panel px-6 py-20 text-center" data-reveal="fade-in">
+                <div className="card-panel px-6 py-20 text-center">
                   <p className="section-title mb-4">No works match your filters</p>
                   <p className="body-text">
                     Try adjusting your selections to see more of the collection.
                   </p>
                 </div>
               )}
-            </Reveal>
+            </div>
           </div>
         </div>
       </div>
