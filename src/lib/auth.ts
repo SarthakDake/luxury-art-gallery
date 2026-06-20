@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { ensureAuthEnv, getAuthBaseUrl } from "@/lib/auth-url";
+import { getAdminEmail } from "@/lib/admin-email";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import type { UserRole } from "@/generated/prisma/client";
 import type { NextAuthOptions } from "next-auth";
@@ -42,8 +43,22 @@ export const authOptions: NextAuthOptions = {
   },
   debug: process.env.NEXTAUTH_DEBUG === "true",
   events: {
-    signIn({ user }) {
+    async signIn({ user }) {
       console.info("[auth] signed in:", user.email ?? user.id);
+
+      const adminEmail = getAdminEmail();
+      const userEmail = user.email?.trim().toLowerCase();
+
+      if (user.id && userEmail === adminEmail) {
+        try {
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { role: "ADMIN" },
+          });
+        } catch (error) {
+          console.error("[auth] failed to promote admin user:", error);
+        }
+      }
     },
     createUser({ user }) {
       console.info("[auth] created user:", user.email ?? user.id);
@@ -56,15 +71,27 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.sub = user.id;
-        token.role = (user as { role?: UserRole }).role ?? "CUSTOMER";
+        const adminEmail = getAdminEmail();
+        const userEmail = user.email?.trim().toLowerCase();
+
+        if (userEmail === adminEmail) {
+          token.role = "ADMIN";
+        } else {
+          token.role = (user as { role?: UserRole }).role ?? "CUSTOMER";
+        }
       }
 
       if (token.sub && !token.role) {
-        const dbUser = await prisma.user.findUnique({
-          where: { id: token.sub },
-          select: { role: true },
-        });
-        token.role = dbUser?.role ?? "CUSTOMER";
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: token.sub },
+            select: { role: true },
+          });
+          token.role = dbUser?.role ?? "CUSTOMER";
+        } catch (error) {
+          console.error("[auth] failed to load user role:", error);
+          token.role = "CUSTOMER";
+        }
       }
 
       return token;

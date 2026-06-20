@@ -4,6 +4,17 @@ export default withAuth({
   pages: {
     signIn: "/signin",
   },
+  callbacks: {
+    authorized: ({ token, req }) => {
+      const pathname = req.nextUrl.pathname;
+
+      if (pathname.startsWith("/admin")) {
+        return token?.role === "ADMIN";
+      }
+
+      return Boolean(token);
+    },
+  },
 });
 
 export const config = {

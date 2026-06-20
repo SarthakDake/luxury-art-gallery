@@ -34,7 +34,7 @@ export async function fetchInstagramVideoUrl(
   const response = await fetch(postUrl, {
     headers: {
       "User-Agent":
-        "Mozilla/5.0 (compatible; LuxuryArtGallery/1.0; +https://example.com)",
+        "Mozilla/5.0 (compatible; ColorsNJoy/1.0)",
       Accept: "text/html",
     },
     next: { revalidate: 60 * 60 * 12 },

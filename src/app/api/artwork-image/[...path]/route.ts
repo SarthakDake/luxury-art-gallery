@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import { ARTWORK_IMAGE_EXTENSIONS } from "@/lib/artwork-image";
 import { convertHeicToPng } from "@/lib/heic-to-image";
+import { enforceRateLimit } from "@/lib/rate-limit";
 
 const ARTWORKS_DIR = path.join(
   /* turbopackIgnore: true */ process.cwd(),
@@ -47,9 +48,15 @@ function getContentType(extension: string): string {
 }
 
 export async function GET(
-  _request: Request,
+  request: Request,
   context: { params: Promise<{ path: string[] }> },
 ) {
+  const rateLimitResponse = await enforceRateLimit(request, "artwork-image");
+
+  if (rateLimitResponse) {
+    return rateLimitResponse;
+  }
+
   const { path: segments } = await context.params;
 
   if (segments.length !== 2 || segments[0] !== "artworks") {

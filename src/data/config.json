@@ -24,7 +24,7 @@
   "offers": [
     {
       "headline": "5% Off Your Entire Order",
-      "code": "AURA5",
+      "code": "CNJ5",
       "detail": "Use on orders above ₹4,000"
     },
     {
@@ -62,10 +62,10 @@
     "pluralLabel": "guests have explored our collection"
   },
   "socialLinks": {
-    "instagram": "https://instagram.com/auragallery",
-    "facebook": "https://facebook.com/auragallery",
-    "youtube": "https://youtube.com/@auragallery",
-    "pinterest": "https://pinterest.com/auragallery",
-    "whatsapp": "https://wa.me/+919403600682"
+    "instagram": "https://instagram.com/colorsnjoy",
+    "facebook": "https://facebook.com/colorsnjoy",
+    "youtube": "https://youtube.com/@colorsnjoy",
+    "pinterest": "https://pinterest.com/colorsnjoy",
+    "whatsapp": "https://wa.me/+919423690682"
   }
 }

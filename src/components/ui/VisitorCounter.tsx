@@ -5,7 +5,7 @@ import { useIsClient } from "@/hooks/use-is-client";
 import { Eye } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const SESSION_KEY = "aura-gallery-visitor-counted";
+const SESSION_KEY = "colors-n-joy-visitor-counted";
 
 function formatCount(value: number): string {
   return new Intl.NumberFormat("en-US").format(value);

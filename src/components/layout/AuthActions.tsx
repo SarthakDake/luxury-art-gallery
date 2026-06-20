@@ -2,7 +2,7 @@
 
 import { useMounted } from "@/hooks/use-mounted";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { LogIn, User } from "lucide-react";
+import { LayoutDashboard, LogIn, User } from "lucide-react";
 import Link from "next/link";
 
 function AuthActionsPlaceholder() {
@@ -24,13 +24,24 @@ export function AuthActions() {
 
   if (session?.user) {
     return (
-      <Link
-        href="/profile"
-        aria-label="My Profile/Orders"
-        className="icon-btn"
-      >
-        <User className="h-[18px] w-[18px]" strokeWidth={1.5} />
-      </Link>
+      <div className="header-auth-actions">
+        {session.user.role === "ADMIN" ? (
+          <Link
+            href="/admin/orders"
+            aria-label="Admin orders"
+            className="icon-btn"
+          >
+            <LayoutDashboard className="h-[18px] w-[18px]" strokeWidth={1.5} />
+          </Link>
+        ) : null}
+        <Link
+          href="/profile"
+          aria-label="My Profile/Orders"
+          className="icon-btn"
+        >
+          <User className="h-[18px] w-[18px]" strokeWidth={1.5} />
+        </Link>
+      </div>
     );
   }
 
@@ -64,6 +75,17 @@ export function MobileAuthActions({ onNavigate }: { onNavigate?: () => void }) {
   if (session?.user) {
     return (
       <>
+        {session.user.role === "ADMIN" ? (
+          <li>
+            <Link
+              href="/admin/orders"
+              onClick={onNavigate}
+              className="mobile-nav-link"
+            >
+              Admin Orders
+            </Link>
+          </li>
+        ) : null}
         <li>
           <Link
             href="/profile"

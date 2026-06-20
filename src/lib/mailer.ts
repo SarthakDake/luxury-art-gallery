@@ -6,6 +6,15 @@ import nodemailer from "nodemailer";
 
 const artworkCatalog = artworks as Artwork[];
 
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 interface OrderEmailItem {
   artworkId: string;
   size: string;
@@ -69,12 +78,12 @@ function buildOrderEmailHtml(payload: NewOrderEmailPayload) {
   return `
     <div style="font-family: Georgia, 'Times New Roman', serif; color: #171717; line-height: 1.6;">
       <p style="font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #6b7280;">New Order Confirmed</p>
-      <h1 style="font-size: 24px; font-weight: 500; margin: 0 0 16px;">Payment received for order ${payload.orderId.slice(-8).toUpperCase()}</h1>
+      <h1 style="font-size: 24px; font-weight: 500; margin: 0 0 16px;">Payment received for order ${escapeHtml(payload.orderId.slice(-8).toUpperCase())}</h1>
       <p style="margin: 0 0 24px;">A collector has completed checkout. Review the details below in your admin dashboard.</p>
       <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
         <tbody>
-          <tr><td style="padding: 4px 0; color: #6b7280;">Buyer</td><td style="padding: 4px 0; text-align: right;">${payload.buyerName ? `${payload.buyerName} (${payload.buyerEmail})` : payload.buyerEmail}</td></tr>
-          <tr><td style="padding: 4px 0; color: #6b7280;">Order ID</td><td style="padding: 4px 0; text-align: right;">${payload.orderId}</td></tr>
+          <tr><td style="padding: 4px 0; color: #6b7280;">Buyer</td><td style="padding: 4px 0; text-align: right;">${payload.buyerName ? `${escapeHtml(payload.buyerName)} (${escapeHtml(payload.buyerEmail)})` : escapeHtml(payload.buyerEmail)}</td></tr>
+          <tr><td style="padding: 4px 0; color: #6b7280;">Order ID</td><td style="padding: 4px 0; text-align: right;">${escapeHtml(payload.orderId)}</td></tr>
           <tr><td style="padding: 4px 0; color: #6b7280;">Placed</td><td style="padding: 4px 0; text-align: right;">${payload.createdAt.toLocaleString("en-IN")}</td></tr>
           <tr><td style="padding: 4px 0; color: #6b7280;">Total</td><td style="padding: 4px 0; text-align: right; font-weight: 600;">${formatPrice(payload.totalAmount)}</td></tr>
         </tbody>
@@ -117,6 +126,51 @@ export async function sendNewOrderConfirmedEmail(
         (item) =>
           `- ${getArtworkTitle(item.artworkId)} (${item.size}) x${item.quantity}: ${formatPrice(item.price * item.quantity)}`,
       ),
+    ].join("\n"),
+  });
+}
+
+export interface ContactEmailPayload {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
+export async function sendContactFormEmail(
+  payload: ContactEmailPayload,
+): Promise<void> {
+  const transporter = createTransporter();
+  const from =
+    process.env.SMTP_FROM ??
+    `${config.siteName} <${process.env.SMTP_USER ?? config.contactEmail}>`;
+  const safeName = escapeHtml(payload.name);
+  const safeEmail = escapeHtml(payload.email);
+  const safeSubject = escapeHtml(payload.subject);
+  const safeMessage = escapeHtml(payload.message);
+
+  await transporter.sendMail({
+    from,
+    to: config.contactEmail,
+    replyTo: payload.email,
+    subject: `[Contact] ${payload.subject}`,
+    html: `
+      <div style="font-family: Georgia, 'Times New Roman', serif; color: #171717; line-height: 1.6;">
+        <p style="font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #6b7280;">New Contact Inquiry</p>
+        <h1 style="font-size: 24px; font-weight: 500; margin: 0 0 16px;">${safeSubject}</h1>
+        <p style="margin: 0 0 8px;"><strong>Name:</strong> ${safeName}</p>
+        <p style="margin: 0 0 24px;"><strong>Email:</strong> ${safeEmail}</p>
+        <p style="margin: 0 0 8px; color: #6b7280; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;">Message</p>
+        <p style="margin: 0; white-space: pre-wrap;">${safeMessage}</p>
+      </div>
+    `,
+    text: [
+      "New Contact Inquiry",
+      `Name: ${payload.name}`,
+      `Email: ${payload.email}`,
+      `Subject: ${payload.subject}`,
+      "",
+      payload.message,
     ].join("\n"),
   });
 }

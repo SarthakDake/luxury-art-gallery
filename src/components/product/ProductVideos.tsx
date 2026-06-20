@@ -11,7 +11,11 @@ import {
 import type { Artwork } from "@/types/artwork";
 import { Play, Volume2, VolumeX } from "lucide-react";
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 interface ProductVideosProps {
   artwork: Artwork;
@@ -240,38 +244,105 @@ function LocalVideoCard({ video }: { video: ResolvedArtworkVideo }) {
   );
 }
 
-function InstagramVideoCard({ video }: { video: ResolvedArtworkVideo }) {
-  const [streamUrl, setStreamUrl] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [loadFailed, setLoadFailed] = useState(false);
+function fetchInstagramStream(url: string): Promise<string> {
+  if (typeof window === "undefined") {
+    return Promise.reject(new Error("Instagram video fetch is client-only."));
+  }
 
-  const loadStream = useCallback(async () => {
-    setIsLoading(true);
-    setLoadFailed(false);
-    setStreamUrl(null);
-
-    try {
-      const response = await fetch(
-        `/api/instagram-video?url=${encodeURIComponent(video.url)}`,
-      );
-      const payload = (await response.json()) as { videoUrl?: string };
+  return fetch(`/api/instagram-video?url=${encodeURIComponent(url)}`).then(
+    async (response) => {
+      const payload = (await response.json()) as {
+        videoUrl?: string;
+        error?: string;
+      };
 
       if (!response.ok || !payload.videoUrl) {
-        setLoadFailed(true);
-        return;
+        throw new Error(payload.error ?? "Could not load Instagram video.");
       }
 
-      setStreamUrl(payload.videoUrl);
-    } catch {
-      setLoadFailed(true);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [video.url]);
+      return payload.videoUrl;
+    },
+  );
+}
+
+function InstagramVideoFallback({
+  video,
+  showPlay,
+  loadFailed,
+  onRetry,
+}: {
+  video: ResolvedArtworkVideo;
+  showPlay: boolean;
+  loadFailed: boolean;
+  onRetry: () => void;
+}) {
+  return (
+    <article className="space-y-4" data-reveal="scale-in">
+      <div className="art-image-frame product-video-frame product-video-frame--paused">
+        <VideoPoster posterUrl={video.posterUrl} title={video.title} />
+
+        <VideoControls
+          showPlay={showPlay}
+          showMute={false}
+          muted
+          onPlay={onRetry}
+          onToggleMute={() => {}}
+        />
+      </div>
+
+      {video.title ? (
+        <div className="space-y-2">
+          <h3 className="font-serif text-lg leading-snug tracking-wide text-[var(--foreground)]">
+            {video.title}
+          </h3>
+          {loadFailed ? (
+            <p className="text-sm text-[var(--muted)]">
+              Could not load this Instagram video. Tap play to try again.
+            </p>
+          ) : null}
+        </div>
+      ) : loadFailed ? (
+        <p className="text-sm text-[var(--muted)]">
+          Could not load this Instagram video. Tap play to try again.
+        </p>
+      ) : null}
+    </article>
+  );
+}
+
+function InstagramVideoLoader({
+  video,
+  onRetry,
+}: {
+  video: ResolvedArtworkVideo;
+  onRetry: () => void;
+}) {
+  const [streamUrl, setStreamUrl] = useState<string | null>(null);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    void loadStream();
-  }, [loadStream]);
+    let cancelled = false;
+
+    fetchInstagramStream(video.url)
+      .then((url) => {
+        if (cancelled) {
+          return;
+        }
+
+        setStreamUrl(url);
+      })
+      .catch(() => {
+        if (cancelled) {
+          return;
+        }
+
+        setFailed(true);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [video.url]);
 
   if (streamUrl) {
     return (
@@ -284,38 +355,24 @@ function InstagramVideoCard({ video }: { video: ResolvedArtworkVideo }) {
   }
 
   return (
-    <article className="space-y-4" data-reveal="scale-in">
-      <div className="art-image-frame product-video-frame product-video-frame--paused">
-        <VideoPoster posterUrl={video.posterUrl} title={video.title} />
+    <InstagramVideoFallback
+      video={video}
+      showPlay={failed}
+      loadFailed={failed}
+      onRetry={onRetry}
+    />
+  );
+}
 
-        <VideoControls
-          showPlay={!isLoading}
-          showMute={false}
-          muted
-          onPlay={() => {
-            void loadStream();
-          }}
-          onToggleMute={() => {}}
-        />
-      </div>
+function InstagramVideoCard({ video }: { video: ResolvedArtworkVideo }) {
+  const [retryKey, setRetryKey] = useState(0);
 
-      {video.title ? (
-        <div className="space-y-2">
-          <h3 className="font-serif text-lg leading-snug tracking-wide text-[var(--foreground)]">
-            {video.title}
-          </h3>
-          {loadFailed ? (
-            <p className="text-sm text-[var(--muted-foreground)]">
-              Could not load this Instagram video. Tap play to try again.
-            </p>
-          ) : null}
-        </div>
-      ) : loadFailed ? (
-        <p className="text-sm text-[var(--muted-foreground)]">
-          Could not load this Instagram video. Tap play to try again.
-        </p>
-      ) : null}
-    </article>
+  return (
+    <InstagramVideoLoader
+      key={retryKey}
+      video={video}
+      onRetry={() => setRetryKey((current) => current + 1)}
+    />
   );
 }
 

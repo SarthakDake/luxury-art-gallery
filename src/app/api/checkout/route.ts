@@ -1,11 +1,13 @@
 import { authOptions } from "@/lib/auth";
 import { verifyCartItems } from "@/lib/catalog";
+import { applyPromoCode } from "@/lib/promo-codes";
 import { createPhonePePayment } from "@/lib/payments/phonepe";
 import {
   getAppBaseUrl,
   resolvePaymentGateway,
 } from "@/lib/payments/gateway";
 import { prisma } from "@/lib/prisma";
+import { enforceRateLimit } from "@/lib/rate-limit";
 import { getRazorpayClient } from "@/lib/razorpay";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
@@ -21,9 +23,16 @@ interface CheckoutItemInput {
 
 interface CheckoutBody {
   items?: CheckoutItemInput[];
+  promoCode?: string;
 }
 
 export async function POST(request: Request) {
+  const rateLimitResponse = await enforceRateLimit(request, "checkout");
+
+  if (rateLimitResponse) {
+    return rateLimitResponse;
+  }
+
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
@@ -56,10 +65,26 @@ export async function POST(request: Request) {
     );
   }
 
-  const totalAmount = verifiedItems.reduce(
+  const subtotal = verifiedItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0,
   );
+
+  let discountAmount = 0;
+  let promoCode: string | undefined;
+
+  if (body.promoCode?.trim()) {
+    const promoResult = applyPromoCode(body.promoCode, subtotal);
+
+    if (!promoResult.valid) {
+      return NextResponse.json({ error: promoResult.message }, { status: 400 });
+    }
+
+    discountAmount = promoResult.discount;
+    promoCode = promoResult.code;
+  }
+
+  const totalAmount = subtotal - discountAmount;
   const amountInPaise = Math.round(totalAmount * 100);
 
   if (amountInPaise < 100) {
@@ -82,6 +107,8 @@ export async function POST(request: Request) {
         data: {
           userId: session.user.id,
           totalAmount,
+          discountAmount,
+          promoCode,
           status: "PENDING",
           paymentProvider: "RAZORPAY",
           razorpayOrderId: razorpayOrder.id,
@@ -109,6 +136,8 @@ export async function POST(request: Request) {
       data: {
         userId: session.user.id,
         totalAmount,
+        discountAmount,
+        promoCode,
         status: "PENDING",
         paymentProvider: "PHONEPE",
         items: {
@@ -145,12 +174,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Checkout failed:", error);
     return NextResponse.json(
-      {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Unable to create checkout order.",
-      },
+      { error: "Unable to create checkout order." },
       { status: 500 },
     );
   }

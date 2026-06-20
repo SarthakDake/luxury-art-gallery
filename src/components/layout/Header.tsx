@@ -15,24 +15,26 @@ const navLinks = [
 export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--background)]/95 backdrop-blur-md transition-colors duration-300">
-      <div className="site-container flex h-[var(--header-height)] items-center justify-between gap-4">
-        <div className="header-brand-group">
-          <MobileNav />
-          <Link
-            href="/"
-            className="site-logo truncate font-serif text-xl tracking-wide text-[var(--foreground)] transition-opacity duration-300 hover:opacity-75 lg:text-2xl"
-          >
-            {config.siteName}
-          </Link>
-        </div>
-
-        <nav aria-label="Primary" className="header-nav">
-          {navLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="nav-link">
-              {link.label}
+      <div className="site-container header-inner">
+        <div className="header-leading">
+          <div className="header-brand-group">
+            <MobileNav />
+            <Link
+              href="/"
+              className="site-logo truncate font-serif text-xl tracking-wide text-[var(--foreground)] transition-opacity duration-300 hover:opacity-75 lg:text-2xl"
+            >
+              {config.siteName}
             </Link>
-          ))}
-        </nav>
+          </div>
+
+          <nav aria-label="Primary" className="header-nav">
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href} className="nav-link">
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
 
         <div className="header-actions">
           <GlobalSearch variant="inline" />

@@ -1,40 +1,24 @@
 {
   "artistName": "Aishwarya Dake",
   "artistTagline": "Painting and sculpture shaped by light, restraint, and quiet form.",
-  "portraitImageUrl": "/artist-portrait.jpg",
-  "biography": "Elena Marchetti is a contemporary artist working at the intersection of minimal form and atmospheric light. Based in Milan, her practice spans painting and sculpture, with a focus on quiet compositions that reward sustained viewing.",
+  "portraitImageUrl": "",
+  "biography": "Aishwarya Dake is the artist behind Colors N Joy, working at the intersection of minimal form and atmospheric light. Her practice spans painting and sculpture, with a focus on quiet compositions that reward sustained viewing and bring calm, considered presence into everyday spaces.",
   "exhibitions": [
     {
       "year": 2024,
-      "title": "Thresholds",
-      "location": "Galleria Nova, Milan"
+      "title": "Chasing Light & Form",
+      "location": "Colors N Joy Studio Collection"
+    },
+    {
+      "year": 2023,
+      "title": "Selected Works",
+      "location": "Colors N Joy Online Gallery"
     },
     {
       "year": 2022,
-      "title": "Quiet Architectures",
-      "location": "Haus der Kunst, Berlin"
-    },
-    {
-      "year": 2020,
-      "title": "Light & Line",
-      "location": "The White Cube, London"
+      "title": "Studio Introduction",
+      "location": "Colors N Joy Studio"
     }
   ],
-  "press": [
-    {
-      "publication": "Art Review",
-      "year": 2024,
-      "link": "https://artreview.com/elena-marchetti-thresholds"
-    },
-    {
-      "publication": "Monocle",
-      "year": 2022,
-      "link": "https://monocle.com/design/quiet-architectures-berlin"
-    },
-    {
-      "publication": "Frieze",
-      "year": 2020,
-      "link": "https://frieze.com/article/elena-marchetti-light-line"
-    }
-  ]
+  "press": []
 }

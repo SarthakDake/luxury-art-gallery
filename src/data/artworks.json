@@ -23,12 +23,6 @@
     "defaultSelectedSizeIndex": 1,
     "videos": [
       {
-        "type": "file",
-        "url": "/videos/horizon-line-no-7-studio.mp4",
-        "title": "Studio Walkthrough",
-        "poster": "/artworks/brown_1.heic"
-      },
-      {
         "type": "youtube",
         "url": "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
         "title": "Artist Process"
@@ -65,12 +59,6 @@
     "defaultSelectedSizeIndex": 1,
     "videos": [
       {
-        "type": "file",
-        "url": "/videos/silent-column-studio.mp4",
-        "title": "In the Studio",
-        "poster": "/artworks/green_leaf_1.jpg"
-      },
-      {
         "type": "youtube",
         "url": "https://youtu.be/aqz-KE-bpKQ",
         "title": "Making of"
@@ -81,7 +69,11 @@
     "id": "art-003",
     "title": "Veil of Dawn",
     "slug": "veil-of-dawn",
-    "imageUrl": "/artworks/sample3.jpg",
+    "imageUrl": "/artworks/brown_2.heic",
+    "galleryImages": [
+      "/artworks/brown_2.heic",
+      "/artworks/brown_3.heic"
+    ],
     "category": "Ready to hang Arts",
     "subcategory": "Abstract",
     "material": "Acrylic on canvas",
@@ -92,21 +84,13 @@
       { "size": "24x32 inches", "price": 3100 },
       { "size": "30x40 inches", "price": 3900 }
     ],
-    "defaultSelectedSizeIndex": 1,
-    "videos": [
-      {
-        "type": "file",
-        "url": "/videos/veil-of-dawn-process.mp4",
-        "title": "Layering Process",
-        "poster": "/artworks/sample3.jpg"
-      }
-    ]
+    "defaultSelectedSizeIndex": 1
   },
   {
     "id": "art-004",
     "title": "Negative Space Study",
     "slug": "negative-space-study",
-    "imageUrl": "/artworks/sample4.jpg",
+    "imageUrl": "/artworks/brown_3.heic",
     "category": "Ready to hang Arts",
     "subcategory": "Works on Paper",
     "material": "Graphite and gesso on paper",
@@ -117,21 +101,13 @@
       { "size": "18x24 inches", "price": 1850 },
       { "size": "22x30 inches", "price": 2750 }
     ],
-    "defaultSelectedSizeIndex": 0,
-    "videos": [
-      {
-        "type": "file",
-        "url": "/videos/negative-space-study-studio.mp4",
-        "title": "Drawing in Progress",
-        "poster": "/artworks/sample4.jpg"
-      }
-    ]
+    "defaultSelectedSizeIndex": 0
   },
   {
     "id": "art-005",
     "title": "Arc of Balance",
     "slug": "arc-of-balance",
-    "imageUrl": "/artworks/sample5.jpg",
+    "imageUrl": "/artworks/green_leaf_3.heic",
     "category": "Statement Wall Art",
     "subcategory": "Marble Sculpture",
     "material": "Carrara marble",
@@ -142,14 +118,6 @@
       { "size": "18 x 14 x 6 inches", "price": 5400 },
       { "size": "24 x 18 x 8 inches", "price": 7600 }
     ],
-    "defaultSelectedSizeIndex": 1,
-    "videos": [
-      {
-        "type": "file",
-        "url": "/videos/arc-of-balance-studio.mp4",
-        "title": "Sculpture in Light",
-        "poster": "/artworks/sample5.jpg"
-      }
-    ]
+    "defaultSelectedSizeIndex": 1
   }
 ]

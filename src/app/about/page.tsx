@@ -5,6 +5,14 @@ import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import Image from "next/image";
 import Link from "next/link";
 
+interface PressFeature {
+  publication: string;
+  year: number;
+  link: string;
+}
+
+const pressFeatures = profile.press as PressFeature[];
+
 const exhibitions = [...profile.exhibitions].sort((a, b) => b.year - a.year);
 const careerStart = Math.min(...profile.exhibitions.map((item) => item.year));
 const careerYears = new Date().getFullYear() - careerStart;
@@ -89,10 +97,12 @@ export default function AboutPage() {
               <p className="about-highlight-value">{careerYears}+</p>
               <p className="about-highlight-label">Years in Practice</p>
             </div>
-            <div className="about-highlight-item">
-              <p className="about-highlight-value">{profile.press.length}</p>
-              <p className="about-highlight-label">Press Features</p>
-            </div>
+            {pressFeatures.length > 0 ? (
+              <div className="about-highlight-item">
+                <p className="about-highlight-value">{pressFeatures.length}</p>
+                <p className="about-highlight-label">Press Features</p>
+              </div>
+            ) : null}
           </Reveal>
         </section>
       </div>
@@ -110,8 +120,8 @@ export default function AboutPage() {
               Selected Shows
             </h2>
             <p className="body-text max-w-2xl">
-              A record of solo and group presentations across Europe, shaping
-              a practice rooted in light, material, and stillness.
+              A record of studio presentations and collection launches through
+              Colors N Joy, rooted in light, material, and stillness.
             </p>
           </div>
 
@@ -135,43 +145,50 @@ export default function AboutPage() {
         </div>
       </Reveal>
 
+      {pressFeatures.length > 0 ? (
+        <Reveal
+          as="section"
+          variant="slide-up"
+          aria-labelledby="press-heading"
+          className="site-container about-section"
+        >
+          <div className="about-section-header">
+            <p className="eyebrow">Recognition</p>
+            <h2 id="press-heading" className="section-title">
+              Press & Selected Awards
+            </h2>
+            <p className="body-text max-w-2xl">
+              Critical writing and editorial features on the work and its evolving
+              dialogue with contemporary minimalism.
+            </p>
+          </div>
+
+          <ul className="about-press-grid" data-reveal-stagger>
+            {pressFeatures.map((item) => (
+              <li key={`${item.publication}-${item.year}`} data-reveal="scale-in">
+                <article className="about-press-card">
+                  <p className="eyebrow">{item.year}</p>
+                  <h3 className="section-title">{item.publication}</h3>
+                  <a
+                    href={item.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-text"
+                  >
+                    Read Feature
+                  </a>
+                </article>
+              </li>
+            ))}
+          </ul>
+        </Reveal>
+      ) : null}
+
       <Reveal
-        as="section"
         variant="slide-up"
-        aria-labelledby="press-heading"
-        className="site-container about-section"
+        className="site-container about-section about-cta-wrap"
       >
-        <div className="about-section-header">
-          <p className="eyebrow">Recognition</p>
-          <h2 id="press-heading" className="section-title">
-            Press & Selected Awards
-          </h2>
-          <p className="body-text max-w-2xl">
-            Critical writing and editorial features on the work and its evolving
-            dialogue with contemporary minimalism.
-          </p>
-        </div>
-
-        <ul className="about-press-grid" data-reveal-stagger>
-          {profile.press.map((item) => (
-            <li key={`${item.publication}-${item.year}`} data-reveal="scale-in">
-              <article className="about-press-card">
-                <p className="eyebrow">{item.year}</p>
-                <h3 className="section-title">{item.publication}</h3>
-                <a
-                  href={item.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-text"
-                >
-                  Read Feature
-                </a>
-              </article>
-            </li>
-          ))}
-        </ul>
-
-        <Reveal variant="slide-up" className="about-cta">
+        <div className="about-cta">
           <div className="about-cta-copy">
             <p className="eyebrow">Explore the Collection</p>
             <h2 className="section-title">
@@ -190,7 +207,7 @@ export default function AboutPage() {
               Get in Touch
             </Link>
           </div>
-        </Reveal>
+        </div>
       </Reveal>
     </>
   );

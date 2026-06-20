@@ -1,17 +1,22 @@
-Placeholder assets for local testing. Replace with your own files when ready.
+Remaining assets to upload when you have final media ready.
 
-public/hero-banner.jpg
-  Homepage hero background (recommended: 1600 x 900 px or wider)
+Optional homepage / about images:
+  public/hero-banner.jpg       — homepage hero (1600 x 900 px or wider)
+  public/artist-portrait.jpg   — about page portrait (900 x 1200 px, 3:4)
 
-public/artist-portrait.jpg
-  About page portrait (recommended: 900 x 1200 px, 3:4 ratio)
-  Path is set in src/data/profile.json -> portraitImageUrl
+Optional product videos (local files):
+  public/videos/*.mp4          — add paths in src/data/artworks.json as type "file"
 
-public/artworks/sample1.jpg ... sample5.jpg
-  Gallery, shop, cart, and product detail images
-  Paths are set in src/data/artworks.json -> imageUrl
+Current artwork images in use:
+  public/artworks/brown_*.heic
+  public/artworks/green_leaf_1.jpg
+  public/artworks/green_leaf_2.HEIC
+  public/artworks/green_leaf_3.heic
 
-Text and business data:
-  src/data/config.json   site name, contact, social links, hero copy
-  src/data/artworks.json artwork titles, prices, sizes, descriptions
-  src/data/profile.json  artist bio, exhibitions, press
+Production setup checklist:
+  1. Set ADMIN_EMAIL in .env (matches your Google sign-in email)
+  2. Run: npx prisma migrate deploy
+  3. Sign in once as admin to activate ADMIN role
+  4. Optional: UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN for production rate limits
+  5. Replace placeholder YouTube URLs in src/data/artworks.json with your real videos
+  6. Update socialLinks in src/data/config.json with your live profile URLs

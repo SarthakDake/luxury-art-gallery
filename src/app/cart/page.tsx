@@ -1,7 +1,9 @@
 "use client";
 
 import config from "@/data/config.json";
+import { CartPromoCode } from "@/components/cart/CartPromoCode";
 import { Reveal } from "@/components/motion/Reveal";
+import { applyPromoCode } from "@/lib/promo-codes";
 import { useCartHydrated, useCartStore } from "@/lib/store";
 import {
   buildWhatsAppCheckoutUrl,
@@ -16,7 +18,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import Script from "next/script";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 
 type PaymentGateway = "razorpay" | "phonepe" | null;
 
@@ -53,15 +55,27 @@ function CartPageContent() {
   const [razorpayReady, setRazorpayReady] = useState(false);
   const [paymentGateway, setPaymentGateway] = useState<PaymentGateway>(null);
   const [gatewayLoading, setGatewayLoading] = useState(true);
+  const [appliedPromoCode, setAppliedPromoCode] = useState<string | null>(null);
+  const [whatsAppCheckoutComplete, setWhatsAppCheckoutComplete] = useState(false);
 
   const paymentStatus = searchParams.get("payment");
+  const paymentOrderId = searchParams.get("orderId");
   const paymentSucceeded = checkoutSuccess;
 
   const subtotal = items.reduce(
     (total, item) => total + item.price * item.quantity,
     0,
   );
-  const finalTotal = subtotal;
+  const appliedPromo = useMemo(() => {
+    if (!appliedPromoCode) {
+      return null;
+    }
+
+    const result = applyPromoCode(appliedPromoCode, subtotal);
+    return result.valid ? result : null;
+  }, [appliedPromoCode, subtotal]);
+  const discount = appliedPromo?.discount ?? 0;
+  const finalTotal = Math.max(subtotal - discount, 0);
   const isSessionLoading = status === "loading";
   const usesRazorpay = paymentGateway === "razorpay";
   const paymentConfigured = Boolean(paymentGateway);
@@ -94,23 +108,69 @@ function CartPageContent() {
   }, []);
 
   useEffect(() => {
-    if (paymentStatus === "success") {
-      clearCart();
+    if (paymentStatus !== "success") {
+      if (paymentStatus === "failed") {
+        const frame = requestAnimationFrame(() => {
+          setCheckoutError("Payment was not completed. Please try again.");
+          router.replace("/cart", { scroll: false });
+        });
+        return () => cancelAnimationFrame(frame);
+      }
+
+      return;
+    }
+
+    if (!paymentOrderId) {
       const frame = requestAnimationFrame(() => {
-        setCheckoutSuccess(true);
+        setCheckoutError("Payment confirmation is invalid. Please contact support.");
         router.replace("/cart", { scroll: false });
       });
       return () => cancelAnimationFrame(frame);
     }
 
-    if (paymentStatus === "failed") {
-      const frame = requestAnimationFrame(() => {
-        setCheckoutError("Payment was not completed. Please try again.");
+    const verifiedOrderId = paymentOrderId;
+    let cancelled = false;
+
+    async function verifyPayment() {
+      try {
+        const response = await fetch(
+          `/api/orders/payment-status?orderId=${encodeURIComponent(verifiedOrderId)}`,
+        );
+        const data = (await response.json()) as {
+          verified?: boolean;
+          error?: string;
+        };
+
+        if (cancelled) {
+          return;
+        }
+
+        if (response.ok && data.verified) {
+          clearCart();
+          setAppliedPromoCode(null);
+          setCheckoutSuccess(true);
+          router.replace("/cart", { scroll: false });
+          return;
+        }
+
+        setCheckoutError(
+          data.error ?? "Payment could not be verified. Please contact support.",
+        );
         router.replace("/cart", { scroll: false });
-      });
-      return () => cancelAnimationFrame(frame);
+      } catch {
+        if (!cancelled) {
+          setCheckoutError("Payment could not be verified. Please try again.");
+          router.replace("/cart", { scroll: false });
+        }
+      }
     }
-  }, [paymentStatus, clearCart, router]);
+
+    void verifyPayment();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [paymentStatus, paymentOrderId, clearCart, router]);
 
   async function verifyRazorpayPayment(
     orderId: string,
@@ -139,8 +199,23 @@ function CartPageContent() {
     }
   }
 
+  function openWhatsAppCheckout(url: string) {
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.target = "_blank";
+    anchor.rel = "noopener noreferrer";
+    anchor.style.display = "none";
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+  }
+
   function redirectToWhatsAppCheckout() {
-    const url = buildWhatsAppCheckoutUrl(items, finalTotal);
+    const url = buildWhatsAppCheckoutUrl(items, subtotal, {
+      discount,
+      promoCode: appliedPromo?.code,
+      finalTotal,
+    });
 
     if (!url) {
       setCheckoutError("Checkout is unavailable. Please try again later.");
@@ -148,8 +223,11 @@ function CartPageContent() {
       return false;
     }
 
+    openWhatsAppCheckout(url);
     clearCart();
-    globalThis.location.assign(url);
+    setAppliedPromoCode(null);
+    setWhatsAppCheckoutComplete(true);
+    setIsCheckingOut(false);
     return true;
   }
 
@@ -207,6 +285,7 @@ function CartPageContent() {
             price: item.price,
             quantity: item.quantity,
           })),
+          promoCode: appliedPromo?.code,
         }),
       });
 
@@ -252,6 +331,7 @@ function CartPageContent() {
           try {
             await verifyRazorpayPayment(checkoutData.orderId, response);
             clearCart();
+            setAppliedPromoCode(null);
             setCheckoutSuccess(true);
           } catch (error) {
             setCheckoutError(
@@ -300,6 +380,29 @@ function CartPageContent() {
             </Link>
             <Link href="/shop" className="btn-secondary btn-responsive">
               Continue Browsing
+            </Link>
+          </div>
+        </Reveal>
+      </div>
+    );
+  }
+
+  if (whatsAppCheckoutComplete) {
+    return (
+      <div className="site-container page-shell flex min-h-[60vh] flex-col items-center justify-center text-center">
+        <Reveal variant="slide-up" className="flex flex-col items-center text-center">
+          <p className="eyebrow">Order Sent</p>
+          <h1 className="page-title mt-4">Your inquiry is on WhatsApp.</h1>
+          <p className="body-text mt-4 max-w-md">
+            We opened WhatsApp with your order details in a new tab. Your cart
+            has been cleared here. Our studio will confirm your order on WhatsApp.
+          </p>
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+            <Link href="/shop" className="btn-primary btn-responsive">
+              Continue Browsing
+            </Link>
+            <Link href="/contact" className="btn-secondary btn-responsive">
+              Contact Studio
             </Link>
           </div>
         </Reveal>
@@ -431,15 +534,32 @@ function CartPageContent() {
           </Reveal>
 
           <Reveal as="aside" variant="slide-left" className="card-panel sticky-below-header h-fit p-6 sm:p-8">
-            <h2 className="eyebrow mb-8">Order Summary</h2>
+            <h2 className="eyebrow mb-6">Order Summary</h2>
 
-            <dl className="space-y-5 text-sm">
+            <CartPromoCode
+              subtotal={subtotal}
+              appliedPromo={appliedPromo}
+              onApply={(promo) => setAppliedPromoCode(promo?.code ?? null)}
+              disabled={isCheckingOut}
+            />
+
+            <dl className="cart-summary-list">
               <div className="flex items-center justify-between gap-4">
                 <dt className="text-[var(--muted)]">Subtotal</dt>
                 <dd className="font-medium text-[var(--foreground)]">
                   {formatPrice(subtotal)}
                 </dd>
               </div>
+              {discount > 0 ? (
+                <div className="flex items-center justify-between gap-4">
+                  <dt className="text-[var(--muted)]">
+                    Promo{appliedPromo ? ` (${appliedPromo.code})` : ""}
+                  </dt>
+                  <dd className="font-medium text-emerald-700 dark:text-emerald-400">
+                    -{formatPrice(discount)}
+                  </dd>
+                </div>
+              ) : null}
               <div className="flex items-center justify-between gap-4">
                 <dt className="text-[var(--muted)]">Shipping</dt>
                 <dd className="text-[var(--foreground)]">Free Shipping</dd>

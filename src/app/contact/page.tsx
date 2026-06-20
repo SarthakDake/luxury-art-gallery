@@ -15,14 +15,43 @@ export default function ContactPage() {
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const body = `Name: ${name}\nEmail: ${email}\n\n${message}`;
-    const mailtoLink = `mailto:${config.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setIsSubmitting(true);
+    setError(null);
+    setSuccess(false);
 
-    window.open(mailtoLink, "_self");
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, subject, message }),
+      });
+
+      const data = (await response.json()) as { success?: boolean; error?: string };
+
+      if (!response.ok || !data.success) {
+        setError(data.error ?? "Unable to send your message. Please try again.");
+        return;
+      }
+
+      setSuccess(true);
+      setName("");
+      setEmail("");
+      setSubject("");
+      setMessage("");
+    } catch {
+      setError("Unable to send your message. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -103,6 +132,19 @@ export default function ContactPage() {
             Send a Message
           </h2>
 
+          {success ? (
+            <p className="contact-form-success" role="status">
+              Thank you. Your message has been sent and we will get back to you
+              soon.
+            </p>
+          ) : null}
+
+          {error ? (
+            <p className="contact-form-error" role="alert">
+              {error}
+            </p>
+          ) : null}
+
           <form onSubmit={handleSubmit} className="form-stack">
             <div className="form-field">
               <label htmlFor="name" className="field-label">
@@ -117,6 +159,7 @@ export default function ContactPage() {
                 onChange={(event) => setName(event.target.value)}
                 className="input-field"
                 placeholder="Your name"
+                disabled={isSubmitting}
               />
             </div>
 
@@ -133,6 +176,7 @@ export default function ContactPage() {
                 onChange={(event) => setEmail(event.target.value)}
                 className="input-field"
                 placeholder="you@example.com"
+                disabled={isSubmitting}
               />
             </div>
 
@@ -149,6 +193,7 @@ export default function ContactPage() {
                 onChange={(event) => setSubject(event.target.value)}
                 className="input-field"
                 placeholder="Inquiry subject"
+                disabled={isSubmitting}
               />
             </div>
 
@@ -165,11 +210,16 @@ export default function ContactPage() {
                 onChange={(event) => setMessage(event.target.value)}
                 className="input-field input-field--textarea"
                 placeholder="Tell us about the work you are interested in..."
+                disabled={isSubmitting}
               />
             </div>
 
-            <button type="submit" className="btn-primary btn-responsive">
-              Send Message
+            <button
+              type="submit"
+              className="btn-primary btn-responsive"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Sending…" : "Send Message"}
             </button>
           </form>
         </Reveal>
