@@ -3,6 +3,13 @@ export interface ArtworkSize {
   price: number;
 }
 
+export interface ArtworkVideo {
+  url: string;
+  title?: string;
+  poster?: string;
+  type?: "file" | "youtube" | "instagram";
+}
+
 export interface Artwork {
   id: string;
   title: string;
@@ -21,6 +28,13 @@ export interface Artwork {
   careGuide?: string;
   shippingReturns?: string;
   beforeYouBuy?: string;
+  videos?: ArtworkVideo[];
+}
+
+export function getArtworkVideos(artwork: Artwork): ArtworkVideo[] {
+  return (
+    artwork.videos?.filter((video) => video.url.trim().length > 0) ?? []
+  );
 }
 
 export function getGalleryImages(artwork: Artwork): string[] {

@@ -6,6 +6,7 @@ import { ProductAccordion } from "@/components/product/ProductAccordion";
 import { ProductFeatures } from "@/components/product/ProductFeatures";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { QuantityStepper } from "@/components/product/QuantityStepper";
+import { ProductVideos } from "@/components/product/ProductVideos";
 import { RelatedProducts } from "@/components/product/RelatedProducts";
 import { SizeSelector } from "@/components/product/SizeSelector";
 import { useCartStore } from "@/lib/store";
@@ -264,6 +265,8 @@ function ArtworkDetailContent({ artwork }: { artwork: Artwork }) {
         </div>
 
         <ProductFeatures />
+
+        <ProductVideos artwork={artwork} />
 
         <RelatedProducts artworks={artworks} currentSlug={artwork.slug} />
       </div>

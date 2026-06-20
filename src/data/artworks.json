@@ -20,7 +20,26 @@
       { "size": "36x48 inches", "price": 4200 },
       { "size": "48x60 inches", "price": 5800 }
     ],
-    "defaultSelectedSizeIndex": 1
+    "defaultSelectedSizeIndex": 1,
+    "videos": [
+      {
+        "type": "file",
+        "url": "/videos/horizon-line-no-7-studio.mp4",
+        "title": "Studio Walkthrough",
+        "poster": "/artworks/brown_1.heic"
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
+        "title": "Artist Process"
+      },
+      {
+        "type": "instagram",
+        "url": "https://www.instagram.com/p/fA9uwTtkSN/",
+        "title": "Studio Reel",
+        "poster": "/artworks/brown_3.heic"
+      }
+    ]
   },
   {
     "id": "art-002",
@@ -43,7 +62,20 @@
       { "size": "36x48 inches", "price": 4200 },
       { "size": "48x60 inches", "price": 5800 }
     ],
-    "defaultSelectedSizeIndex": 1
+    "defaultSelectedSizeIndex": 1,
+    "videos": [
+      {
+        "type": "file",
+        "url": "/videos/silent-column-studio.mp4",
+        "title": "In the Studio",
+        "poster": "/artworks/green_leaf_1.jpg"
+      },
+      {
+        "type": "youtube",
+        "url": "https://youtu.be/aqz-KE-bpKQ",
+        "title": "Making of"
+      }
+    ]
   },
   {
     "id": "art-003",
@@ -60,7 +92,15 @@
       { "size": "24x32 inches", "price": 3100 },
       { "size": "30x40 inches", "price": 3900 }
     ],
-    "defaultSelectedSizeIndex": 1
+    "defaultSelectedSizeIndex": 1,
+    "videos": [
+      {
+        "type": "file",
+        "url": "/videos/veil-of-dawn-process.mp4",
+        "title": "Layering Process",
+        "poster": "/artworks/sample3.jpg"
+      }
+    ]
   },
   {
     "id": "art-004",
@@ -77,7 +117,15 @@
       { "size": "18x24 inches", "price": 1850 },
       { "size": "22x30 inches", "price": 2750 }
     ],
-    "defaultSelectedSizeIndex": 0
+    "defaultSelectedSizeIndex": 0,
+    "videos": [
+      {
+        "type": "file",
+        "url": "/videos/negative-space-study-studio.mp4",
+        "title": "Drawing in Progress",
+        "poster": "/artworks/sample4.jpg"
+      }
+    ]
   },
   {
     "id": "art-005",
@@ -94,6 +142,14 @@
       { "size": "18 x 14 x 6 inches", "price": 5400 },
       { "size": "24 x 18 x 8 inches", "price": 7600 }
     ],
-    "defaultSelectedSizeIndex": 1
+    "defaultSelectedSizeIndex": 1,
+    "videos": [
+      {
+        "type": "file",
+        "url": "/videos/arc-of-balance-studio.mp4",
+        "title": "Sculpture in Light",
+        "poster": "/artworks/sample5.jpg"
+      }
+    ]
   }
 ]
