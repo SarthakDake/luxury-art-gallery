@@ -150,13 +150,7 @@ function ShopFilters({
         </ul>
       </div>
 
-      <div
-        className={
-          availableSubcategories.length > 0
-            ? undefined
-            : "filter-section-disabled"
-        }
-      >
+      <div>
         <h2 className="eyebrow mb-5">Subcategory</h2>
         {availableSubcategories.length > 0 ? (
           <ul className="filter-list">
@@ -175,9 +169,7 @@ function ShopFilters({
             ))}
           </ul>
         ) : (
-          <p className="filter-helper-text">
-            Select a category to browse subcategories.
-          </p>
+          <p className="filter-helper-text">No subcategories available.</p>
         )}
       </div>
 
@@ -239,7 +231,7 @@ function ShopFilters({
           />
         </Reveal>
 
-        {selectedCategories.length > 0 ? (
+        {availableSubcategories.length > 0 ? (
           <Reveal variant="slide-up" className="mb-12">
             <SubcategoryPills
               selectedCategories={selectedCategories}

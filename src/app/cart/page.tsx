@@ -3,6 +3,10 @@
 import config from "@/data/config.json";
 import { Reveal } from "@/components/motion/Reveal";
 import { useCartHydrated, useCartStore } from "@/lib/store";
+import {
+  buildWhatsAppCheckoutUrl,
+  isWhatsAppCheckoutAvailable,
+} from "@/lib/whatsapp-checkout";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import { formatPrice } from "@/types/artwork";
@@ -61,13 +65,17 @@ function CartPageContent() {
   const isSessionLoading = status === "loading";
   const usesRazorpay = paymentGateway === "razorpay";
   const paymentConfigured = Boolean(paymentGateway);
+  const whatsAppCheckoutAvailable = isWhatsAppCheckoutAvailable();
+  const usesWhatsAppCheckout =
+    !paymentConfigured && whatsAppCheckoutAvailable;
   const canCheckout =
     !isCheckingOut &&
-    !isSessionLoading &&
     !gatewayLoading &&
-    paymentConfigured &&
-    status === "authenticated" &&
-    (!usesRazorpay || razorpayReady);
+    (usesWhatsAppCheckout ||
+      (!isSessionLoading &&
+        paymentConfigured &&
+        status === "authenticated" &&
+        (!usesRazorpay || razorpayReady)));
 
   useEffect(() => {
     async function loadGateway() {
@@ -131,8 +139,31 @@ function CartPageContent() {
     }
   }
 
+  function redirectToWhatsAppCheckout() {
+    const url = buildWhatsAppCheckoutUrl(items, finalTotal);
+
+    if (!url) {
+      setCheckoutError("Checkout is unavailable. Please try again later.");
+      setIsCheckingOut(false);
+      return false;
+    }
+
+    clearCart();
+    globalThis.location.assign(url);
+    return true;
+  }
+
   async function handleCheckout() {
-    if (items.length === 0 || isCheckingOut || isSessionLoading) return;
+    if (items.length === 0 || isCheckingOut) return;
+
+    if (!usesWhatsAppCheckout && isSessionLoading) return;
+
+    if (usesWhatsAppCheckout) {
+      setIsCheckingOut(true);
+      setCheckoutError(null);
+      redirectToWhatsAppCheckout();
+      return;
+    }
 
     if (status !== "authenticated") {
       router.push("/signin?callbackUrl=/cart");
@@ -140,6 +171,13 @@ function CartPageContent() {
     }
 
     if (!paymentConfigured) {
+      if (whatsAppCheckoutAvailable) {
+        setIsCheckingOut(true);
+        setCheckoutError(null);
+        redirectToWhatsAppCheckout();
+        return;
+      }
+
       setCheckoutError("Payment is not configured. Please try again later.");
       return;
     }
@@ -177,11 +215,16 @@ function CartPageContent() {
       };
 
       if (!checkoutResponse.ok) {
+        if (whatsAppCheckoutAvailable) {
+          redirectToWhatsAppCheckout();
+          return;
+        }
+
         throw new Error(checkoutData.error ?? "Unable to start checkout.");
       }
 
       if (checkoutData.provider === "phonepe") {
-        window.location.href = checkoutData.redirectUrl;
+        globalThis.location.assign(checkoutData.redirectUrl);
         return;
       }
 
@@ -229,6 +272,11 @@ function CartPageContent() {
 
       payment.open();
     } catch (error) {
+      if (whatsAppCheckoutAvailable) {
+        redirectToWhatsAppCheckout();
+        return;
+      }
+
       setCheckoutError(
         error instanceof Error ? error.message : "Unable to start checkout.",
       );
@@ -419,7 +467,7 @@ function CartPageContent() {
               </p>
             ) : null}
 
-            {status === "unauthenticated" && !isSessionLoading ? (
+            {status === "unauthenticated" && !isSessionLoading && paymentConfigured ? (
               <p className="body-text mt-6 text-sm">
                 <Link href="/signin?callbackUrl=/cart" className="underline underline-offset-4">
                   Sign in
@@ -428,7 +476,7 @@ function CartPageContent() {
               </p>
             ) : null}
 
-            {!paymentConfigured && !gatewayLoading ? (
+            {!paymentConfigured && !gatewayLoading && !whatsAppCheckoutAvailable ? (
               <p className="body-text mt-6 text-sm text-[var(--muted)]">
                 Add Razorpay or PhonePe credentials to your environment to enable
                 payments.
@@ -441,13 +489,13 @@ function CartPageContent() {
               disabled={!canCheckout}
               className="btn-primary btn-block mt-8"
             >
-              {isSessionLoading || gatewayLoading
+              {(!usesWhatsAppCheckout && isSessionLoading) || gatewayLoading
                 ? "Checking Account…"
                 : isCheckingOut
                   ? "Processing…"
                   : usesRazorpay && !razorpayReady
                     ? "Loading Checkout…"
-                    : status !== "authenticated"
+                    : status !== "authenticated" && paymentConfigured
                       ? "Sign In to Checkout"
                       : "Checkout"}
             </button>

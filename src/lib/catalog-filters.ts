@@ -12,16 +12,15 @@ export function getSubcategoriesForCategories(
   artworks: Artwork[],
   selectedCategories: string[],
 ): string[] {
-  if (selectedCategories.length === 0) {
-    return [];
-  }
+  const scopedArtworks =
+    selectedCategories.length === 0
+      ? artworks
+      : artworks.filter((artwork) =>
+          selectedCategories.includes(artwork.category),
+        );
 
   return [
-    ...new Set(
-      artworks
-        .filter((artwork) => selectedCategories.includes(artwork.category))
-        .map((artwork) => artwork.subcategory),
-    ),
+    ...new Set(scopedArtworks.map((artwork) => artwork.subcategory)),
   ].sort();
 }
 
