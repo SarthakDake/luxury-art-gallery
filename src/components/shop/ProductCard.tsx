@@ -1,5 +1,5 @@
 import { formatPriceFrom, type Artwork } from "@/types/artwork";
-import Image from "next/image";
+import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import Link from "next/link";
 
 interface ProductCardProps {
@@ -17,7 +17,7 @@ export function ProductCard({ artwork, reveal = false }: ProductCardProps) {
     >
       <article className="space-y-4">
         <div className="art-image-frame">
-          <Image
+          <ArtworkImage
             src={artwork.imageUrl}
             alt={artwork.title}
             fill

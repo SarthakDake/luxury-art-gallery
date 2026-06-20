@@ -3,19 +3,19 @@
     "id": "art-001",
     "title": "Horizon Line No. 7",
     "slug": "horizon-line-no-7",
-    "imageUrl": "/artworks/sample1.jpg",
+    "imageUrl": "/artworks/brown_1.heic",
     "galleryImages": [
-      "/artworks/sample1.jpg",
-      "/artworks/sample2.jpg",
-      "/artworks/sample3.jpg",
-      "/artworks/sample4.jpg"
+      "/artworks/brown_1.heic",
+      "/artworks/brown_2.heic",
+      "/artworks/brown_3.heic"
     ],
     "category": "Ready to hang Arts",
     "material": "Oil on linen",
     "inStock": true,
     "description": "A restrained study of coastal light, where a single horizon divides muted sky from deep water.",
     "sizes": [
-      { "size": "24x32 inches", "price": 2800 },
+      { "size": "20x30 inches", "price": 2500 },
+      { "size": "24x36 inches", "price": 2800 },
       { "size": "36x48 inches", "price": 4200 },
       { "size": "48x60 inches", "price": 5800 }
     ],
@@ -25,15 +25,21 @@
     "id": "art-002",
     "title": "Silent Column",
     "slug": "silent-column",
-    "imageUrl": "/artworks/sample2.jpg",
+    "imageUrl": "/artworks/green_leaf_1.jpg",
+    "galleryImages": [
+      "/artworks/green_leaf_1.jpg",
+      "/artworks/green_leaf_2.heic",
+      "/artworks/green_leaf_3.heic"
+    ],
     "category": "Statement Wall Art",
     "material": "Cast bronze",
     "inStock": true,
     "description": "An upright bronze form with a hand-polished surface that catches ambient light from every angle.",
     "sizes": [
-      { "size": "18 x 6 x 6 inches", "price": 4200 },
-      { "size": "24 x 8 x 8 inches", "price": 6800 },
-      { "size": "36 x 12 x 12 inches", "price": 9800 }
+      { "size": "20x30 inches", "price": 2500 },
+      { "size": "24x36 inches", "price": 2800 },
+      { "size": "36x48 inches", "price": 4200 },
+      { "size": "48x60 inches", "price": 5800 }
     ],
     "defaultSelectedSizeIndex": 1
   },

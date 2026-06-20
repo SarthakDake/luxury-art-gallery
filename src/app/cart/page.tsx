@@ -4,11 +4,11 @@ import config from "@/data/config.json";
 import { Reveal } from "@/components/motion/Reveal";
 import { useCartHydrated, useCartStore } from "@/lib/store";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
+import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import { formatPrice } from "@/types/artwork";
 import type { RazorpaySuccessResponse } from "@/types/razorpay";
 import { Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import Script from "next/script";
@@ -336,7 +336,7 @@ function CartPageContent() {
                     scroll={false}
                     className="art-image-frame-sm block shrink-0"
                   >
-                    <Image
+                    <ArtworkImage
                       src={item.imageUrl}
                       alt={item.title}
                       fill

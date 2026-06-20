@@ -11,6 +11,9 @@ interface GlobalSearchProps {
   variant?: "inline" | "mobile" | "drawer";
 }
 
+const MOBILE_SEARCH_TOP =
+  "top-[calc(var(--announcement-height)+var(--header-height))]";
+
 export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
   const isClient = useIsClient();
   const router = useRouter();
@@ -50,25 +53,44 @@ export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
   }, [variant]);
 
   useEffect(() => {
-    if (!mobileExpanded) return;
+    if (variant !== "mobile" || !mobileExpanded) return;
 
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
+    const frame = requestAnimationFrame(() => {
+      inputRef.current?.focus({ preventScroll: true });
+    });
 
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    const scrollY = window.scrollY;
+    const { style } = document.body;
+    const previousOverflow = style.overflow;
+    const previousPosition = style.position;
+    const previousTop = style.top;
+    const previousWidth = style.width;
+
+    style.overflow = "hidden";
+    style.position = "fixed";
+    style.top = `-${scrollY}px`;
+    style.width = "100%";
 
     return () => {
-      document.body.style.overflow = previousOverflow;
+      cancelAnimationFrame(frame);
+      style.overflow = previousOverflow;
+      style.position = previousPosition;
+      style.top = previousTop;
+      style.width = previousWidth;
+      window.scrollTo(0, scrollY);
     };
-  }, [mobileExpanded]);
+  }, [variant, mobileExpanded]);
 
   function handleSelect(slug: string) {
     setQuery("");
     setIsOpen(false);
     setMobileExpanded(false);
     router.push(`/art/${slug}`, { scroll: false });
+  }
+
+  function openMobileSearch() {
+    window.scrollTo(0, 0);
+    setMobileExpanded(true);
   }
 
   function closeMobileSearch() {
@@ -80,7 +102,7 @@ export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
   function clearQuery() {
     setQuery("");
     setIsOpen(false);
-    inputRef.current?.focus();
+    inputRef.current?.focus({ preventScroll: true });
   }
 
   const resultsPanel =
@@ -166,18 +188,21 @@ export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
           <button
             type="button"
             aria-label="Close search overlay"
-            className="mobile-search-overlay"
             onClick={closeMobileSearch}
+            className={`fixed inset-x-0 bottom-0 ${MOBILE_SEARCH_TOP} z-[44] cursor-pointer border-0 bg-black/30 backdrop-blur-[2px]`}
           />
-          <div ref={containerRef} className="mobile-search-panel">
-            <div className="site-container mobile-search-panel-inner">
-              <div className="mobile-search-panel-row">
-                {searchInput}
+          <div
+            ref={containerRef}
+            className={`fixed inset-x-0 ${MOBILE_SEARCH_TOP} z-[45] border-b border-[var(--border)] bg-[var(--background)] shadow-[0_12px_32px_rgba(0,0,0,0.08)]`}
+          >
+            <div className="site-container py-3.5">
+              <div className="flex items-center gap-2">
+                <div className="min-w-0 flex-1">{searchInput}</div>
                 <button
                   type="button"
                   aria-label="Close search"
                   onClick={closeMobileSearch}
-                  className="icon-btn mobile-search-close"
+                  className="icon-btn shrink-0"
                 >
                   <X className="h-[18px] w-[18px]" strokeWidth={1.5} />
                 </button>
@@ -194,7 +219,9 @@ export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
           type="button"
           aria-label="Search artworks"
           aria-expanded={mobileExpanded}
-          onClick={() => setMobileExpanded((expanded) => !expanded)}
+          onClick={() =>
+            mobileExpanded ? closeMobileSearch() : openMobileSearch()
+          }
           className="icon-btn xl:hidden"
         >
           {mobileExpanded ? (

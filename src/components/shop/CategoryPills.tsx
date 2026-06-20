@@ -1,8 +1,8 @@
 "use client";
 
 import artworksData from "@/data/artworks.json";
+import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import type { Artwork } from "@/types/artwork";
-import Image from "next/image";
 import Link from "next/link";
 
 const artworks = artworksData as Artwork[];
@@ -70,7 +70,7 @@ export function CategoryPills({
             }`}
           >
             {imageUrl && (
-              <Image
+              <ArtworkImage
                 src={imageUrl}
                 alt=""
                 fill

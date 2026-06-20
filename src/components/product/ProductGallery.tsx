@@ -1,8 +1,8 @@
 "use client";
 
 import { useIsClient } from "@/hooks/use-is-client";
+import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
-import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -145,7 +145,7 @@ export function ProductGallery({ images, title }: ProductGalleryProps) {
         className="product-lightbox-panel"
         onClick={(event) => event.stopPropagation()}
       >
-        <Image
+        <ArtworkImage
           src={activeImage}
           alt={title}
           fill
@@ -176,7 +176,7 @@ export function ProductGallery({ images, title }: ProductGalleryProps) {
           onMouseMove={handleStageMouseMove}
           aria-label={`View ${title} — tap to enlarge`}
         >
-          <Image
+          <ArtworkImage
             src={activeImage}
             alt={title}
             fill
@@ -208,7 +208,7 @@ export function ProductGallery({ images, title }: ProductGalleryProps) {
                 aria-label={`View image ${index + 1}`}
                 aria-selected={activeIndex === index}
               >
-                <Image
+                <ArtworkImage
                   src={src}
                   alt={`${title} — thumbnail ${index + 1}`}
                   fill

@@ -7,6 +7,7 @@ export interface Artwork {
   id: string;
   title: string;
   slug: string;
+  /** Public path under /artworks — .jpg, .jpeg, .png, .webp, .heic, or .heif */
   imageUrl: string;
   galleryImages?: string[];
   category: string;

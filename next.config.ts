@@ -11,7 +11,7 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ["@phonepe-pg/pg-sdk-node"],
+  serverExternalPackages: ["@phonepe-pg/pg-sdk-node", "heic-convert"],
   async headers() {
     return [
       {

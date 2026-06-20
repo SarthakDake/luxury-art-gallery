@@ -676,51 +676,6 @@
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
   }
 
-  .mobile-search-overlay {
-    position: fixed;
-    inset: 0;
-    top: var(--header-height);
-    z-index: 44;
-    border: none;
-    background: rgba(0, 0, 0, 0.28);
-    cursor: pointer;
-    backdrop-filter: blur(2px);
-  }
-
-  .mobile-search-panel {
-    position: fixed;
-    inset-inline: 0;
-    top: var(--header-height);
-    z-index: 45;
-    border-bottom: 1px solid var(--border);
-    background: var(--background);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
-    animation: mobile-nav-slide-in 220ms ease;
-  }
-
-  .mobile-search-panel-inner {
-    padding-block: 0.875rem;
-  }
-
-  .mobile-search-panel-row {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .mobile-search-panel-row .search-input-wrap {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .mobile-search-close {
-    flex-shrink: 0;
-  }
-
-  .mobile-search-panel .search-results-panel {
-    margin-top: 0.75rem;
-  }
-
   .mobile-nav-theme {
     margin-top: 2rem;
     padding-top: 2rem;
