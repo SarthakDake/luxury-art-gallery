@@ -7,21 +7,23 @@ import { Reveal } from "@/components/motion/Reveal";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import artworksData from "@/data/artworks.json";
 import {
+  filterArtworksBySelection,
+  getActiveCategoryPill,
+  getActiveSubcategoryPill,
+  getAvailableFacetValues,
   getCategories,
-  getMaterials,
-  getSubcategoriesForCategories,
-  pruneSubcategories,
+  reconcileFilterSelection,
   resolveCategoryFromParam,
   resolveSubcategoryFromParam,
+  type CatalogFilterSelection,
 } from "@/lib/catalog-filters";
 import type { Artwork } from "@/types/artwork";
 import { SlidersHorizontal } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 const artworks = artworksData as Artwork[];
 const categories = getCategories(artworks);
-const materials = getMaterials(artworks);
 
 function toggleValue(values: string[], value: string): string[] {
   return values.includes(value)
@@ -37,116 +39,262 @@ function ShopFilters({
   subcategoryParam: string | null;
 }) {
   const initialCategory = resolveCategoryFromParam(categoryParam, categories);
-  const initialCategories = initialCategory ? [initialCategory] : [];
   const initialSubcategory = resolveSubcategoryFromParam(
     subcategoryParam,
     artworks,
-    initialCategories,
   );
+  const initialSelection: CatalogFilterSelection = {
+    categories: initialCategory ? [initialCategory] : [],
+    subcategories: initialSubcategory ? [initialSubcategory] : [],
+    materials: [],
+  };
 
-  const [selectedCategories, setSelectedCategories] =
-    useState<string[]>(initialCategories);
-  const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>(
-    () => (initialSubcategory ? [initialSubcategory] : []),
+  const [selection, setSelection] = useState<CatalogFilterSelection>(() =>
+    reconcileFilterSelection(artworks, initialSelection),
   );
-  const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
-  const [activeCategoryPill, setActiveCategoryPill] = useState<string | null>(
-    () => initialCategory,
-  );
-  const [activeSubcategoryPill, setActiveSubcategoryPill] = useState<
-    string | null
-  >(() => initialSubcategory);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const subcategoryPillsRef = useRef<HTMLDivElement>(null);
+  const resultsRef = useRef<HTMLDivElement>(null);
+
+  function isMobileViewport() {
+    return (
+      typeof window !== "undefined" &&
+      window.matchMedia("(max-width: 1023px)").matches
+    );
+  }
+
+  function getStickyTopOffset() {
+    if (typeof window === "undefined") {
+      return 80;
+    }
+
+    const value = getComputedStyle(document.documentElement)
+      .getPropertyValue("--sticky-top")
+      .trim();
+
+    if (value.endsWith("px")) {
+      return Number.parseFloat(value) || 80;
+    }
+
+    return 80;
+  }
+
+  type MobileScrollMode = "subcategory" | "results-preview" | "results-full";
+
+  function scrollToMobileTarget(
+    element: HTMLElement | null,
+    mode: MobileScrollMode,
+    behavior: ScrollBehavior = "smooth",
+  ) {
+    if (!element || !isMobileViewport()) {
+      return;
+    }
+
+    const stickyTop = getStickyTopOffset();
+    const rect = element.getBoundingClientRect();
+
+    let offsetFromTop = stickyTop + 8;
+
+    if (mode === "subcategory") {
+      offsetFromTop = stickyTop + 12;
+    }
+
+    if (mode === "results-preview") {
+      offsetFromTop = window.innerHeight * 0.4;
+    }
+
+    const top = window.scrollY + rect.top - offsetFromTop;
+    window.scrollTo({ top: Math.max(0, top), behavior });
+  }
+
+  function scrollToSubcategoryFilters(behavior: ScrollBehavior = "smooth") {
+    if (subcategoryPillsRef.current) {
+      scrollToMobileTarget(subcategoryPillsRef.current, "subcategory", behavior);
+      return;
+    }
+
+    scrollToResultsPreview(behavior);
+  }
+
+  function scrollToResultsPreview(behavior: ScrollBehavior = "smooth") {
+    scrollToMobileTarget(resultsRef.current, "results-preview", behavior);
+  }
+
+  function scrollToResultsFull(behavior: ScrollBehavior = "smooth") {
+    scrollToMobileTarget(resultsRef.current, "results-full", behavior);
+  }
+
+  function runMobileScroll(action: () => void) {
+    if (!isMobileViewport()) {
+      return;
+    }
+
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(action);
+    });
+  }
+
+  function closeMobileFiltersPanel() {
+    setFiltersOpen(false);
+  }
+
+  const { categories: selectedCategories, subcategories: selectedSubcategories, materials: selectedMaterials } =
+    selection;
+
+  const availableCategories = useMemo(
+    () => getAvailableFacetValues(artworks, selection, "category"),
+    [selection],
+  );
 
   const availableSubcategories = useMemo(
-    () => getSubcategoriesForCategories(artworks, selectedCategories),
-    [selectedCategories],
+    () => getAvailableFacetValues(artworks, selection, "subcategory"),
+    [selection],
   );
 
-  const filteredArtworks = useMemo(() => {
-    return artworks.filter((artwork) => {
-      const matchesCategory =
-        selectedCategories.length === 0 ||
-        selectedCategories.includes(artwork.category);
-      const matchesSubcategory =
-        selectedSubcategories.length === 0 ||
-        selectedSubcategories.includes(artwork.subcategory);
-      const matchesMaterial =
-        selectedMaterials.length === 0 ||
-        selectedMaterials.includes(artwork.material);
+  const availableMaterials = useMemo(
+    () => getAvailableFacetValues(artworks, selection, "material"),
+    [selection],
+  );
 
-      return matchesCategory && matchesSubcategory && matchesMaterial;
-    });
-  }, [selectedCategories, selectedSubcategories, selectedMaterials]);
+  const filteredArtworks = useMemo(
+    () => filterArtworksBySelection(artworks, selection),
+    [selection],
+  );
 
-  function syncSubcategories(nextCategories: string[]) {
-    setSelectedSubcategories((current) =>
-      pruneSubcategories(artworks, nextCategories, current),
-    );
+  const activeCategoryPill = getActiveCategoryPill(selectedCategories);
+  const activeSubcategoryPill = getActiveSubcategoryPill(selectedSubcategories);
 
-    setActiveSubcategoryPill((current) => {
-      if (!current) return null;
-      const available = getSubcategoriesForCategories(artworks, nextCategories);
-      return available.includes(current) ? current : null;
-    });
+  function applySelection(nextSelection: CatalogFilterSelection) {
+    setSelection(reconcileFilterSelection(artworks, nextSelection));
   }
 
   function handleCategoryPillSelect(category: string | null) {
-    setActiveCategoryPill(category);
-    const nextCategories = category ? [category] : [];
-    setSelectedCategories(nextCategories);
-    setSelectedSubcategories([]);
-    setActiveSubcategoryPill(null);
-  }
+    applySelection({
+      ...selection,
+      categories: category ? [category] : [],
+    });
 
-  function handleSubcategoryPillSelect(subcategory: string | null) {
-    setActiveSubcategoryPill(subcategory);
-    setSelectedSubcategories(subcategory ? [subcategory] : []);
-  }
+    runMobileScroll(() => {
+      if (category) {
+        scrollToSubcategoryFilters();
+        return;
+      }
 
-  function handleCategoryCheckboxToggle(category: string) {
-    const next = toggleValue(selectedCategories, category);
-    setSelectedCategories(next);
-    syncSubcategories(next);
-    setActiveCategoryPill(
-      next.length === 1 ? next[0] : next.length === 0 ? null : activeCategoryPill,
-    );
-  }
-
-  function handleSubcategoryCheckboxToggle(subcategory: string) {
-    setSelectedSubcategories((current) => {
-      const next = toggleValue(current, subcategory);
-      setActiveSubcategoryPill(next.length === 1 ? next[0] : null);
-      return next;
+      scrollToResultsFull();
     });
   }
 
-  function clearFilters() {
-    setSelectedCategories([]);
-    setSelectedSubcategories([]);
-    setSelectedMaterials([]);
-    setActiveCategoryPill(null);
-    setActiveSubcategoryPill(null);
+  function handleSubcategoryPillSelect(subcategory: string | null) {
+    applySelection({
+      ...selection,
+      subcategories: subcategory ? [subcategory] : [],
+    });
+
+    runMobileScroll(() => {
+      if (subcategory) {
+        scrollToResultsPreview();
+        return;
+      }
+
+      scrollToResultsFull();
+    });
   }
+
+  function handleCategoryCheckboxToggle(category: string) {
+    const isSelecting = !selectedCategories.includes(category);
+
+    applySelection({
+      ...selection,
+      categories: toggleValue(selectedCategories, category),
+    });
+    closeMobileFiltersPanel();
+
+    runMobileScroll(() => {
+      if (isSelecting) {
+        scrollToSubcategoryFilters();
+        return;
+      }
+
+      scrollToResultsFull();
+    });
+  }
+
+  function handleSubcategoryCheckboxToggle(subcategory: string) {
+    const isSelecting = !selectedSubcategories.includes(subcategory);
+
+    applySelection({
+      ...selection,
+      subcategories: toggleValue(selectedSubcategories, subcategory),
+    });
+    closeMobileFiltersPanel();
+
+    runMobileScroll(() => {
+      if (isSelecting) {
+        scrollToResultsPreview();
+        return;
+      }
+
+      scrollToResultsFull();
+    });
+  }
+
+  function handleMaterialCheckboxToggle(material: string) {
+    applySelection({
+      ...selection,
+      materials: toggleValue(selectedMaterials, material),
+    });
+    closeMobileFiltersPanel();
+
+    runMobileScroll(scrollToResultsFull);
+  }
+
+  function handleClearFilters() {
+    setSelection({
+      categories: [],
+      subcategories: [],
+      materials: [],
+    });
+    setFiltersOpen(false);
+
+    runMobileScroll(scrollToResultsFull);
+  }
+
+  const activeFilterCount =
+    selectedCategories.length +
+    selectedSubcategories.length +
+    selectedMaterials.length;
+
+  const resultsSummary =
+    filteredArtworks.length === 1
+      ? "1 work"
+      : `${filteredArtworks.length} works`;
 
   const filterSidebar = (
     <aside className="card-panel space-y-8 p-6 lg:p-8">
       <div>
         <h2 className="eyebrow mb-5">Category</h2>
         <ul className="filter-list">
-          {categories.map((category) => (
-            <li key={category}>
-              <label className="filter-label">
-                <input
-                  type="checkbox"
-                  checked={selectedCategories.includes(category)}
-                  onChange={() => handleCategoryCheckboxToggle(category)}
-                  className="filter-checkbox"
-                />
-                {category}
-              </label>
-            </li>
-          ))}
+          {categories.map((category) => {
+            const isChecked = selectedCategories.includes(category);
+            const isAvailable = availableCategories.includes(category);
+
+            return (
+              <li key={category}>
+                <label
+                  className={`filter-label${isAvailable || isChecked ? "" : " filter-label-disabled"}`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={isChecked}
+                    disabled={!isAvailable && !isChecked}
+                    onChange={() => handleCategoryCheckboxToggle(category)}
+                    className="filter-checkbox"
+                  />
+                  {category}
+                </label>
+              </li>
+            );
+          })}
         </ul>
       </div>
 
@@ -154,55 +302,74 @@ function ShopFilters({
         <h2 className="eyebrow mb-5">Subcategory</h2>
         {availableSubcategories.length > 0 ? (
           <ul className="filter-list">
-            {availableSubcategories.map((subcategory) => (
-              <li key={subcategory}>
-                <label className="filter-label">
-                  <input
-                    type="checkbox"
-                    checked={selectedSubcategories.includes(subcategory)}
-                    onChange={() => handleSubcategoryCheckboxToggle(subcategory)}
-                    className="filter-checkbox"
-                  />
-                  {subcategory}
-                </label>
-              </li>
-            ))}
+            {availableSubcategories.map((subcategory) => {
+              const isChecked = selectedSubcategories.includes(subcategory);
+
+              return (
+                <li key={subcategory}>
+                  <label className="filter-label">
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={() => handleSubcategoryCheckboxToggle(subcategory)}
+                      className="filter-checkbox"
+                    />
+                    {subcategory}
+                  </label>
+                </li>
+              );
+            })}
           </ul>
         ) : (
-          <p className="filter-helper-text">No subcategories available.</p>
+          <p className="filter-helper-text">No subcategories match your filters.</p>
         )}
       </div>
 
       <div>
         <h2 className="eyebrow mb-5">Material</h2>
-        <ul className="filter-list">
-          {materials.map((material) => (
-            <li key={material}>
-              <label className="filter-label">
-                <input
-                  type="checkbox"
-                  checked={selectedMaterials.includes(material)}
-                  onChange={() =>
-                    setSelectedMaterials((current) =>
-                      toggleValue(current, material),
-                    )
-                  }
-                  className="filter-checkbox"
-                />
-                {material}
-              </label>
-            </li>
-          ))}
-        </ul>
+        {availableMaterials.length > 0 ? (
+          <ul className="filter-list">
+            {availableMaterials.map((material) => {
+              const isChecked = selectedMaterials.includes(material);
+
+              return (
+                <li key={material}>
+                  <label className="filter-label">
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={() => handleMaterialCheckboxToggle(material)}
+                      className="filter-checkbox"
+                    />
+                    {material}
+                  </label>
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          <p className="filter-helper-text">No materials match your filters.</p>
+        )}
       </div>
 
-      {(selectedCategories.length > 0 ||
-        selectedSubcategories.length > 0 ||
-        selectedMaterials.length > 0) && (
-        <button type="button" onClick={clearFilters} className="btn-text">
+      {activeFilterCount > 0 && (
+        <button type="button" onClick={handleClearFilters} className="btn-text">
           Clear filters
         </button>
       )}
+
+      <div className="shop-mobile-filter-actions lg:hidden">
+        <button
+          type="button"
+          onClick={() => {
+            closeMobileFiltersPanel();
+            runMobileScroll(scrollToResultsFull);
+          }}
+          className="btn-primary btn-block"
+        >
+          View {resultsSummary}
+        </button>
+      </div>
     </aside>
   );
 
@@ -233,21 +400,32 @@ function ShopFilters({
 
         {availableSubcategories.length > 0 ? (
           <Reveal variant="slide-up">
-            <SubcategoryPills
-              selectedCategories={selectedCategories}
-              activeSubcategory={activeSubcategoryPill}
-              onSelect={handleSubcategoryPillSelect}
-            />
+            <div ref={subcategoryPillsRef}>
+              <SubcategoryPills
+                subcategories={availableSubcategories}
+                activeSubcategory={activeSubcategoryPill}
+                onSelect={handleSubcategoryPillSelect}
+              />
+            </div>
           </Reveal>
         ) : null}
       </div>
 
       <div className="surface-section section-block shop-catalog-block">
         <div className="site-container">
+          <div className="shop-mobile-results-bar lg:hidden">
+            <p className="shop-mobile-results-count">{resultsSummary}</p>
+            <p className="shop-mobile-results-meta">
+              {activeFilterCount > 0
+                ? `${activeFilterCount} filter${activeFilterCount === 1 ? "" : "s"} applied`
+                : "Works appear below"}
+            </p>
+          </div>
+
           <button
             type="button"
             onClick={() => setFiltersOpen((open) => !open)}
-            className="btn-ghost btn-block mb-8 lg:hidden"
+            className="btn-ghost btn-block mb-6 lg:hidden"
             aria-expanded={filtersOpen}
           >
             <SlidersHorizontal className="h-4 w-4" strokeWidth={1.5} />
@@ -256,17 +434,20 @@ function ShopFilters({
 
           <div className="shop-catalog-grid">
             <div
-              className={`transition-all duration-300 lg:block ${
+              className={`shop-filters-column transition-all duration-300 lg:block ${
                 filtersOpen
-                  ? "mb-4 block opacity-100"
+                  ? "block opacity-100"
                   : "hidden opacity-0 lg:opacity-100"
               }`}
             >
               {filterSidebar}
             </div>
 
-            <div>
-              <p className="mb-6 meta-text">
+            <div
+              ref={resultsRef}
+              className="shop-results-column shop-results-anchor"
+            >
+              <p className="mb-6 meta-text hidden lg:block">
                 {filteredArtworks.length}{" "}
                 {filteredArtworks.length === 1 ? "work" : "works"}
               </p>

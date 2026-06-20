@@ -1,31 +1,29 @@
 "use client";
 
-import artworksData from "@/data/artworks.json";
-import {
-  getSubcategoriesForCategories,
-} from "@/lib/catalog-filters";
-import type { Artwork } from "@/types/artwork";
-
-const artworks = artworksData as Artwork[];
-
 interface SubcategoryPillsProps {
-  selectedCategories: string[];
+  subcategories: string[];
   activeSubcategory?: string | null;
   onSelect?: (subcategory: string | null) => void;
 }
 
+function chipClassName(isActive: boolean) {
+  return isActive
+    ? "chip chip--selected !border-[#171717] !bg-[#171717] !text-white dark:!border-[#e5e5e5] dark:!bg-[#e5e5e5] dark:!text-[#111111]"
+    : "chip";
+}
+
 export function SubcategoryPills({
-  selectedCategories,
+  subcategories,
   activeSubcategory = null,
   onSelect,
 }: SubcategoryPillsProps) {
-  const subcategories = getSubcategoriesForCategories(
-    artworks,
-    selectedCategories,
-  );
-
   if (subcategories.length === 0) {
     return null;
+  }
+
+  function handleSelect(subcategory: string | null, target: HTMLButtonElement) {
+    onSelect?.(subcategory);
+    target.blur();
   }
 
   return (
@@ -34,8 +32,8 @@ export function SubcategoryPills({
       <div className="subcategory-pills-scroll">
         <button
           type="button"
-          onClick={() => onSelect?.(null)}
-          className={`chip ${activeSubcategory === null ? "chip-active" : ""}`}
+          onClick={(event) => handleSelect(null, event.currentTarget)}
+          className={chipClassName(activeSubcategory === null)}
           aria-pressed={activeSubcategory === null}
         >
           All
@@ -48,8 +46,8 @@ export function SubcategoryPills({
             <button
               key={subcategory}
               type="button"
-              onClick={() => onSelect?.(subcategory)}
-              className={`chip ${isActive ? "chip-active" : ""}`}
+              onClick={(event) => handleSelect(subcategory, event.currentTarget)}
+              className={chipClassName(isActive)}
               aria-pressed={isActive}
             >
               {subcategory}

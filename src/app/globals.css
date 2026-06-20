@@ -190,6 +190,42 @@
     gap: 2rem;
   }
 
+  .shop-results-column {
+    min-width: 0;
+  }
+
+  .shop-results-anchor {
+    scroll-margin-top: calc(var(--sticky-top) + 0.75rem);
+  }
+
+  .shop-mobile-results-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.875rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .shop-mobile-results-count {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--foreground);
+  }
+
+  .shop-mobile-results-meta {
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: var(--muted);
+  }
+
+  .shop-mobile-filter-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding-top: 0.5rem;
+  }
+
   @media (min-width: 1024px) {
     .shop-catalog-grid {
       grid-template-columns: 280px minmax(0, 1fr);
@@ -974,20 +1010,71 @@
     letter-spacing: 0.02em;
     border: 1px solid var(--border);
     color: var(--muted);
-    background: transparent;
-    transition: all 300ms ease;
+    background-color: transparent;
+    transition:
+      border-color 300ms ease,
+      background-color 300ms ease,
+      color 300ms ease;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  .chip:hover {
-    border-color: var(--foreground);
-    color: var(--foreground);
+  @media (hover: hover) and (pointer: fine) {
+    .chip:not([aria-pressed="true"]):hover {
+      border-color: var(--foreground);
+      color: var(--foreground);
+    }
   }
 
-  .chip-active {
+  .chip[aria-pressed="true"],
+  .chip.chip--selected {
     border-color: var(--foreground);
-    background: var(--foreground);
+    background-color: var(--foreground);
     color: var(--background);
+  }
+
+  button.chip[aria-pressed="true"],
+  button.chip.chip--selected {
+    border-color: #171717 !important;
+    background-color: #171717 !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
+
+  .dark button.chip[aria-pressed="true"],
+  .dark button.chip.chip--selected {
+    border-color: #e5e5e5 !important;
+    background-color: #e5e5e5 !important;
+    color: #111111 !important;
+    -webkit-text-fill-color: #111111 !important;
+  }
+
+  button.chip[aria-pressed="true"]:hover,
+  button.chip[aria-pressed="true"]:focus,
+  button.chip[aria-pressed="true"]:focus-visible,
+  button.chip[aria-pressed="true"]:active,
+  button.chip.chip--selected:hover,
+  button.chip.chip--selected:focus,
+  button.chip.chip--selected:focus-visible,
+  button.chip.chip--selected:active {
+    border-color: #171717 !important;
+    background-color: #171717 !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
+
+  .dark button.chip[aria-pressed="true"]:hover,
+  .dark button.chip[aria-pressed="true"]:focus,
+  .dark button.chip[aria-pressed="true"]:focus-visible,
+  .dark button.chip[aria-pressed="true"]:active,
+  .dark button.chip.chip--selected:hover,
+  .dark button.chip.chip--selected:focus,
+  .dark button.chip.chip--selected:focus-visible,
+  .dark button.chip.chip--selected:active {
+    border-color: #e5e5e5 !important;
+    background-color: #e5e5e5 !important;
+    color: #111111 !important;
+    -webkit-text-fill-color: #111111 !important;
   }
 
   /* ── Cards & panels ── */
@@ -1943,6 +2030,15 @@
 
   .filter-label:hover {
     color: var(--foreground);
+  }
+
+  .filter-label-disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+
+  .filter-label-disabled:hover {
+    color: var(--muted);
   }
 
   /* ── Product detail page ── */
