@@ -2,7 +2,7 @@
 
 import { useMounted } from "@/hooks/use-mounted";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { LayoutDashboard, LogIn, User } from "lucide-react";
+import { FilePenLine, LayoutDashboard, LogIn, User } from "lucide-react";
 import Link from "next/link";
 
 function AuthActionsPlaceholder() {
@@ -26,13 +26,22 @@ export function AuthActions() {
     return (
       <div className="header-auth-actions">
         {session.user.role === "ADMIN" ? (
-          <Link
-            href="/admin/orders"
-            aria-label="Admin orders"
-            className="icon-btn"
-          >
-            <LayoutDashboard className="h-[18px] w-[18px]" strokeWidth={1.5} />
-          </Link>
+          <>
+            <Link
+              href="/admin/content"
+              aria-label="Content studio"
+              className="icon-btn"
+            >
+              <FilePenLine className="h-[18px] w-[18px]" strokeWidth={1.5} />
+            </Link>
+            <Link
+              href="/admin/orders"
+              aria-label="Admin orders"
+              className="icon-btn"
+            >
+              <LayoutDashboard className="h-[18px] w-[18px]" strokeWidth={1.5} />
+            </Link>
+          </>
         ) : null}
         <Link
           href="/profile"
@@ -76,15 +85,26 @@ export function MobileAuthActions({ onNavigate }: { onNavigate?: () => void }) {
     return (
       <>
         {session.user.role === "ADMIN" ? (
-          <li>
-            <Link
-              href="/admin/orders"
-              onClick={onNavigate}
-              className="mobile-nav-link"
-            >
-              Admin Orders
-            </Link>
-          </li>
+          <>
+            <li>
+              <Link
+                href="/admin/content"
+                onClick={onNavigate}
+                className="mobile-nav-link"
+              >
+                Content Studio
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/admin/orders"
+                onClick={onNavigate}
+                className="mobile-nav-link"
+              >
+                Admin Orders
+              </Link>
+            </li>
+          </>
         ) : null}
         <li>
           <Link

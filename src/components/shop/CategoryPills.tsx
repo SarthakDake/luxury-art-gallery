@@ -1,19 +1,18 @@
 "use client";
 
-import artworksData from "@/data/artworks.json";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import type { Artwork } from "@/types/artwork";
 import Link from "next/link";
 
-const artworks = artworksData as Artwork[];
-
 interface CategoryPillsProps {
+  artworks: Artwork[];
   activeCategory?: string | null;
   onSelect?: (category: string | null) => void;
   linkMode?: boolean;
 }
 
 export function CategoryPills({
+  artworks,
   activeCategory = null,
   onSelect,
   linkMode = false,

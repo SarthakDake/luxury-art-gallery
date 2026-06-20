@@ -5,7 +5,6 @@ import { SubcategoryPills } from "@/components/shop/SubcategoryPills";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { Reveal } from "@/components/motion/Reveal";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
-import artworksData from "@/data/artworks.json";
 import {
   filterArtworksBySelection,
   getActiveCategoryPill,
@@ -22,9 +21,6 @@ import { SlidersHorizontal } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
 
-const artworks = artworksData as Artwork[];
-const categories = getCategories(artworks);
-
 function toggleValue(values: string[], value: string): string[] {
   return values.includes(value)
     ? values.filter((item) => item !== value)
@@ -32,12 +28,15 @@ function toggleValue(values: string[], value: string): string[] {
 }
 
 function ShopFilters({
+  artworks,
   categoryParam,
   subcategoryParam,
 }: {
+  artworks: Artwork[];
   categoryParam: string | null;
   subcategoryParam: string | null;
 }) {
+  const categories = getCategories(artworks);
   const initialCategory = resolveCategoryFromParam(categoryParam, categories);
   const initialSubcategory = resolveSubcategoryFromParam(
     subcategoryParam,
@@ -143,22 +142,22 @@ function ShopFilters({
 
   const availableCategories = useMemo(
     () => getAvailableFacetValues(artworks, selection, "category"),
-    [selection],
+    [artworks, selection],
   );
 
   const availableSubcategories = useMemo(
     () => getAvailableFacetValues(artworks, selection, "subcategory"),
-    [selection],
+    [artworks, selection],
   );
 
   const availableMaterials = useMemo(
     () => getAvailableFacetValues(artworks, selection, "material"),
-    [selection],
+    [artworks, selection],
   );
 
   const filteredArtworks = useMemo(
     () => filterArtworksBySelection(artworks, selection),
-    [selection],
+    [artworks, selection],
   );
 
   const activeCategoryPill = getActiveCategoryPill(selectedCategories);
@@ -393,6 +392,7 @@ function ShopFilters({
 
         <Reveal variant="slide-up" className="mb-6">
           <CategoryPills
+            artworks={artworks}
             activeCategory={activeCategoryPill}
             onSelect={handleCategoryPillSelect}
           />
@@ -474,7 +474,7 @@ function ShopFilters({
   );
 }
 
-export default function ShopPageContent() {
+export default function ShopPageContent({ artworks }: { artworks: Artwork[] }) {
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get("category");
   const subcategoryParam = searchParams.get("subcategory");
@@ -482,6 +482,7 @@ export default function ShopPageContent() {
   return (
     <ShopFilters
       key={`${categoryParam ?? "all"}-${subcategoryParam ?? "all"}`}
+      artworks={artworks}
       categoryParam={categoryParam}
       subcategoryParam={subcategoryParam}
     />

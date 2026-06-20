@@ -2,20 +2,18 @@ import { CategoryPills } from "@/components/shop/CategoryPills";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { Reveal } from "@/components/motion/Reveal";
 import { TrustBadges } from "@/components/ui/TrustBadges";
-import config from "@/data/config.json";
-import artworksData from "@/data/artworks.json";
-import type { Artwork } from "@/types/artwork";
+import { getArtworks, getSiteConfig } from "@/lib/site-data";
 import fs from "fs";
 import Link from "next/link";
 import path from "path";
-
-const artworks = artworksData as Artwork[];
-const featuredArtworks = artworks.slice(0, 4);
 
 const heroImagePath = path.join(process.cwd(), "public/hero-banner.jpg");
 const hasHeroImage = fs.existsSync(heroImagePath);
 
 export default function Home() {
+  const config = getSiteConfig();
+  const artworks = getArtworks();
+  const featuredArtworks = artworks.slice(0, 4);
   return (
     <>
       <section
@@ -72,7 +70,7 @@ export default function Home() {
               View all
             </Link>
           </div>
-          <CategoryPills linkMode />
+          <CategoryPills linkMode artworks={artworks} />
         </div>
       </Reveal>
 

@@ -8,10 +8,14 @@ export function isAdminRole(role: string | undefined | null) {
   return role === "ADMIN";
 }
 
-export async function requireAdminSession() {
+export async function requireAdminSession(callbackPath = "/admin/content") {
   const session = await getServerSession(authOptions);
 
-  if (!session?.user?.id || !isAdminRole(session.user.role)) {
+  if (!session?.user?.id) {
+    redirect(`/signin?callbackUrl=${encodeURIComponent(callbackPath)}`);
+  }
+
+  if (!isAdminRole(session.user.role)) {
     redirect("/");
   }
 

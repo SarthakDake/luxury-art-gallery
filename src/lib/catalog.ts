@@ -1,7 +1,4 @@
-import artworks from "@/data/artworks.json";
-import type { Artwork } from "@/types/artwork";
-
-const catalog = artworks as Artwork[];
+import { getArtworks } from "@/lib/site-data";
 
 export interface VerifiedCartLine {
   artworkId: string;
@@ -21,7 +18,7 @@ const MAX_LINE_QUANTITY = 10;
 const MAX_CART_LINES = 20;
 
 export function getArtworkById(id: string) {
-  return catalog.find((artwork) => artwork.id === id);
+  return getArtworks().find((artwork) => artwork.id === id);
 }
 
 export function verifyCartLine(item: CartLineInput): VerifiedCartLine | null {

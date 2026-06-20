@@ -4,6 +4,7 @@ import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { requireAdminSession } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/types/artwork";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -12,7 +13,7 @@ function formatStatus(status: string) {
 }
 
 export default async function AdminOrdersPage() {
-  await requireAdminSession();
+  await requireAdminSession("/admin/orders");
 
   const orders = await prisma.order.findMany({
     where: {
@@ -48,6 +49,11 @@ export default async function AdminOrdersPage() {
           Review confirmed payments and update fulfillment status as works leave
           the studio.
         </p>
+        <div className="content-studio-links">
+          <Link href="/admin/content" className="btn-text">
+            Content studio
+          </Link>
+        </div>
       </Reveal>
 
       {orders.length === 0 ? (

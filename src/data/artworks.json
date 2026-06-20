@@ -15,23 +15,39 @@
     "inStock": true,
     "description": "A restrained study of coastal light, where a single horizon divides muted sky from deep water.",
     "sizes": [
-      { "size": "20x30 inches", "price": 2500 },
-      { "size": "24x36 inches", "price": 2800 },
-      { "size": "36x48 inches", "price": 4200 },
-      { "size": "48x60 inches", "price": 5800 }
+      {
+        "size": "20x30 inches",
+        "price": 2500
+      },
+      {
+        "size": "24x36 inches",
+        "price": 2800
+      },
+      {
+        "size": "36x48 inches",
+        "price": 4200
+      },
+      {
+        "size": "48x60 inches",
+        "price": 5800
+      },
+      {
+        "size": "47x90 Inches",
+        "price": 220
+      }
     ],
     "defaultSelectedSizeIndex": 1,
     "videos": [
       {
-        "type": "youtube",
         "url": "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
-        "title": "Artist Process"
+        "title": "Artist Process",
+        "type": "youtube"
       },
       {
-        "type": "instagram",
         "url": "https://www.instagram.com/p/fA9uwTtkSN/",
         "title": "Studio Reel",
-        "poster": "/artworks/brown_3.heic"
+        "poster": "/artworks/brown_3.heic",
+        "type": "instagram"
       }
     ]
   },
@@ -51,17 +67,29 @@
     "inStock": true,
     "description": "An upright bronze form with a hand-polished surface that catches ambient light from every angle.",
     "sizes": [
-      { "size": "20x30 inches", "price": 2500 },
-      { "size": "24x36 inches", "price": 2800 },
-      { "size": "36x48 inches", "price": 4200 },
-      { "size": "48x60 inches", "price": 5800 }
+      {
+        "size": "20x30 inches",
+        "price": 2500
+      },
+      {
+        "size": "24x36 inches",
+        "price": 2800
+      },
+      {
+        "size": "36x48 inches",
+        "price": 4200
+      },
+      {
+        "size": "48x60 inches",
+        "price": 5800
+      }
     ],
     "defaultSelectedSizeIndex": 1,
     "videos": [
       {
-        "type": "youtube",
         "url": "https://youtu.be/aqz-KE-bpKQ",
-        "title": "Making of"
+        "title": "Making of",
+        "type": "youtube"
       }
     ]
   },
@@ -80,9 +108,18 @@
     "inStock": false,
     "description": "Layered translucent washes evoke the first minutes of morning before the city fully wakes.",
     "sizes": [
-      { "size": "12x16 inches", "price": 1500 },
-      { "size": "24x32 inches", "price": 3100 },
-      { "size": "30x40 inches", "price": 3900 }
+      {
+        "size": "12x16 inches",
+        "price": 1500
+      },
+      {
+        "size": "24x32 inches",
+        "price": 3100
+      },
+      {
+        "size": "30x40 inches",
+        "price": 3900
+      }
     ],
     "defaultSelectedSizeIndex": 1
   },
@@ -97,9 +134,18 @@
     "inStock": true,
     "description": "A monochrome composition that treats emptiness as the primary subject rather than the figure.",
     "sizes": [
-      { "size": "12x16 inches", "price": 950 },
-      { "size": "18x24 inches", "price": 1850 },
-      { "size": "22x30 inches", "price": 2750 }
+      {
+        "size": "12x16 inches",
+        "price": 950
+      },
+      {
+        "size": "18x24 inches",
+        "price": 1850
+      },
+      {
+        "size": "22x30 inches",
+        "price": 2750
+      }
     ],
     "defaultSelectedSizeIndex": 0
   },
@@ -114,10 +160,19 @@
     "inStock": true,
     "description": "A curved marble piece suggesting motion held in stillness, finished with a satin surface.",
     "sizes": [
-      { "size": "12 x 10 x 4 inches", "price": 3200 },
-      { "size": "18 x 14 x 6 inches", "price": 5400 },
-      { "size": "24 x 18 x 8 inches", "price": 7600 }
+      {
+        "size": "12 x 10 x 4 inches",
+        "price": 3200
+      },
+      {
+        "size": "18 x 14 x 6 inches",
+        "price": 5400
+      },
+      {
+        "size": "24 x 18 x 8 inches",
+        "price": 7600
+      }
     ],
-    "defaultSelectedSizeIndex": 1
+    "defaultSelectedSizeIndex": 0
   }
 ]

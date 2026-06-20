@@ -1,5 +1,4 @@
-import config from "@/data/config.json";
-import profile from "@/data/profile.json";
+import { getArtistProfile, getSiteConfig } from "@/lib/site-data";
 import { Reveal } from "@/components/motion/Reveal";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import Image from "next/image";
@@ -11,13 +10,13 @@ interface PressFeature {
   link: string;
 }
 
-const pressFeatures = profile.press as PressFeature[];
-
-const exhibitions = [...profile.exhibitions].sort((a, b) => b.year - a.year);
-const careerStart = Math.min(...profile.exhibitions.map((item) => item.year));
-const careerYears = new Date().getFullYear() - careerStart;
-
 export default function AboutPage() {
+  const config = getSiteConfig();
+  const profile = getArtistProfile();
+  const pressFeatures = profile.press as PressFeature[];
+  const exhibitions = [...profile.exhibitions].sort((a, b) => b.year - a.year);
+  const careerStart = Math.min(...profile.exhibitions.map((item) => item.year));
+  const careerYears = new Date().getFullYear() - careerStart;
   const biographyLead = profile.biography.split(".")[0] + ".";
   const biographyRest = profile.biography.slice(biographyLead.length).trim();
 

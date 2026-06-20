@@ -1,7 +1,10 @@
+import { getArtworks } from "@/lib/site-data";
 import { Suspense } from "react";
 import ShopPageContent from "./ShopPageContent";
 
 export default function ShopPage() {
+  const artworks = getArtworks();
+
   return (
     <Suspense
       fallback={
@@ -10,7 +13,7 @@ export default function ShopPage() {
         </div>
       }
     >
-      <ShopPageContent />
+      <ShopPageContent artworks={artworks} />
     </Suspense>
   );
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import artworksData from "@/data/artworks.json";
 import { searchArtworks } from "@/lib/artwork-search";
 import type { Artwork } from "@/types/artwork";
 import { Search, X } from "lucide-react";
@@ -8,8 +7,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useIsClient } from "@/hooks/use-is-client";
-
-const artworks = artworksData as Artwork[];
 
 interface GlobalSearchProps {
   variant?: "inline" | "mobile" | "drawer";
@@ -26,10 +23,32 @@ export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState(false);
+  const [artworks, setArtworks] = useState<Artwork[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch("/api/site/artworks")
+      .then((response) => response.json())
+      .then((payload: { artworks?: Artwork[] }) => {
+        if (!cancelled && payload.artworks) {
+          setArtworks(payload.artworks);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setArtworks([]);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const hasQuery = query.length > 0;
 
-  const results = useMemo(() => searchArtworks(artworks, query), [query]);
+  const results = useMemo(() => searchArtworks(artworks, query), [artworks, query]);
 
   useEffect(() => {
     if (variant === "mobile") return;

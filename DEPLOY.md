@@ -89,7 +89,17 @@ npm run build:local
 | Rate limits feel inconsistent | Add Upstash Redis env vars |
 | `migrate deploy` fails on existing DB | Run `npm run db:baseline` once against production |
 
-## Local development
+## Content Studio (artist CMS)
+
+Admin-only page: **`/admin/content`** (sign in with your admin Google account).
+
+- **Artworks** — full inventory editor with image uploads, sizes, videos, and product copy overrides
+- **Site Settings** — everything in `config.json` (hero, contact, offers, social links, etc.)
+- **Artist Profile** — biography, portrait, exhibitions, and press
+
+Changes are saved to `src/data/*.json` and uploaded images go to `public/`. The live site reads these files on each request.
+
+**Vercel note:** Serverless deploys use a read-only filesystem. Use Content Studio on **local dev** (`npm run dev`), then commit and push JSON + image changes. For always-on editing in production, self-host or add blob/database storage later.
 
 ```bash
 cp .env.example .env   # fill in values
