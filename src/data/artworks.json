@@ -1,0 +1,88 @@
+[
+  {
+    "id": "art-001",
+    "title": "Horizon Line No. 7",
+    "slug": "horizon-line-no-7",
+    "imageUrl": "/artworks/sample1.jpg",
+    "galleryImages": [
+      "/artworks/sample1.jpg",
+      "/artworks/sample2.jpg",
+      "/artworks/sample3.jpg",
+      "/artworks/sample4.jpg"
+    ],
+    "category": "Ready to hang Arts",
+    "material": "Oil on linen",
+    "inStock": true,
+    "description": "A restrained study of coastal light, where a single horizon divides muted sky from deep water.",
+    "sizes": [
+      { "size": "24x32 inches", "price": 2800 },
+      { "size": "36x48 inches", "price": 4200 },
+      { "size": "48x60 inches", "price": 5800 }
+    ],
+    "defaultSelectedSizeIndex": 1
+  },
+  {
+    "id": "art-002",
+    "title": "Silent Column",
+    "slug": "silent-column",
+    "imageUrl": "/artworks/sample2.jpg",
+    "category": "Statement Wall Art",
+    "material": "Cast bronze",
+    "inStock": true,
+    "description": "An upright bronze form with a hand-polished surface that catches ambient light from every angle.",
+    "sizes": [
+      { "size": "18 x 6 x 6 inches", "price": 4200 },
+      { "size": "24 x 8 x 8 inches", "price": 6800 },
+      { "size": "36 x 12 x 12 inches", "price": 9800 }
+    ],
+    "defaultSelectedSizeIndex": 1
+  },
+  {
+    "id": "art-003",
+    "title": "Veil of Dawn",
+    "slug": "veil-of-dawn",
+    "imageUrl": "/artworks/sample3.jpg",
+    "category": "Ready to hang Arts",
+    "material": "Acrylic on canvas",
+    "inStock": false,
+    "description": "Layered translucent washes evoke the first minutes of morning before the city fully wakes.",
+    "sizes": [
+      { "size": "12x16 inches", "price": 1500 },
+      { "size": "24x32 inches", "price": 3100 },
+      { "size": "30x40 inches", "price": 3900 }
+    ],
+    "defaultSelectedSizeIndex": 1
+  },
+  {
+    "id": "art-004",
+    "title": "Negative Space Study",
+    "slug": "negative-space-study",
+    "imageUrl": "/artworks/sample4.jpg",
+    "category": "Ready to hang Arts",
+    "material": "Graphite and gesso on paper",
+    "inStock": true,
+    "description": "A monochrome composition that treats emptiness as the primary subject rather than the figure.",
+    "sizes": [
+      { "size": "12x16 inches", "price": 950 },
+      { "size": "18x24 inches", "price": 1850 },
+      { "size": "22x30 inches", "price": 2750 }
+    ],
+    "defaultSelectedSizeIndex": 0
+  },
+  {
+    "id": "art-005",
+    "title": "Arc of Balance",
+    "slug": "arc-of-balance",
+    "imageUrl": "/artworks/sample5.jpg",
+    "category": "Statement Wall Art",
+    "material": "Carrara marble",
+    "inStock": true,
+    "description": "A curved marble piece suggesting motion held in stillness, finished with a satin surface.",
+    "sizes": [
+      { "size": "12 x 10 x 4 inches", "price": 3200 },
+      { "size": "18 x 14 x 6 inches", "price": 5400 },
+      { "size": "24 x 18 x 8 inches", "price": 7600 }
+    ],
+    "defaultSelectedSizeIndex": 1
+  }
+]

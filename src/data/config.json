@@ -1,0 +1,70 @@
+{
+  "siteName": "Colors N Joy",
+  "contactEmail": "hello@auragallery.com",
+  "whatsappNumber": "1234567890",
+  "studioAddress": "Via Montenapoleone 12, 20121 Milan, Italy",
+  "heroTitle": "Chasing Light & Form",
+  "heroSubtitle": "A collection of minimalist visual narratives.",
+  "announcements": [
+    "Free Shipping on All Artworks",
+    "Private Viewings Available",
+    "Commission Inquiries Welcome"
+  ],
+  "trustBadges": [
+    "Free Shipping",
+    "Secure Checkout",
+    "Artist Direct",
+    "Expert Support"
+  ],
+  "defaultDispatchNote": "Made to Order | Dispatches in 14–21 Days",
+  "defaultCareGuide": "Handle artwork with clean, dry hands. Avoid direct sunlight and damp environments. Dust gently with a soft, dry microfiber cloth. Ensure secure hanging hardware for wall-mounted pieces.",
+  "defaultShippingReturns": "We ship worldwide with full tracking. Provide a complete delivery address at checkout. International orders may incur customs duties. Returns are accepted within 48 hours of delivery for damaged or incorrect items only.",
+  "defaultBeforeYouBuy": "Each work is handcrafted and unique. Slight variations in texture and tone are inherent to the medium and part of the artwork's character. Monitor color display may vary from the physical piece.",
+  "offers": [
+    {
+      "headline": "5% Off Your Entire Order",
+      "code": "AURA5",
+      "detail": "Use on orders above ₹4,000"
+    },
+    {
+      "headline": "Save ₹500 On Your Entire Order",
+      "code": "SAVE500",
+      "detail": "Use on orders above ₹8,000"
+    },
+    {
+      "headline": "10% Off Your Entire Order",
+      "code": "FESTIVE10",
+      "detail": "Use on orders above ₹12,000, up to ₹2,000 off"
+    }
+  ],
+  "productFeatures": [
+    {
+      "title": "Original Works",
+      "description": "Paintings and sculptures direct from the studio"
+    },
+    {
+      "title": "One of a Kind",
+      "description": "Each piece embodies a unique visual narrative"
+    },
+    {
+      "title": "Shop with Ease",
+      "description": "Personal assistance for every acquisition"
+    },
+    {
+      "title": "Artist Direct",
+      "description": "Every purchase supports independent practice"
+    }
+  ],
+  "visitorCounter": {
+    "eyebrow": "Gallery Reach",
+    "singularLabel": "guest has explored our collection",
+    "pluralLabel": "guests have explored our collection"
+  },
+  "socialLinks": {
+    "instagram": "https://instagram.com/auragallery",
+    "facebook": "https://facebook.com/auragallery",
+    "youtube": "https://youtube.com/@auragallery",
+    "pinterest": "https://pinterest.com/auragallery",
+    "whatsapp": "https://wa.me/1234567890"
+  }
+}

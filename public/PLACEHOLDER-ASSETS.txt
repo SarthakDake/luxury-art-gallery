@@ -1,0 +1,17 @@
+Placeholder assets for local testing. Replace with your own files when ready.
+
+public/hero-banner.jpg
+  Homepage hero background (recommended: 1600 x 900 px or wider)
+
+public/artist-portrait.jpg
+  About page portrait (recommended: 900 x 1200 px, 3:4 ratio)
+  Path is set in src/data/profile.json -> portraitImageUrl
+
+public/artworks/sample1.jpg ... sample5.jpg
+  Gallery, shop, cart, and product detail images
+  Paths are set in src/data/artworks.json -> imageUrl
+
+Text and business data:
+  src/data/config.json   site name, contact, social links, hero copy
+  src/data/artworks.json artwork titles, prices, sizes, descriptions
+  src/data/profile.json  artist bio, exhibitions, press
