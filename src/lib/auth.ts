@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { ensureAuthEnv, getAuthBaseUrl } from "@/lib/auth-url";
-import { getAdminEmail } from "@/lib/admin-email";
+import { isAdminEmail } from "@/lib/admin-email";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import type { UserRole } from "@/generated/prisma/client";
 import type { NextAuthOptions } from "next-auth";
@@ -46,10 +46,9 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user }) {
       console.info("[auth] signed in:", user.email ?? user.id);
 
-      const adminEmail = getAdminEmail();
       const userEmail = user.email?.trim().toLowerCase();
 
-      if (user.id && userEmail === adminEmail) {
+      if (user.id && isAdminEmail(userEmail)) {
         try {
           await prisma.user.update({
             where: { id: user.id },
@@ -71,10 +70,9 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.sub = user.id;
-        const adminEmail = getAdminEmail();
         const userEmail = user.email?.trim().toLowerCase();
 
-        if (userEmail === adminEmail) {
+        if (isAdminEmail(userEmail)) {
           token.role = "ADMIN";
         } else {
           token.role = (user as { role?: UserRole }).role ?? "CUSTOMER";

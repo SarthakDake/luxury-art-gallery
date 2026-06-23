@@ -53,21 +53,18 @@ export function ConfigTab({
         <StudioGroup
           eyebrow="Contact"
           title="How visitors reach you"
-          description="Shown in the footer, contact page, and order emails."
+          description="Shown in the footer, contact page, and order notification emails."
         >
           <StudioFormGrid>
-            <StudioField label="Contact email">
+            <StudioField
+              label="Contact email"
+              hint="Public studio email. Separate multiple addresses with commas if needed."
+              fullWidth
+            >
               <StudioInput
-                type="email"
                 value={config.contactEmail}
                 onChange={(event) => onChange({ ...config, contactEmail: event.target.value })}
-              />
-            </StudioField>
-            <StudioField label="Admin email">
-              <StudioInput
-                type="email"
-                value={config.adminEmail}
-                onChange={(event) => onChange({ ...config, adminEmail: event.target.value })}
+                placeholder="colorsnjoybyaish@gmail.com"
               />
             </StudioField>
             <StudioField label="WhatsApp number">
@@ -77,13 +74,31 @@ export function ConfigTab({
                 placeholder="+919423690682"
               />
             </StudioField>
-            <StudioField label="Studio address">
+            <StudioField label="Studio address" fullWidth>
               <StudioInput
                 value={config.studioAddress}
                 onChange={(event) => onChange({ ...config, studioAddress: event.target.value })}
               />
             </StudioField>
           </StudioFormGrid>
+        </StudioGroup>
+
+        <StudioGroup
+          eyebrow="Admin"
+          title="Dashboard access"
+          description="Google accounts that can open Content Studio and order management. Not shown on the public site."
+        >
+          <StudioField
+            label="Admin emails"
+            hint="Separate multiple Google sign-in emails with commas."
+            fullWidth
+          >
+            <StudioInput
+              value={config.adminEmail}
+              onChange={(event) => onChange({ ...config, adminEmail: event.target.value })}
+              placeholder="you@gmail.com, partner@gmail.com"
+            />
+          </StudioField>
         </StudioGroup>
       </StudioSection>
 

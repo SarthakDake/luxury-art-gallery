@@ -3,8 +3,9 @@
 import config from "@/data/config.json";
 import { Reveal } from "@/components/motion/Reveal";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
+import { ContactEmailLinks } from "@/components/ui/ContactEmailLinks";
 import { SocialLinks } from "@/components/ui/SocialLinks";
-import { Mail, MapPin, MessageCircle } from "lucide-react";
+import { MapPin, MessageCircle } from "lucide-react";
 import { useState } from "react";
 
 const whatsappMessage = "Hello, I am inquiring about your artwork.";
@@ -90,19 +91,11 @@ export default function ContactPage() {
 
               <li className="contact-info-item">
                 <p className="eyebrow">Email</p>
-                <div className="contact-info-row">
-                  <Mail
-                    className="contact-info-icon"
-                    strokeWidth={1.5}
-                    aria-hidden
-                  />
-                  <a
-                    href={`mailto:${config.contactEmail}`}
-                    className="contact-info-link"
-                  >
-                    {config.contactEmail}
-                  </a>
-                </div>
+                <ContactEmailLinks
+                  className="contact-info-email-list"
+                  linkClassName="contact-info-link contact-info-row"
+                  iconClassName="contact-info-icon"
+                />
               </li>
             </ul>
 

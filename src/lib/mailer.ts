@@ -1,5 +1,6 @@
 import config from "@/data/config.json";
 import artworks from "@/data/artworks.json";
+import { formatEmailList, getContactEmails } from "@/lib/emails";
 import type { Artwork } from "@/types/artwork";
 import { formatPrice } from "@/types/artwork";
 import nodemailer from "nodemailer";
@@ -107,13 +108,15 @@ export async function sendNewOrderConfirmedEmail(
   payload: NewOrderEmailPayload,
 ): Promise<void> {
   const transporter = createTransporter();
+  const contactEmails = getContactEmails();
+  const primaryContactEmail = contactEmails[0] ?? config.contactEmail;
   const from =
     process.env.SMTP_FROM ??
-    `${config.siteName} <${process.env.SMTP_USER ?? config.contactEmail}>`;
+    `${config.siteName} <${process.env.SMTP_USER ?? primaryContactEmail}>`;
 
   await transporter.sendMail({
     from,
-    to: config.contactEmail,
+    to: formatEmailList(contactEmails),
     subject: `New Order Confirmed — ${payload.orderId.slice(-8).toUpperCase()}`,
     html: buildOrderEmailHtml(payload),
     text: [
@@ -141,9 +144,11 @@ export async function sendContactFormEmail(
   payload: ContactEmailPayload,
 ): Promise<void> {
   const transporter = createTransporter();
+  const contactEmails = getContactEmails();
+  const primaryContactEmail = contactEmails[0] ?? config.contactEmail;
   const from =
     process.env.SMTP_FROM ??
-    `${config.siteName} <${process.env.SMTP_USER ?? config.contactEmail}>`;
+    `${config.siteName} <${process.env.SMTP_USER ?? primaryContactEmail}>`;
   const safeName = escapeHtml(payload.name);
   const safeEmail = escapeHtml(payload.email);
   const safeSubject = escapeHtml(payload.subject);
@@ -151,7 +156,7 @@ export async function sendContactFormEmail(
 
   await transporter.sendMail({
     from,
-    to: config.contactEmail,
+    to: formatEmailList(contactEmails),
     replyTo: payload.email,
     subject: `[Contact] ${payload.subject}`,
     html: `

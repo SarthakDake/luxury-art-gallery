@@ -14,7 +14,7 @@ Current artwork images in use:
   public/artworks/green_leaf_3.heic
 
 Production setup checklist:
-  1. Set ADMIN_EMAIL in .env (matches your Google sign-in email)
+  1. Set admin emails in config.json or ADMIN_EMAIL in .env (comma-separated for multiple)
   2. Run: npx prisma migrate deploy
   3. Sign in once as admin to activate ADMIN role
   4. Optional: UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN for production rate limits

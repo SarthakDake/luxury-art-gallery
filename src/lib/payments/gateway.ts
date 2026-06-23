@@ -30,10 +30,8 @@ export function resolvePaymentGateway(): PaymentGateway | null {
   return null;
 }
 
+import { getSiteUrl } from "@/lib/auth-url";
+
 export function getAppBaseUrl() {
-  return (
-    process.env.NEXTAUTH_URL ??
-    process.env.NEXT_PUBLIC_APP_URL ??
-    "http://localhost:3001"
-  );
+  return getSiteUrl();
 }

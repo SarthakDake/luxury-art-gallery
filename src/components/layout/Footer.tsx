@@ -1,7 +1,8 @@
 import config from "@/data/config.json";
+import { ContactEmailLinks } from "@/components/ui/ContactEmailLinks";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 import { VisitorCounter } from "@/components/ui/VisitorCounter";
-import { Mail, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 import Link from "next/link";
 
 const exploreLinks = [
@@ -51,19 +52,11 @@ export function Footer() {
                 />
                 <span>{config.studioAddress}</span>
               </li>
-              <li>
-                <a
-                  href={`mailto:${config.contactEmail}`}
-                  className="footer-contact-link"
-                >
-                  <Mail
-                    className="footer-contact-icon"
-                    strokeWidth={1.5}
-                    aria-hidden
-                  />
-                  <span>{config.contactEmail}</span>
-                </a>
-              </li>
+              <ContactEmailLinks
+                asItems
+                linkClassName="footer-contact-link"
+                iconClassName="footer-contact-icon"
+              />
             </ul>
           </div>
 
