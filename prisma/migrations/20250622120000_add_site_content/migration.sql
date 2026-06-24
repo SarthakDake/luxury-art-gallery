@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE "SiteContent" (
+CREATE TABLE IF NOT EXISTS "SiteContent" (
     "key" TEXT NOT NULL,
     "data" JSONB NOT NULL,
     "updatedAt" TIMESTAMP(3) NOT NULL,

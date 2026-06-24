@@ -37,30 +37,31 @@ function resolveMigration(name) {
   run(`npx prisma migrate resolve --applied ${name}`);
 }
 
-export function deployMigrations() {
-  let result = runCapture("npx prisma migrate deploy");
+function extractFailedMigration(output) {
+  const match = output.match(/Migration name: ([^\s\n]+)/);
+  return match?.[1] ?? null;
+}
 
-  if (result.ok) {
-    console.log("[db] Migrations applied.");
-    return;
-  }
+function isDuplicateObjectError(output) {
+  return (
+    output.includes("42P07") ||
+    output.includes("42701") ||
+    /already exists/i.test(output)
+  );
+}
 
-  if (!result.output.includes("P3005")) {
-    console.error(result.output);
-    throw result.error ?? new Error("prisma migrate deploy failed");
-  }
-
+function baselineExistingDatabase() {
   console.log(
     "[db] Existing database detected (P3005). Baselining migration history…",
   );
 
   resolveMigration(INIT_MIGRATION);
 
-  result = runCapture("npx prisma migrate deploy");
+  let result = runCapture("npx prisma migrate deploy");
 
   if (result.ok) {
     console.log("[db] Pending migrations applied after baseline.");
-    return;
+    return true;
   }
 
   if (result.output.includes("P3005")) {
@@ -74,12 +75,49 @@ export function deployMigrations() {
 
     if (result.ok) {
       console.log("[db] Migration history baselined.");
-      return;
+      return true;
     }
   }
 
   console.error(result.output);
   throw result.error ?? new Error("prisma migrate deploy failed after baseline");
+}
+
+export function deployMigrations() {
+  const maxAttempts = listMigrations().length + 3;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const result = runCapture("npx prisma migrate deploy");
+
+    if (result.ok) {
+      console.log("[db] Migrations applied.");
+      return;
+    }
+
+    const output = result.output;
+
+    if (output.includes("P3018") && isDuplicateObjectError(output)) {
+      const migration = extractFailedMigration(output);
+
+      if (migration) {
+        console.log(
+          `[db] Migration ${migration} targets objects that already exist. Recovering…`,
+        );
+        resolveMigration(migration);
+        continue;
+      }
+    }
+
+    if (output.includes("P3005")) {
+      baselineExistingDatabase();
+      return;
+    }
+
+    console.error(output);
+    throw result.error ?? new Error("prisma migrate deploy failed");
+  }
+
+  throw new Error("prisma migrate deploy failed after recovery attempts");
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
