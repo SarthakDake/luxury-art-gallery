@@ -22,6 +22,7 @@ Colors N Joy is a standard Next.js app with PostgreSQL (Prisma), NextAuth, and o
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google sign-in |
 | `ADMIN_EMAIL` | Admin sign-in email(s) only — comma-separated (not used for public contact) |
 | `CONTACT_EMAIL` | Optional override for public contact / notification email(s) — comma-separated |
+| `BLOB_READ_WRITE_TOKEN` | **Required on Vercel** for Content Studio image uploads (auto-set when you connect a Blob store) |
 
 Generate a secret:
 
@@ -152,9 +153,59 @@ Admin-only page: **`/admin/content`** (sign in with your admin Google account).
 - **Site Settings** — everything in `config.json` (hero, contact, offers, social links, etc.)
 - **Artist Profile** — biography, portrait, exhibitions, and press
 
-Changes are saved to `src/data/*.json` and uploaded images go to `public/`. The live site reads these files on each request.
+Changes are stored in **PostgreSQL** (`SiteContent` table) when `DATABASE_URL` is set. Uploaded images go to `public/` (local) or **Vercel Blob** (production).
 
-**Vercel note:** Serverless deploys use a read-only filesystem. Use Content Studio on **local dev** (`npm run dev`), then commit and push JSON + image changes. For always-on editing in production, self-host or add blob/database storage later.
+**JSON mirror (automatic on every save):**
+
+| Environment | `src/data/*.json` on disk | Blob JSON copy | Git repo JSON (optional) |
+|-------------|---------------------------|----------------|--------------------------|
+| Local dev | Yes | Yes (if Blob connected) | Yes (if GitHub sync enabled) |
+| Vercel production | No (read-only FS) | **Yes** (if Blob connected) | Yes (if GitHub sync enabled) |
+
+Production Content Studio saves always update PostgreSQL. If **Vercel Blob** is connected (`BLOB_READ_WRITE_TOKEN`), the same JSON is also written to:
+
+- `site-content/artworks.json`
+- `site-content/config.json`
+- `site-content/profile.json`
+
+**Optional — commit JSON to GitHub automatically:** Set these Vercel env vars to push `src/data/*.json` to your repo on every save (useful if production is your only CMS):
+
+```bash
+GITHUB_CONTENT_SYNC=true
+GITHUB_TOKEN=ghp_…            # fine-grained PAT with Contents: Read and write
+GITHUB_REPO=your-user/luxury-art-gallery   # or GITHUB_REPOSITORY
+GITHUB_BRANCH=main            # optional; defaults to main or VERCEL_GIT_COMMIT_REF
+```
+
+After deploy, sign in as admin and open `/api/admin/content/sync-status` (or check the save bar in Content Studio) to confirm Blob/GitHub mirrors are configured.
+
+If GitHub sync fails, the save banner will show the exact mirror error (for example token scope, branch name, or repo path).
+
+**Pull production JSON to your machine:**
+
+```bash
+# From database (recommended)
+DATABASE_URL="postgresql://…" npm run db:sync-content
+
+# From Blob (no DB URL needed, only blob token)
+BLOB_READ_WRITE_TOKEN="…" npm run db:sync-content:blob
+```
+
+**First deploy:** The build runs migrations and seeds `artworks`, `config`, and `profile` from the bundled JSON files if those rows do not exist yet. Existing production content is never overwritten on redeploy.
+
+**Vercel image uploads:** Serverless deploys cannot write to `public/`. Connect Blob storage once:
+
+1. Vercel → your project → **Storage** → **Create Database** → **Blob**
+2. Name the store and **connect it to this project** (Vercel adds `BLOB_READ_WRITE_TOKEN` automatically)
+3. **Redeploy** production
+
+Uploaded images are stored in Blob and saved as full URLs in your artwork/profile data. Local dev (`npm run dev`) still writes to `public/` when Blob is not configured.
+
+**Manual seed** (optional, if content is missing after migration):
+
+```bash
+DATABASE_URL="postgresql://…" npm run db:seed-content
+```
 
 ```bash
 cp .env.example .env   # fill in values

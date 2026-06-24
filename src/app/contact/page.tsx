@@ -1,6 +1,6 @@
 "use client";
 
-import config from "@/data/config.json";
+import { useSiteConfig } from "@/components/providers/site-config-provider";
 import { Reveal } from "@/components/motion/Reveal";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { ContactEmailLinks } from "@/components/ui/ContactEmailLinks";
@@ -9,9 +9,10 @@ import { MapPin, MessageCircle } from "lucide-react";
 import { useState } from "react";
 
 const whatsappMessage = "Hello, I am inquiring about your artwork.";
-const whatsappHref = `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
 
 export default function ContactPage() {
+  const config = useSiteConfig();
+  const whatsappHref = `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");

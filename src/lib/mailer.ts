@@ -1,11 +1,8 @@
-import config from "@/data/config.json";
-import artworks from "@/data/artworks.json";
+import { getArtworkTitle } from "@/lib/catalog";
 import { formatEmailList, getContactEmails } from "@/lib/emails";
-import type { Artwork } from "@/types/artwork";
+import { getSiteConfig } from "@/lib/site-data";
 import { formatPrice } from "@/types/artwork";
 import nodemailer from "nodemailer";
-
-const artworkCatalog = artworks as Artwork[];
 
 function escapeHtml(value: string): string {
   return value
@@ -32,12 +29,6 @@ export interface NewOrderEmailPayload {
   items: OrderEmailItem[];
 }
 
-function getArtworkTitle(artworkId: string) {
-  return (
-    artworkCatalog.find((artwork) => artwork.id === artworkId)?.title ?? artworkId
-  );
-}
-
 function createTransporter() {
   const host = process.env.SMTP_HOST;
   const user = process.env.SMTP_USER;
@@ -60,21 +51,22 @@ function createTransporter() {
   });
 }
 
-function buildOrderEmailHtml(payload: NewOrderEmailPayload) {
-  const itemRows = payload.items
-    .map((item) => {
+async function buildOrderEmailHtml(payload: NewOrderEmailPayload) {
+  const itemRows = await Promise.all(
+    payload.items.map(async (item) => {
       const lineTotal = item.price * item.quantity;
+      const title = await getArtworkTitle(item.artworkId);
 
       return `
         <tr>
-          <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;">${getArtworkTitle(item.artworkId)}</td>
+          <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;">${title}</td>
           <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;">${item.size}</td>
           <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;">${item.quantity}</td>
           <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb; text-align: right;">${formatPrice(lineTotal)}</td>
         </tr>
       `;
-    })
-    .join("");
+    }),
+  );
 
   return `
     <div style="font-family: Georgia, 'Times New Roman', serif; color: #171717; line-height: 1.6;">
@@ -98,7 +90,7 @@ function buildOrderEmailHtml(payload: NewOrderEmailPayload) {
             <th style="text-align: right; padding-bottom: 8px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #6b7280;">Amount</th>
           </tr>
         </thead>
-        <tbody>${itemRows}</tbody>
+        <tbody>${itemRows.join("")}</tbody>
       </table>
     </div>
   `;
@@ -108,27 +100,33 @@ export async function sendNewOrderConfirmedEmail(
   payload: NewOrderEmailPayload,
 ): Promise<void> {
   const transporter = createTransporter();
-  const contactEmails = getContactEmails();
+  const [contactEmails, config] = await Promise.all([
+    getContactEmails(),
+    getSiteConfig(),
+  ]);
   const primaryContactEmail = contactEmails[0] ?? config.contactEmail;
   const from =
     process.env.SMTP_FROM ??
     `${config.siteName} <${process.env.SMTP_USER ?? primaryContactEmail}>`;
+  const textLines = await Promise.all(
+    payload.items.map(async (item) => {
+      const title = await getArtworkTitle(item.artworkId);
+      return `- ${title} (${item.size}) x${item.quantity}: ${formatPrice(item.price * item.quantity)}`;
+    }),
+  );
 
   await transporter.sendMail({
     from,
     to: formatEmailList(contactEmails),
     subject: `New Order Confirmed — ${payload.orderId.slice(-8).toUpperCase()}`,
-    html: buildOrderEmailHtml(payload),
+    html: await buildOrderEmailHtml(payload),
     text: [
       "New Order Confirmed",
       `Order ID: ${payload.orderId}`,
       `Buyer: ${payload.buyerEmail}`,
       `Total: ${formatPrice(payload.totalAmount)}`,
       "",
-      ...payload.items.map(
-        (item) =>
-          `- ${getArtworkTitle(item.artworkId)} (${item.size}) x${item.quantity}: ${formatPrice(item.price * item.quantity)}`,
-      ),
+      ...textLines,
     ].join("\n"),
   });
 }
@@ -144,7 +142,10 @@ export async function sendContactFormEmail(
   payload: ContactEmailPayload,
 ): Promise<void> {
   const transporter = createTransporter();
-  const contactEmails = getContactEmails();
+  const [contactEmails, config] = await Promise.all([
+    getContactEmails(),
+    getSiteConfig(),
+  ]);
   const primaryContactEmail = contactEmails[0] ?? config.contactEmail;
   const from =
     process.env.SMTP_FROM ??

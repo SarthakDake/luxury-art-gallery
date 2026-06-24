@@ -1,6 +1,6 @@
 "use client";
 
-import config from "@/data/config.json";
+import { useSiteConfig } from "@/components/providers/site-config-provider";
 import { CartPromoCode } from "@/components/cart/CartPromoCode";
 import { Reveal } from "@/components/motion/Reveal";
 import { applyPromoCode } from "@/lib/promo-codes";
@@ -41,6 +41,7 @@ interface PhonePeCheckoutResponse {
 type CheckoutResponse = RazorpayCheckoutResponse | PhonePeCheckoutResponse;
 
 function CartPageContent() {
+  const config = useSiteConfig();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session, status } = useSession();
@@ -71,15 +72,15 @@ function CartPageContent() {
       return null;
     }
 
-    const result = applyPromoCode(appliedPromoCode, subtotal);
+    const result = applyPromoCode(appliedPromoCode, subtotal, config);
     return result.valid ? result : null;
-  }, [appliedPromoCode, subtotal]);
+  }, [appliedPromoCode, config, subtotal]);
   const discount = appliedPromo?.discount ?? 0;
   const finalTotal = Math.max(subtotal - discount, 0);
   const isSessionLoading = status === "loading";
   const usesRazorpay = paymentGateway === "razorpay";
   const paymentConfigured = Boolean(paymentGateway);
-  const whatsAppCheckoutAvailable = isWhatsAppCheckoutAvailable();
+  const whatsAppCheckoutAvailable = isWhatsAppCheckoutAvailable(config);
   const usesWhatsAppCheckout =
     !paymentConfigured && whatsAppCheckoutAvailable;
   const canCheckout =
@@ -211,7 +212,7 @@ function CartPageContent() {
   }
 
   function redirectToWhatsAppCheckout() {
-    const url = buildWhatsAppCheckoutUrl(items, subtotal, {
+    const url = buildWhatsAppCheckoutUrl(items, subtotal, config, {
       discount,
       promoCode: appliedPromo?.code,
       finalTotal,

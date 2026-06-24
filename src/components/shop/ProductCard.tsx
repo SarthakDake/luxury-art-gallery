@@ -1,4 +1,4 @@
-import { formatPriceFrom, type Artwork } from "@/types/artwork";
+import { formatPriceFrom, isShowcaseOnly, type Artwork } from "@/types/artwork";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import Link from "next/link";
 
@@ -8,6 +8,8 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ artwork, reveal = false }: ProductCardProps) {
+  const showcaseOnly = isShowcaseOnly(artwork);
+
   return (
     <Link
       href={`/art/${artwork.slug}`}
@@ -34,9 +36,11 @@ export function ProductCard({ artwork, reveal = false }: ProductCardProps) {
           <h3 className="font-serif text-lg leading-snug tracking-wide text-[var(--foreground)] transition-colors duration-300 group-hover:text-[var(--muted)]">
             {artwork.title}
           </h3>
-          <p className="text-sm font-medium tracking-wide text-[var(--foreground)]">
-            {formatPriceFrom(artwork)}
-          </p>
+          {!showcaseOnly ? (
+            <p className="text-sm font-medium tracking-wide text-[var(--foreground)]">
+              {formatPriceFrom(artwork)}
+            </p>
+          ) : null}
         </div>
       </article>
     </Link>

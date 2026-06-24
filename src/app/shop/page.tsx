@@ -2,8 +2,8 @@ import { getArtworks } from "@/lib/site-data";
 import { Suspense } from "react";
 import ShopPageContent from "./ShopPageContent";
 
-export default function ShopPage() {
-  const artworks = getArtworks();
+export default async function ShopPage() {
+  const artworks = await getArtworks();
 
   return (
     <Suspense

@@ -1,5 +1,5 @@
 import { assertAdminSession } from "@/lib/admin";
-import { getArtistProfile, saveArtistProfile } from "@/lib/site-data";
+import { getArtistProfile, summarizeMirrorResults, saveArtistProfile } from "@/lib/site-data";
 import type { ArtistProfile } from "@/types/site-config";
 
 export const dynamic = "force-dynamic";
@@ -34,7 +34,7 @@ export async function GET() {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  return Response.json({ profile: getArtistProfile() });
+  return Response.json({ profile: await getArtistProfile() });
 }
 
 export async function PUT(request: Request) {
@@ -66,11 +66,16 @@ export async function PUT(request: Request) {
   }
 
   try {
-    saveArtistProfile(profile);
+    const mirrors = await saveArtistProfile(profile);
+    const mirrorWarning = summarizeMirrorResults(mirrors);
+
+    return Response.json({
+      profile,
+      mirrors,
+      ...(mirrorWarning ? { mirrorWarning } : {}),
+    });
   } catch (error) {
     console.error("[content] save profile failed:", error);
     return Response.json({ error: "Could not save artist profile." }, { status: 500 });
   }
-
-  return Response.json({ profile });
 }

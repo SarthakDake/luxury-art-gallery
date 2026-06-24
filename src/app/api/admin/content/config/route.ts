@@ -1,5 +1,5 @@
 import { assertAdminSession } from "@/lib/admin";
-import { getSiteConfig, saveSiteConfig } from "@/lib/site-data";
+import { getSiteConfig, summarizeMirrorResults, saveSiteConfig } from "@/lib/site-data";
 import type { SiteConfig } from "@/types/site-config";
 
 export const dynamic = "force-dynamic";
@@ -54,7 +54,7 @@ export async function GET() {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  return Response.json({ config: getSiteConfig() });
+  return Response.json({ config: await getSiteConfig() });
 }
 
 export async function PUT(request: Request) {
@@ -86,11 +86,16 @@ export async function PUT(request: Request) {
   }
 
   try {
-    saveSiteConfig(config);
+    const mirrors = await saveSiteConfig(config);
+    const mirrorWarning = summarizeMirrorResults(mirrors);
+
+    return Response.json({
+      config,
+      mirrors,
+      ...(mirrorWarning ? { mirrorWarning } : {}),
+    });
   } catch (error) {
     console.error("[content] save config failed:", error);
     return Response.json({ error: "Could not save site settings." }, { status: 500 });
   }
-
-  return Response.json({ config });
 }

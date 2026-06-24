@@ -1,4 +1,4 @@
-import config from "@/data/config.json";
+import type { SiteConfig } from "@/types/site-config";
 import Link from "next/link";
 import { AuthActions } from "./AuthActions";
 import { GlobalSearch } from "./GlobalSearch";
@@ -12,7 +12,7 @@ const navLinks = [
   { href: "/contact", label: "Contact" },
 ] as const;
 
-export function Header() {
+export function Header({ config }: { config: SiteConfig }) {
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--background)]/95 backdrop-blur-md transition-colors duration-300">
       <div className="site-container header-inner">

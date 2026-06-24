@@ -1,4 +1,4 @@
-import { getArtworkImageSrc, isHeicImage } from "@/lib/artwork-image";
+import { getArtworkImageSrc, isHeicImage, isRemoteImageUrl } from "@/lib/artwork-image";
 import Image, { type ImageProps } from "next/image";
 
 type ArtworkImageProps = Omit<ImageProps, "src"> & {
@@ -12,7 +12,7 @@ export function ArtworkImage({ src, alt, ...props }: ArtworkImageProps) {
     <Image
       src={resolvedSrc}
       alt={alt}
-      unoptimized={isHeicImage(src)}
+      unoptimized={isHeicImage(src) || isRemoteImageUrl(src)}
       {...props}
     />
   );

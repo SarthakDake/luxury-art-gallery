@@ -1,5 +1,5 @@
-import config from "@/data/config.json";
 import { Reveal } from "@/components/motion/Reveal";
+import type { SiteConfig } from "@/types/site-config";
 import {
   Gem,
   Headphones,
@@ -10,7 +10,7 @@ import {
 
 const featureIcons: LucideIcon[] = [Palette, Gem, Headphones, HeartHandshake];
 
-export function ProductFeatures() {
+export function ProductFeatures({ config }: { config: SiteConfig }) {
   return (
     <Reveal as="section" variant="slide-up" className="surface-section feature-section">
       <div className="site-container">

@@ -1,6 +1,6 @@
 "use client";
 
-import config from "@/data/config.json";
+import { useSiteConfig } from "@/components/providers/site-config-provider";
 import { useIsClient } from "@/hooks/use-is-client";
 import { Eye } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -41,6 +41,7 @@ function useCountUp(target: number, duration = 1200): number {
 }
 
 export function VisitorCounter() {
+  const config = useSiteConfig();
   const [count, setCount] = useState<number | null>(null);
   const isClient = useIsClient();
   const animatedCount = useCountUp(isClient && count !== null ? count : 0);

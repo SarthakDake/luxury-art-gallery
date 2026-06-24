@@ -1,4 +1,7 @@
-import config from "@/data/config.json";
+"use client";
+
+import { useSiteConfig } from "@/components/providers/site-config-provider";
+import type { SiteSocialLinks } from "@/types/site-config";
 import Link from "next/link";
 
 export type SocialPlatform =
@@ -59,13 +62,15 @@ function SocialIcon({ platform }: { platform: SocialPlatform }) {
   }
 }
 
-function getSocialHref(platform: SocialPlatform): string | null {
-  const links = config.socialLinks;
-
+function getSocialHref(
+  platform: SocialPlatform,
+  links: SiteSocialLinks,
+  whatsappNumber: string,
+): string | null {
   if (platform === "whatsapp") {
     if (links.whatsapp) return links.whatsapp;
-    if (config.whatsappNumber) {
-      return `https://wa.me/${config.whatsappNumber}`;
+    if (whatsappNumber) {
+      return `https://wa.me/${whatsappNumber}`;
     }
     return null;
   }
@@ -78,10 +83,11 @@ interface SocialLinksProps {
 }
 
 export function SocialLinks({ showHeading = true }: SocialLinksProps) {
+  const config = useSiteConfig();
   const items = platformOrder
     .map((platform) => ({
       platform,
-      href: getSocialHref(platform),
+      href: getSocialHref(platform, config.socialLinks, config.whatsappNumber),
       label: platformLabels[platform],
     }))
     .filter((item) => Boolean(item.href));

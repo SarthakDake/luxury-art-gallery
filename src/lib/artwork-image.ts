@@ -28,7 +28,15 @@ export function isSupportedArtworkImage(src: string): boolean {
   return getArtworkImageExtension(src) !== null;
 }
 
+export function isRemoteImageUrl(src: string): boolean {
+  return src.startsWith("http://") || src.startsWith("https://");
+}
+
 export function getArtworkImageSrc(src: string): string {
+  if (isRemoteImageUrl(src)) {
+    return src;
+  }
+
   if (!src.startsWith("/")) {
     return src;
   }

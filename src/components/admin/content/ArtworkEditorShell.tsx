@@ -1,7 +1,7 @@
 "use client";
 
 import { getArtworkImageSrc } from "@/lib/artwork-image";
-import { formatPriceFrom, type Artwork } from "@/types/artwork";
+import { formatPriceFrom, isShowcaseOnly, type Artwork } from "@/types/artwork";
 import {
   ImageIcon,
   Layers,
@@ -83,11 +83,20 @@ export function ArtworkSidebar({
                 </span>
 
                 <span className="studio-artwork-list-copy">
-                  <span className="studio-artwork-list-title">
-                    {item.title || "Untitled piece"}
-                  </span>
-                  <span className="studio-artwork-list-meta">
-                    {item.category || "No category yet"}
+                  <span className="studio-artwork-list-heading">
+                    <span className="studio-artwork-list-title">
+                      {item.title || "Untitled piece"}
+                    </span>
+                    {item.category ? (
+                      <>
+                        <span className="studio-artwork-list-sep" aria-hidden>
+                          ·
+                        </span>
+                        <span className="studio-artwork-list-meta">{item.category}</span>
+                      </>
+                    ) : (
+                      <span className="studio-artwork-list-meta">No category yet</span>
+                    )}
                   </span>
                   <span
                     className={`studio-stock-pill${item.inStock ? " studio-stock-pill--in" : " studio-stock-pill--out"}`}
@@ -135,12 +144,15 @@ export function ArtworkEditorHero({
 
         <div className="studio-editor-hero-copy">
           <p className="eyebrow studio-sidebar-eyebrow">{artwork.id}</p>
-          <h2 className="studio-editor-title">{artwork.title || "Untitled piece"}</h2>
-          <p className="studio-editor-hero-meta">
-            {artwork.category || "No category"}
-            {artwork.subcategory ? ` · ${artwork.subcategory}` : ""}
-          </p>
-          {artwork.sizes.length > 0 ? (
+          <div className="studio-editor-hero-headline">
+            <h2 className="studio-editor-title">{artwork.title || "Untitled piece"}</h2>
+            <p className="studio-editor-hero-meta">
+              {artwork.category || "No category"}
+              {artwork.subcategory ? ` · ${artwork.subcategory}` : ""}
+              {artwork.material ? ` · ${artwork.material}` : ""}
+            </p>
+          </div>
+          {artwork.sizes.length > 0 && !isShowcaseOnly(artwork) ? (
             <p className="studio-editor-hero-price">{formatPriceFrom(artwork)}</p>
           ) : null}
         </div>
@@ -174,7 +186,10 @@ export function ArtworkStepNav({
             onClick={() => onChange(step.id)}
           >
             <Icon className="studio-step-nav-icon" strokeWidth={1.5} aria-hidden />
-            <span className="studio-step-nav-label">{step.label}</span>
+            <span className="studio-step-nav-copy">
+              <span className="studio-step-nav-label">{step.label}</span>
+              <span className="studio-step-nav-hint">{step.hint}</span>
+            </span>
           </button>
         );
       })}

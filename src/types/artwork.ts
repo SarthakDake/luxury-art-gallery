@@ -21,6 +21,10 @@ export interface Artwork {
   subcategory: string;
   material: string;
   inStock: boolean;
+  /** Display-only piece — no price or checkout on the storefront */
+  showcaseOnly?: boolean;
+  /** Button label on the product page when showcaseOnly is true */
+  showcaseEnquireLabel?: string;
   description: string;
   sizes: ArtworkSize[];
   defaultSelectedSizeIndex?: number;
@@ -48,6 +52,21 @@ export function getGalleryImages(artwork: Artwork): string[] {
 export function getDefaultSize(artwork: Artwork): ArtworkSize {
   const index = artwork.defaultSelectedSizeIndex ?? 0;
   return artwork.sizes[index] ?? artwork.sizes[0];
+}
+
+export function isShowcaseOnly(artwork: Artwork): boolean {
+  return Boolean(artwork.showcaseOnly);
+}
+
+export function isPurchasable(artwork: Artwork): boolean {
+  return artwork.inStock && !isShowcaseOnly(artwork);
+}
+
+export const DEFAULT_SHOWCASE_ENQUIRE_LABEL = "Get Custom Design Quote";
+
+export function getShowcaseEnquireLabel(artwork: Artwork): string {
+  const label = artwork.showcaseEnquireLabel?.trim();
+  return label || DEFAULT_SHOWCASE_ENQUIRE_LABEL;
 }
 
 export function getStartingPrice(artwork: Artwork): number {

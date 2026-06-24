@@ -10,8 +10,8 @@ interface ArtworkPageProps {
 
 export default async function ArtworkDetailPage({ params }: ArtworkPageProps) {
   const { slug } = await params;
-  const artworks = getArtworks();
-  const siteConfig = getSiteConfig();
+  const artworks = await getArtworks();
+  const siteConfig = await getSiteConfig();
   const artwork = artworks.find((item) => item.slug === slug);
 
   if (!artwork) {

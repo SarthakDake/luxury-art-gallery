@@ -1,10 +1,10 @@
 import { assertAdminSession } from "@/lib/admin";
 import { ARTWORK_IMAGE_EXTENSIONS } from "@/lib/artwork-image";
+import { uploadContentImage } from "@/lib/content-upload";
 import {
   buildArtworkImageFilename,
   buildPortraitFilename,
 } from "@/lib/site-data/slug";
-import { saveUploadedFile } from "@/lib/site-data";
 import path from "path";
 
 const MAX_UPLOAD_BYTES = 15 * 1024 * 1024;
@@ -62,13 +62,23 @@ export async function POST(request: Request) {
   try {
     if (kind === "portrait") {
       const filename = buildPortraitFilename(extension);
-      const publicPath = saveUploadedFile("", filename, buffer);
+      const publicPath = await uploadContentImage({
+        directory: "",
+        filename,
+        buffer,
+        extension,
+      });
       return Response.json({ path: publicPath, filename });
     }
 
     if (kind === "cover") {
       const filename = buildArtworkImageFilename(slug, "cover", extension);
-      const publicPath = saveUploadedFile("artworks", filename, buffer);
+      const publicPath = await uploadContentImage({
+        directory: "artworks",
+        filename,
+        buffer,
+        extension,
+      });
       return Response.json({ path: publicPath, filename });
     }
 
@@ -79,24 +89,40 @@ export async function POST(request: Request) {
         extension,
         Number.isFinite(galleryIndex) ? galleryIndex : 0,
       );
-      const publicPath = saveUploadedFile("artworks", filename, buffer);
+      const publicPath = await uploadContentImage({
+        directory: "artworks",
+        filename,
+        buffer,
+        extension,
+      });
       return Response.json({ path: publicPath, filename });
     }
 
     if (kind === "video-poster") {
       const filename = buildArtworkImageFilename(slug, "video-poster", extension);
-      const publicPath = saveUploadedFile("artworks", filename, buffer);
+      const publicPath = await uploadContentImage({
+        directory: "artworks",
+        filename,
+        buffer,
+        extension,
+      });
       return Response.json({ path: publicPath, filename });
     }
 
     const filename = buildArtworkImageFilename(slug, "gallery", extension, 0);
-    const publicPath = saveUploadedFile("artworks", filename, buffer);
+    const publicPath = await uploadContentImage({
+      directory: "artworks",
+      filename,
+      buffer,
+      extension,
+    });
     return Response.json({ path: publicPath, filename });
   } catch (error) {
     console.error("[upload] failed:", error);
-    return Response.json(
-      { error: "Could not save image. Check server write permissions." },
-      { status: 500 },
-    );
+    const message =
+      error instanceof Error
+        ? error.message
+        : "Could not save image. Check server write permissions.";
+    return Response.json({ error: message }, { status: 500 });
   }
 }

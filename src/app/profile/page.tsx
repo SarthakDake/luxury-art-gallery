@@ -1,7 +1,7 @@
 import { SignOutButton } from "@/components/layout/AuthActions";
 import { Reveal } from "@/components/motion/Reveal";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
-import { getArtworkTitle } from "@/lib/catalog";
+import { getArtworks } from "@/lib/site-data";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/types/artwork";
@@ -79,6 +79,8 @@ export default async function ProfilePage() {
     include: { items: true },
     orderBy: { createdAt: "desc" },
   });
+  const artworks = await getArtworks();
+  const artworkTitles = new Map(artworks.map((artwork) => [artwork.id, artwork.title]));
 
   const welcomeName = getWelcomeName(session.user.name, session.user.email);
 
@@ -165,7 +167,7 @@ export default async function ProfilePage() {
                       <li key={item.id} className="profile-order-item">
                         <div className="profile-order-item-copy">
                           <p className="profile-order-item-title">
-                            {getArtworkTitle(item.artworkId)}
+                            {artworkTitles.get(item.artworkId) ?? item.artworkId}
                           </p>
                           <p className="profile-order-item-meta">
                             {item.size}

@@ -14,6 +14,9 @@
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
     "db:baseline": "node scripts/db-baseline.mjs",
+    "db:seed-content": "node scripts/seed-site-content.mjs",
+    "db:sync-content": "node scripts/sync-site-content.mjs",
+    "db:sync-content:blob": "node scripts/sync-site-content.mjs --from-blob",
     "db:promote-admin": "node scripts/promote-admin.mjs",
     "db:studio": "prisma studio"
   },
@@ -24,6 +27,7 @@
     "@prisma/client": "^7.8.0",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.38.0",
+    "@vercel/blob": "^2.4.1",
     "heic-convert": "^2.1.0",
     "lucide-react": "^1.21.0",
     "next": "16.2.9",
@@ -35,6 +39,7 @@
     "razorpay": "^2.9.6",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "server-only": "^0.0.1",
     "zustand": "^5.0.14"
   },
   "overrides": {

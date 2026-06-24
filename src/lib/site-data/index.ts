@@ -1,52 +1,76 @@
-import type { ArtistProfile } from "@/types/site-config";
-import type { SiteConfig } from "@/types/site-config";
+import "server-only";
+import type { ArtistProfile, SiteConfig } from "@/types/site-config";
 import type { Artwork } from "@/types/artwork";
+import {
+  readArtistProfileFromFile,
+  readArtworksFromFile,
+  readSiteConfigFromFile,
+} from "@/lib/site-data/files";
+import {
+  summarizeMirrorResults,
+  type ContentMirrorResult,
+} from "@/lib/content-json-mirror";
+import { loadSiteContent, persistSiteContent } from "@/lib/site-data/store";
 import fs from "fs";
 import path from "path";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 
-const DATA_DIR = path.join(process.cwd(), "src/data");
+const getArtworksCached = unstable_cache(
+  async () =>
+    loadSiteContent<Artwork[]>("artworks", readArtworksFromFile),
+  ["site-content", "artworks"],
+  { tags: ["site-content-artworks"] },
+);
 
-const ARTWORKS_PATH = path.join(DATA_DIR, "artworks.json");
-const CONFIG_PATH = path.join(DATA_DIR, "config.json");
-const PROFILE_PATH = path.join(DATA_DIR, "profile.json");
+const getSiteConfigCached = unstable_cache(
+  async () =>
+    loadSiteContent<SiteConfig>("config", readSiteConfigFromFile),
+  ["site-content", "config"],
+  { tags: ["site-content-config"] },
+);
 
-function readJsonFile<T>(filePath: string): T {
-  const raw = fs.readFileSync(filePath, "utf8");
-  return JSON.parse(raw) as T;
+const getArtistProfileCached = unstable_cache(
+  async () =>
+    loadSiteContent<ArtistProfile>("profile", readArtistProfileFromFile),
+  ["site-content", "profile"],
+  { tags: ["site-content-profile"] },
+);
+
+export async function getArtworks(): Promise<Artwork[]> {
+  return getArtworksCached();
 }
 
-function writeJsonFile(filePath: string, data: unknown) {
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  fs.writeFileSync(filePath, `${JSON.stringify(data, null, 2)}\n`, "utf8");
+export async function getSiteConfig(): Promise<SiteConfig> {
+  return getSiteConfigCached();
 }
 
-export function getArtworks(): Artwork[] {
-  return readJsonFile<Artwork[]>(ARTWORKS_PATH);
+export async function getArtistProfile(): Promise<ArtistProfile> {
+  return getArtistProfileCached();
 }
 
-export function getSiteConfig(): SiteConfig {
-  return readJsonFile<SiteConfig>(CONFIG_PATH);
-}
+export type { ContentMirrorResult };
+export { summarizeMirrorResults };
 
-export function getArtistProfile(): ArtistProfile {
-  return readJsonFile<ArtistProfile>(PROFILE_PATH);
-}
-
-export function saveArtworks(artworks: Artwork[]) {
-  writeJsonFile(ARTWORKS_PATH, artworks);
+export async function saveArtworks(artworks: Artwork[]) {
+  const mirrors = await persistSiteContent("artworks", artworks);
+  revalidateTag("site-content-artworks", "max");
   revalidatePath("/");
   revalidatePath("/shop");
+  return mirrors;
 }
 
-export function saveSiteConfig(config: SiteConfig) {
-  writeJsonFile(CONFIG_PATH, config);
+export async function saveSiteConfig(config: SiteConfig) {
+  const mirrors = await persistSiteContent("config", config);
+  revalidateTag("site-content-config", "max");
   revalidatePath("/", "layout");
+  return mirrors;
 }
 
-export function saveArtistProfile(profile: ArtistProfile) {
-  writeJsonFile(PROFILE_PATH, profile);
+export async function saveArtistProfile(profile: ArtistProfile) {
+  const mirrors = await persistSiteContent("profile", profile);
+  revalidateTag("site-content-profile", "max");
   revalidatePath("/about");
+  return mirrors;
 }
 
 export function getPublicDir(...segments: string[]) {

@@ -126,18 +126,21 @@ export function StudioToggle({
   label,
   checked,
   onChange,
+  disabled = false,
 }: {
   label: string;
   checked: boolean;
   onChange: (checked: boolean) => void;
+  disabled?: boolean;
 }) {
   return (
-    <label className="studio-toggle">
+    <label className={`studio-toggle${disabled ? " studio-toggle--disabled" : ""}`}>
       <span className="studio-toggle-copy">{label}</span>
       <button
         type="button"
         role="switch"
         aria-checked={checked}
+        disabled={disabled}
         className={`studio-toggle-track${checked ? " studio-toggle-track--on" : ""}`}
         onClick={() => onChange(!checked)}
       >

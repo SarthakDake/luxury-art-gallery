@@ -48,7 +48,7 @@ export const authOptions: NextAuthOptions = {
 
       const userEmail = user.email?.trim().toLowerCase();
 
-      if (user.id && isAdminEmail(userEmail)) {
+      if (user.id && (await isAdminEmail(userEmail))) {
         try {
           await prisma.user.update({
             where: { id: user.id },
@@ -72,7 +72,7 @@ export const authOptions: NextAuthOptions = {
         token.sub = user.id;
         const userEmail = user.email?.trim().toLowerCase();
 
-        if (isAdminEmail(userEmail)) {
+        if (await isAdminEmail(userEmail)) {
           token.role = "ADMIN";
         } else {
           token.role = (user as { role?: UserRole }).role ?? "CUSTOMER";

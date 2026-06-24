@@ -12,6 +12,14 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ["@phonepe-pg/pg-sdk-node", "heic-convert"],
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.public.blob.vercel-storage.com",
+      },
+    ],
+  },
   async headers() {
     return [
       {

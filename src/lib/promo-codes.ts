@@ -1,4 +1,4 @@
-import config from "@/data/config.json";
+import type { SiteConfig } from "@/types/site-config";
 
 export interface PromoRule {
   code: string;
@@ -16,7 +16,7 @@ const PROMO_RULES: Record<string, Omit<PromoRule, "code" | "headline" | "detail"
   FESTIVE10: { type: "percent", value: 10, minSubtotal: 12000, maxDiscount: 2000 },
 };
 
-export function getPromoOffers(): PromoRule[] {
+export function getPromoOffers(config: SiteConfig): PromoRule[] {
   return config.offers
     .map((offer) => {
       const rule = PROMO_RULES[offer.code.trim().toUpperCase()];
@@ -51,14 +51,18 @@ export interface PromoRejection {
 
 export type PromoResult = PromoApplication | PromoRejection;
 
-export function applyPromoCode(code: string, subtotal: number): PromoResult {
+export function applyPromoCode(
+  code: string,
+  subtotal: number,
+  config: SiteConfig,
+): PromoResult {
   const normalizedCode = code.trim().toUpperCase();
 
   if (!normalizedCode) {
     return { valid: false, message: "Enter a promo code." };
   }
 
-  const offer = getPromoOffers().find((entry) => entry.code === normalizedCode);
+  const offer = getPromoOffers(config).find((entry) => entry.code === normalizedCode);
 
   if (!offer) {
     return { valid: false, message: "This promo code is not valid." };

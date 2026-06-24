@@ -14,11 +14,15 @@ import type { SiteConfig } from "@/types/site-config";
 import {
   formatPrice,
   getGalleryImages,
+  getShowcaseEnquireLabel,
+  isPurchasable,
+  isShowcaseOnly,
   type Artwork,
 } from "@/types/artwork";
+import { buildShowcaseEnquireUrl } from "@/lib/whatsapp-checkout";
 import { Check, MessageCircle, Share2 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 interface ArtworkDetailClientProps {
   artwork: Artwork;
@@ -65,6 +69,12 @@ function ArtworkDetailContent({
 
   const selectedSize = artwork.sizes[selectedSizeIndex] ?? artwork.sizes[0];
   const galleryImages = getGalleryImages(artwork);
+  const showcaseOnly = isShowcaseOnly(artwork);
+  const purchasable = isPurchasable(artwork);
+  const showcaseEnquireHref = useMemo(
+    () => (showcaseOnly ? buildShowcaseEnquireUrl(artwork, siteConfig) : null),
+    [showcaseOnly, artwork, siteConfig],
+  );
   const dispatchNote = artwork.dispatchNote ?? siteConfig.defaultDispatchNote;
   const careGuide = artwork.careGuide ?? siteConfig.defaultCareGuide;
   const shippingReturns =
@@ -97,7 +107,7 @@ function ArtworkDetailContent({
   ];
 
   function handleAddToCart() {
-    if (!artwork.inStock) return;
+    if (!purchasable) return;
 
     addToCart({
       id: artwork.id,
@@ -162,9 +172,11 @@ function ArtworkDetailContent({
 
                 <h1 className="page-title">{artwork.title}</h1>
 
-                <p className="product-price">
-                  {formatPrice(selectedSize.price)}
-                </p>
+                {!showcaseOnly ? (
+                  <p className="product-price">
+                    {formatPrice(selectedSize.price)}
+                  </p>
+                ) : null}
 
                 <p className="body-text">{artwork.material}</p>
               </div>
@@ -175,52 +187,73 @@ function ArtworkDetailContent({
                 onSelect={setSelectedSizeIndex}
               />
 
-              <QuantityStepper quantity={quantity} onChange={setQuantity} />
+              {purchasable ? (
+                <>
+                  <QuantityStepper quantity={quantity} onChange={setQuantity} />
 
-              <p className="dispatch-note">{dispatchNote}</p>
+                  <p className="dispatch-note">{dispatchNote}</p>
 
-              <div className="space-y-3">
-                <button
-                  type="button"
-                  onClick={handleAddToCart}
-                  disabled={!artwork.inStock}
-                  className="btn-primary btn-block"
-                >
-                  Add to Cart
-                </button>
+                  <div className="space-y-3">
+                    <button
+                      type="button"
+                      onClick={handleAddToCart}
+                      className="btn-primary btn-block"
+                    >
+                      Add to Cart
+                    </button>
 
-                <div
-                  aria-live="polite"
-                  className={`flex min-h-6 items-center justify-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[var(--foreground)] transition-all duration-500 ${
-                    itemAdded
-                      ? "translate-y-0 opacity-100"
-                      : "pointer-events-none translate-y-1 opacity-0"
-                  }`}
-                >
-                  <Check className="h-4 w-4" strokeWidth={1.5} />
-                  Item Added
-                </div>
-              </div>
-
-              <TrustBadges variant="list" />
-
-              <div>
-                <h2 className="section-title mb-4">Best Offers</h2>
-                <div className="offer-panel">
-                  {siteConfig.offers.map((offer) => (
-                    <div key={offer.code} className="offer-item">
-                      <p className="text-sm text-[var(--foreground)]">
-                        {offer.headline}
-                      </p>
-                      <p className="mt-1 text-xs text-[var(--muted)]">
-                        Use Code:{" "}
-                        <span className="offer-code">{offer.code}</span> (
-                        {offer.detail})
-                      </p>
+                    <div
+                      aria-live="polite"
+                      className={`flex min-h-6 items-center justify-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[var(--foreground)] transition-all duration-500 ${
+                        itemAdded
+                          ? "translate-y-0 opacity-100"
+                          : "pointer-events-none translate-y-1 opacity-0"
+                      }`}
+                    >
+                      <Check className="h-4 w-4" strokeWidth={1.5} />
+                      Item Added
                     </div>
-                  ))}
+                  </div>
+                </>
+              ) : null}
+
+              {showcaseOnly && showcaseEnquireHref ? (
+                <a
+                  href={showcaseEnquireHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-primary btn-block showcase-enquire-btn"
+                >
+                  <MessageCircle
+                    className="showcase-enquire-btn-icon"
+                    strokeWidth={1.5}
+                    aria-hidden
+                  />
+                  {getShowcaseEnquireLabel(artwork)}
+                </a>
+              ) : null}
+
+              <TrustBadges config={siteConfig} variant="list" />
+
+              {!showcaseOnly ? (
+                <div>
+                  <h2 className="section-title mb-4">Best Offers</h2>
+                  <div className="offer-panel">
+                    {siteConfig.offers.map((offer) => (
+                      <div key={offer.code} className="offer-item">
+                        <p className="text-sm text-[var(--foreground)]">
+                          {offer.headline}
+                        </p>
+                        <p className="mt-1 text-xs text-[var(--muted)]">
+                          Use Code:{" "}
+                          <span className="offer-code">{offer.code}</span> (
+                          {offer.detail})
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              ) : null}
 
               <div className="share-row">
                 <p className="body-text">
@@ -263,7 +296,7 @@ function ArtworkDetailContent({
           </div>
         </div>
 
-        <ProductFeatures />
+        <ProductFeatures config={siteConfig} />
 
         <ProductVideos artwork={artwork} />
 

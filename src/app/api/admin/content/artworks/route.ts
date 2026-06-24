@@ -1,5 +1,5 @@
 import { assertAdminSession } from "@/lib/admin";
-import { getArtworks, saveArtworks } from "@/lib/site-data";
+import { getArtworks, summarizeMirrorResults, saveArtworks } from "@/lib/site-data";
 import { nextArtworkId, slugify } from "@/lib/site-data/slug";
 import type { Artwork, ArtworkSize, ArtworkVideo } from "@/types/artwork";
 
@@ -51,6 +51,10 @@ function normalizeArtwork(raw: Artwork, existing: Artwork[]): Artwork {
     subcategory: raw.subcategory.trim(),
     material: raw.material.trim(),
     inStock: Boolean(raw.inStock),
+    showcaseOnly: Boolean(raw.showcaseOnly),
+    ...(raw.showcaseOnly && raw.showcaseEnquireLabel?.trim()
+      ? { showcaseEnquireLabel: raw.showcaseEnquireLabel.trim() }
+      : {}),
     description: raw.description.trim(),
     sizes,
     defaultSelectedSizeIndex,
@@ -71,7 +75,7 @@ export async function GET() {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  return Response.json({ artworks: getArtworks() });
+  return Response.json({ artworks: await getArtworks() });
 }
 
 export async function PUT(request: Request) {
@@ -116,11 +120,16 @@ export async function PUT(request: Request) {
   }
 
   try {
-    saveArtworks(normalized);
+    const mirrors = await saveArtworks(normalized);
+    const mirrorWarning = summarizeMirrorResults(mirrors);
+
+    return Response.json({
+      artworks: normalized,
+      mirrors,
+      ...(mirrorWarning ? { mirrorWarning } : {}),
+    });
   } catch (error) {
     console.error("[content] save artworks failed:", error);
     return Response.json({ error: "Could not save artworks." }, { status: 500 });
   }
-
-  return Response.json({ artworks: normalized });
 }

@@ -1,7 +1,7 @@
-import config from "@/data/config.json";
 import { ContactEmailLinks } from "@/components/ui/ContactEmailLinks";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 import { VisitorCounter } from "@/components/ui/VisitorCounter";
+import type { SiteConfig } from "@/types/site-config";
 import { MapPin } from "lucide-react";
 import Link from "next/link";
 
@@ -12,7 +12,7 @@ const exploreLinks = [
   { href: "/cart", label: "Cart" },
 ] as const;
 
-export function Footer() {
+export function Footer({ config }: { config: SiteConfig }) {
   return (
     <footer className="site-footer">
       <div className="site-container footer-main">

@@ -24,7 +24,12 @@ import {
 } from "./shared";
 import { nextArtworkId, slugify } from "@/lib/site-data/slug";
 import { useState } from "react";
-import type { Artwork, ArtworkSize, ArtworkVideo } from "@/types/artwork";
+import {
+  DEFAULT_SHOWCASE_ENQUIRE_LABEL,
+  type Artwork,
+  type ArtworkSize,
+  type ArtworkVideo,
+} from "@/types/artwork";
 
 function createEmptyArtwork(existing: Artwork[]): Artwork {
   const id = nextArtworkId(existing);
@@ -38,6 +43,7 @@ function createEmptyArtwork(existing: Artwork[]): Artwork {
     subcategory: "",
     material: "",
     inStock: true,
+    showcaseOnly: false,
     description: "",
     sizes: [{ size: "24x36 inches", price: 2500 }],
     defaultSelectedSizeIndex: 0,
@@ -308,8 +314,41 @@ export function ArtworksTab({
 
           <StudioGroup eyebrow="Step 4" title="Availability">
             <StudioToggle
+              label="Showcase only (display piece, not for sale)"
+              checked={Boolean(artwork.showcaseOnly)}
+              onChange={(checked) =>
+                onChange(
+                  updateArtwork(artworks, artworkIndex, {
+                    showcaseOnly: checked,
+                    ...(checked && !artwork.showcaseEnquireLabel
+                      ? { showcaseEnquireLabel: DEFAULT_SHOWCASE_ENQUIRE_LABEL }
+                      : {}),
+                  }),
+                )
+              }
+            />
+            {artwork.showcaseOnly ? (
+              <StudioField
+                label="Enquiry button text"
+                hint="Shown on the product page instead of Add to Cart. Opens WhatsApp with a link to this piece."
+              >
+                <StudioInput
+                  value={artwork.showcaseEnquireLabel ?? ""}
+                  onChange={(event) =>
+                    onChange(
+                      updateArtwork(artworks, artworkIndex, {
+                        showcaseEnquireLabel: event.target.value,
+                      }),
+                    )
+                  }
+                  placeholder={DEFAULT_SHOWCASE_ENQUIRE_LABEL}
+                />
+              </StudioField>
+            ) : null}
+            <StudioToggle
               label="Available to purchase"
               checked={artwork.inStock}
+              disabled={Boolean(artwork.showcaseOnly)}
               onChange={(checked) =>
                 onChange(updateArtwork(artworks, artworkIndex, { inStock: checked }))
               }

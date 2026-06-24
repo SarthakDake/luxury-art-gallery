@@ -10,9 +10,9 @@ interface PressFeature {
   link: string;
 }
 
-export default function AboutPage() {
-  const config = getSiteConfig();
-  const profile = getArtistProfile();
+export default async function AboutPage() {
+  const config = await getSiteConfig();
+  const profile = await getArtistProfile();
   const pressFeatures = profile.press as PressFeature[];
   const exhibitions = [...profile.exhibitions].sort((a, b) => b.year - a.year);
   const careerStart = Math.min(...profile.exhibitions.map((item) => item.year));

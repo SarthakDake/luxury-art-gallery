@@ -1,28 +1,20 @@
-import config from "@/data/config.json";
+import {
+  DEFAULT_ADMIN_EMAILS,
+  DEFAULT_CONTACT_EMAIL,
+  formatEmailList,
+  parseEmailList,
+} from "@/lib/email-list";
+import { getSiteConfig } from "@/lib/site-data";
 
-export const DEFAULT_ADMIN_EMAILS = [
-  "sarthaksdake@gmail.com",
-  "colorsnjoybyaish@gmail.com",
-] as const;
+export {
+  DEFAULT_ADMIN_EMAILS,
+  DEFAULT_CONTACT_EMAIL,
+  formatEmailList,
+  parseEmailList,
+};
 
-export const DEFAULT_CONTACT_EMAIL = "colorsnjoybyaish@gmail.com";
-
-export function parseEmailList(value: string | undefined | null): string[] {
-  if (!value?.trim()) {
-    return [];
-  }
-
-  return [
-    ...new Set(
-      value
-        .split(/[,;]+/)
-        .map((entry) => entry.trim().toLowerCase())
-        .filter(Boolean),
-    ),
-  ];
-}
-
-export function getAdminEmails(): string[] {
+export async function getAdminEmails(): Promise<string[]> {
+  const config = await getSiteConfig();
   const combined = [
     ...parseEmailList(process.env.ADMIN_EMAIL),
     ...parseEmailList(config.adminEmail),
@@ -32,19 +24,22 @@ export function getAdminEmails(): string[] {
   return unique.length > 0 ? unique : [...DEFAULT_ADMIN_EMAILS];
 }
 
-export function getAdminEmail() {
-  return getAdminEmails()[0] ?? DEFAULT_ADMIN_EMAILS[0];
+export async function getAdminEmail() {
+  const admins = await getAdminEmails();
+  return admins[0] ?? DEFAULT_ADMIN_EMAILS[0];
 }
 
-export function isAdminEmail(email: string | null | undefined) {
+export async function isAdminEmail(email: string | null | undefined) {
   if (!email?.trim()) {
     return false;
   }
 
-  return getAdminEmails().includes(email.trim().toLowerCase());
+  const admins = await getAdminEmails();
+  return admins.includes(email.trim().toLowerCase());
 }
 
-export function getContactEmails(): string[] {
+export async function getContactEmails(): Promise<string[]> {
+  const config = await getSiteConfig();
   const combined = [
     ...parseEmailList(process.env.CONTACT_EMAIL),
     ...parseEmailList(config.contactEmail),
@@ -56,8 +51,4 @@ export function getContactEmails(): string[] {
   }
 
   return [DEFAULT_CONTACT_EMAIL];
-}
-
-export function formatEmailList(emails: string[]) {
-  return emails.join(", ");
 }

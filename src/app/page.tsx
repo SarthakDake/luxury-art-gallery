@@ -10,9 +10,9 @@ import path from "path";
 const heroImagePath = path.join(process.cwd(), "public/hero-banner.jpg");
 const hasHeroImage = fs.existsSync(heroImagePath);
 
-export default function Home() {
-  const config = getSiteConfig();
-  const artworks = getArtworks();
+export default async function Home() {
+  const config = await getSiteConfig();
+  const artworks = await getArtworks();
   const featuredArtworks = artworks.slice(0, 4);
   return (
     <>
@@ -56,7 +56,7 @@ export default function Home() {
       </section>
 
       <Reveal as="section" variant="slide-up" className="site-container content-band content-band--compact">
-        <TrustBadges />
+        <TrustBadges config={config} />
       </Reveal>
 
       <Reveal as="section" variant="slide-up" className="surface-section section-block">

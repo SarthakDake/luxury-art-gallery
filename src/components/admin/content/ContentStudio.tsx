@@ -38,6 +38,41 @@ export function ContentStudio() {
     null,
   );
   const [saving, setSaving] = useState(false);
+  const [mirrorStatus, setMirrorStatus] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function loadMirrorStatus() {
+      try {
+        const response = await fetch("/api/admin/content/sync-status");
+        if (!response.ok) {
+          return;
+        }
+
+        const payload = (await response.json()) as {
+          mirrors?: {
+            blob: boolean;
+            github: { enabled: boolean; configured: boolean; repo: string | null; branch: string | null };
+          };
+        };
+
+        const parts: string[] = [];
+        if (payload.mirrors?.blob) {
+          parts.push("Blob JSON backup");
+        }
+        if (payload.mirrors?.github.configured) {
+          parts.push(`GitHub ${payload.mirrors.github.repo}@${payload.mirrors.github.branch}`);
+        } else if (payload.mirrors?.github.enabled) {
+          parts.push("GitHub sync enabled but not fully configured");
+        }
+
+        setMirrorStatus(parts.length > 0 ? parts.join(" · ") : null);
+      } catch {
+        setMirrorStatus(null);
+      }
+    }
+
+    void loadMirrorStatus();
+  }, []);
 
   useEffect(() => {
     async function loadContent() {
@@ -93,6 +128,7 @@ export function ContentStudio() {
         const payload = (await response.json()) as {
           artworks?: Artwork[];
           error?: string;
+          mirrorWarning?: string;
         };
 
         if (!response.ok) {
@@ -100,7 +136,12 @@ export function ContentStudio() {
         }
 
         setArtworks(payload.artworks ?? artworks);
-        setMessage({ tone: "success", text: "Artworks saved. Your gallery is live." });
+        setMessage({
+          tone: payload.mirrorWarning ? "error" : "success",
+          text: payload.mirrorWarning
+            ? `Artworks saved to the database, but remote sync needs attention: ${payload.mirrorWarning}`
+            : "Artworks saved. Your gallery is live.",
+        });
       }
 
       if (activeTab === "config" && config) {
@@ -112,6 +153,7 @@ export function ContentStudio() {
         const payload = (await response.json()) as {
           config?: SiteConfig;
           error?: string;
+          mirrorWarning?: string;
         };
 
         if (!response.ok) {
@@ -119,7 +161,12 @@ export function ContentStudio() {
         }
 
         setConfig(payload.config ?? config);
-        setMessage({ tone: "success", text: "Site settings saved." });
+        setMessage({
+          tone: payload.mirrorWarning ? "error" : "success",
+          text: payload.mirrorWarning
+            ? `Site settings saved to the database, but remote sync needs attention: ${payload.mirrorWarning}`
+            : "Site settings saved.",
+        });
       }
 
       if (activeTab === "profile" && profile) {
@@ -131,6 +178,7 @@ export function ContentStudio() {
         const payload = (await response.json()) as {
           profile?: ArtistProfile;
           error?: string;
+          mirrorWarning?: string;
         };
 
         if (!response.ok) {
@@ -138,7 +186,12 @@ export function ContentStudio() {
         }
 
         setProfile(payload.profile ?? profile);
-        setMessage({ tone: "success", text: "Artist profile saved." });
+        setMessage({
+          tone: payload.mirrorWarning ? "error" : "success",
+          text: payload.mirrorWarning
+            ? `Artist profile saved to the database, but remote sync needs attention: ${payload.mirrorWarning}`
+            : "Artist profile saved.",
+        });
       }
     } catch (error) {
       setMessage({
@@ -194,6 +247,7 @@ export function ContentStudio() {
           <p className="studio-save-title">Ready to publish?</p>
           <p className="studio-field-hint">
             Save this tab to update the live site. Images are renamed automatically.
+            {mirrorStatus ? ` Remote backup: ${mirrorStatus}.` : ""}
           </p>
         </div>
         <button

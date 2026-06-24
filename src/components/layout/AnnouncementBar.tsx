@@ -1,6 +1,6 @@
-import config from "@/data/config.json";
+import type { SiteConfig } from "@/types/site-config";
 
-export function AnnouncementBar() {
+export function AnnouncementBar({ config }: { config: SiteConfig }) {
   return (
     <div className="announcement-bar">
       <div className="site-container announcement-bar-inner">

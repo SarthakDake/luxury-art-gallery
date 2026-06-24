@@ -1,4 +1,5 @@
 import { applyPromoCode } from "@/lib/promo-codes";
+import { getSiteConfig } from "@/lib/site-data";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -23,7 +24,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid subtotal." }, { status: 400 });
   }
 
-  const result = applyPromoCode(body.code ?? "", subtotal);
+  const siteConfig = await getSiteConfig();
+  const result = applyPromoCode(body.code ?? "", subtotal, siteConfig);
 
   if (!result.valid) {
     return NextResponse.json({ valid: false, message: result.message }, { status: 400 });

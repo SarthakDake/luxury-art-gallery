@@ -1,6 +1,7 @@
 import { authOptions } from "@/lib/auth";
 import { verifyCartItems } from "@/lib/catalog";
 import { applyPromoCode } from "@/lib/promo-codes";
+import { getSiteConfig } from "@/lib/site-data";
 import { createPhonePePayment } from "@/lib/payments/phonepe";
 import {
   getAppBaseUrl,
@@ -56,7 +57,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
 
-  const verifiedItems = verifyCartItems(body.items ?? []);
+  const verifiedItems = await verifyCartItems(body.items ?? []);
 
   if (!verifiedItems) {
     return NextResponse.json(
@@ -74,7 +75,8 @@ export async function POST(request: Request) {
   let promoCode: string | undefined;
 
   if (body.promoCode?.trim()) {
-    const promoResult = applyPromoCode(body.promoCode, subtotal);
+    const siteConfig = await getSiteConfig();
+    const promoResult = applyPromoCode(body.promoCode, subtotal, siteConfig);
 
     if (!promoResult.valid) {
       return NextResponse.json({ error: promoResult.message }, { status: 400 });

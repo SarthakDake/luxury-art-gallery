@@ -1,4 +1,4 @@
-import config from "@/data/config.json";
+import type { SiteConfig } from "@/types/site-config";
 import {
   Headphones,
   RotateCcw,
@@ -10,10 +10,11 @@ import {
 const badgeIcons = [Truck, ShieldCheck, RotateCcw, Headphones, Sparkles];
 
 interface TrustBadgesProps {
+  config: SiteConfig;
   variant?: "pills" | "list";
 }
 
-export function TrustBadges({ variant = "pills" }: TrustBadgesProps) {
+export function TrustBadges({ config, variant = "pills" }: TrustBadgesProps) {
   if (variant === "list") {
     return (
       <ul className="trust-list">

@@ -1,8 +1,9 @@
-import config from "@/data/config.json";
+import type { Artwork } from "@/types/artwork";
+import type { SiteConfig } from "@/types/site-config";
 import type { CartItem } from "@/lib/store";
 import { formatPrice } from "@/types/artwork";
 
-export function isWhatsAppCheckoutAvailable() {
+export function isWhatsAppCheckoutAvailable(config: SiteConfig) {
   return Boolean(config.whatsappNumber?.trim());
 }
 
@@ -54,16 +55,39 @@ export function buildWhatsAppCheckoutMessage(
   return `Hello, I would like to acquire the following pieces:\n\n${lines.join("\n\n")}${discountLine}\n\nSubtotal: ${formatPrice(subtotal)}\nTotal: ${formatPrice(finalTotal)}.`;
 }
 
+export function buildShowcaseEnquireMessage(
+  artwork: Pick<Artwork, "title" | "slug">,
+): string {
+  const baseUrl = getSiteBaseUrl();
+  const productUrl = `${baseUrl}/art/${artwork.slug}`;
+
+  return `Hello, I would like to enquire about "${artwork.title}".\n\n${productUrl}`;
+}
+
+export function buildShowcaseEnquireUrl(
+  artwork: Pick<Artwork, "title" | "slug">,
+  config: SiteConfig,
+): string | null {
+  if (!isWhatsAppCheckoutAvailable(config)) {
+    return null;
+  }
+
+  const message = buildShowcaseEnquireMessage(artwork);
+
+  return `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(message)}`;
+}
+
 export function buildWhatsAppCheckoutUrl(
   items: CartItem[],
   subtotal: number,
+  config: SiteConfig,
   options?: {
     discount?: number;
     promoCode?: string;
     finalTotal?: number;
   },
 ): string | null {
-  if (!isWhatsAppCheckoutAvailable()) {
+  if (!isWhatsAppCheckoutAvailable(config)) {
     return null;
   }
 
