@@ -1,23 +1,13 @@
 {
   "artistName": "Aishwarya Dake",
   "artistTagline": "Blending traditional craftsmanship with modern design through custom texture art, murals, and bespoke creations.",
-  "portraitImageUrl": "/portraits/artist-portrait.webp?v=1782314593111",
+  "portraitImageUrl": "/portraits/artist-portrait.webp?v=1782314629545",
   "biography": "About Me\n\nHi, I’m the artist behind Colors N Joy, a texture art studio dedicated to transforming spaces through handcrafted art and meaningful design.\n\nI believe every wall has the potential to tell a story. Through custom texture art, relief murals, canvas paintings, bespoke artwork, and handcrafted Art Clocks, I create pieces that bring depth, character, and individuality to homes, cafés, offices, and commercial spaces. My work blends modern aesthetics with timeless traditional craftsmanship, creating art that feels both contemporary and enduring.\n\nInspired by nature, architecture, cultural motifs, and organic textures, I enjoy exploring the balance between modern minimalism and traditional artistry. Whether it’s a large-scale statement mural, a personalized artwork, a textured canvas, or a functional Art Clock, each piece is thoughtfully designed to complement the space while reflecting the personality and vision of its owner.\n\nWhat sets my work apart is my commitment to customization, detail, and craftsmanship. Every artwork is handcrafted with patience and precision, ensuring a unique result that cannot be replicated by mass production. I collaborate closely with clients to create pieces that are not only visually striking but also meaningful and deeply personal.\n\nAt Colors N Joy, my goal is to create art that enhances interiors, sparks conversation, and leaves a lasting impression. From contemporary texture installations to traditional-inspired relief art, custom artwork, and artistic clocks, I help transform blank walls into distinctive expressions of style and creativity.\n\nThank you for visiting my portfolio. I would love to collaborate with you and create something truly unique for your space.\n\nLet’s create art that beautifully blends tradition, craftsmanship, and modern design.",
   "exhibitions": [
     {
       "year": 2024,
-      "title": "Chasing Light & Form",
-      "location": "Colors N Joy Studio Collection"
-    },
-    {
-      "year": 2023,
-      "title": "Selected Works",
-      "location": "Colors N Joy Online Gallery"
-    },
-    {
-      "year": 2022,
       "title": "Studio Introduction",
-      "location": "Colors N Joy Studio"
+      "location": "Colors N Joy | Texture Art Studio"
     }
   ],
   "press": []
