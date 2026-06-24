@@ -67,6 +67,7 @@ async function mirrorContentJsonToBlob(
     await put(blobPathnameForKey(key), body, {
       access: getBlobAccess(),
       addRandomSuffix: false,
+      allowOverwrite: true,
       contentType: "application/json",
     });
 

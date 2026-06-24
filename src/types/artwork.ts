@@ -42,11 +42,31 @@ export function getArtworkVideos(artwork: Artwork): ArtworkVideo[] {
 }
 
 export function getGalleryImages(artwork: Artwork): string[] {
-  if (artwork.galleryImages && artwork.galleryImages.length > 0) {
-    return artwork.galleryImages;
+  const cover = artwork.imageUrl.trim();
+  const gallery = (artwork.galleryImages ?? [])
+    .map((image) => image.trim())
+    .filter(Boolean);
+
+  if (!cover) {
+    return gallery;
   }
 
-  return [artwork.imageUrl];
+  const coverPath = stripImageQuery(cover);
+  const additionalImages = gallery.filter(
+    (image) => stripImageQuery(image) !== coverPath,
+  );
+
+  return [cover, ...additionalImages];
+}
+
+function stripImageQuery(path: string): string {
+  const queryIndex = path.indexOf("?");
+
+  if (queryIndex === -1) {
+    return path;
+  }
+
+  return path.slice(0, queryIndex);
 }
 
 export function getDefaultSize(artwork: Artwork): ArtworkSize {

@@ -551,6 +551,7 @@ export function ArtworksTab({
                     path={video.poster}
                     slug={slug}
                     kind="video-poster"
+                    videoIndex={videoIndex}
                     compact
                     onUploaded={(path) =>
                       updateVideo(artworkIndex, videoIndex, { poster: path })

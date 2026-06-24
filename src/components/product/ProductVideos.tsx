@@ -1,6 +1,7 @@
 "use client";
 
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
+import { getArtworkImageSrc } from "@/lib/artwork-image";
 import { Reveal } from "@/components/motion/Reveal";
 import {
   buildYouTubeEmbedUrl,
@@ -119,6 +120,7 @@ function StreamVideoCard({ streamUrl, posterUrl, title }: StreamVideoCardProps) 
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [muted, setMuted] = useState(true);
+  const resolvedPosterUrl = posterUrl ? getArtworkImageSrc(posterUrl) : undefined;
 
   useEffect(() => {
     const element = videoRef.current;
@@ -188,7 +190,7 @@ function StreamVideoCard({ streamUrl, posterUrl, title }: StreamVideoCardProps) 
         <video
           ref={videoRef}
           src={streamUrl}
-          poster={posterUrl}
+          poster={resolvedPosterUrl}
           muted
           loop
           playsInline

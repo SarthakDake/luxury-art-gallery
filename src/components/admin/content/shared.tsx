@@ -1,9 +1,8 @@
 "use client";
 
 import { ChevronDown, ImageIcon, Plus, Trash2, Upload } from "lucide-react";
-import Image from "next/image";
 import { useState, type ReactNode, type SelectHTMLAttributes } from "react";
-import { getArtworkImageSrc } from "@/lib/artwork-image";
+import { ArtworkImage } from "@/components/ui/ArtworkImage";
 
 export function StudioTabs({
   tabs,
@@ -304,6 +303,7 @@ export function ImageUploadField({
   slug,
   kind,
   galleryIndex,
+  videoIndex,
   onUploaded,
   hint,
   compact = false,
@@ -313,6 +313,7 @@ export function ImageUploadField({
   slug: string;
   kind: "cover" | "gallery" | "portrait" | "video-poster";
   galleryIndex?: number;
+  videoIndex?: number;
   onUploaded: (path: string) => void;
   hint?: string;
   compact?: boolean;
@@ -334,10 +335,14 @@ export function ImageUploadField({
     if (galleryIndex !== undefined) {
       formData.append("galleryIndex", String(galleryIndex));
     }
+    if (videoIndex !== undefined) {
+      formData.append("videoIndex", String(videoIndex));
+    }
 
     try {
       const response = await fetch("/api/admin/content/upload", {
         method: "POST",
+        credentials: "same-origin",
         body: formData,
       });
 
@@ -349,25 +354,32 @@ export function ImageUploadField({
       }
 
       onUploaded(payload.path);
+    } catch (error) {
+      console.error("[ImageUploadField] upload failed:", error);
+      window.alert(
+        error instanceof Error
+          ? error.message
+          : "Upload failed. Check your connection and try again.",
+      );
     } finally {
       setUploading(false);
       event.target.value = "";
     }
   }
 
-  const previewSrc = path ? getArtworkImageSrc(path) : null;
+  const previewSrc = path ?? null;
 
   return (
     <StudioField label={label} hint={hint} fullWidth>
       <label className={`studio-dropzone${compact ? " studio-dropzone--compact" : ""}`}>
         {previewSrc ? (
-          <Image
+          <ArtworkImage
+            key={previewSrc}
             src={previewSrc}
             alt=""
             width={compact ? 88 : 120}
             height={compact ? 88 : 120}
             className="studio-dropzone-image"
-            unoptimized
           />
         ) : (
           <span className="studio-dropzone-placeholder" aria-hidden>
@@ -380,7 +392,7 @@ export function ImageUploadField({
             {uploading ? "Uploading…" : previewSrc ? "Replace image" : "Upload image"}
           </span>
           <span className="studio-field-hint">
-            JPG, PNG, WebP, or HEIC · saved automatically
+            JPG, PNG, WebP, or HEIC · stored immediately · click Save Artworks to publish
           </span>
           {path ? <span className="studio-upload-path">{path}</span> : null}
         </span>

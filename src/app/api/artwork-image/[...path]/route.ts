@@ -74,7 +74,7 @@ async function readFromBlob(relativePath: string): Promise<Response | null> {
     return new Response(result.stream, {
       headers: {
         "Content-Type": result.blob.contentType ?? getContentType(path.extname(relativePath)),
-        "Cache-Control": "public, max-age=31536000, immutable",
+        "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
       },
     });
   } catch (error) {
@@ -132,7 +132,7 @@ export async function GET(
   return new Response(new Uint8Array(output), {
     headers: {
       "Content-Type": getContentType(extension),
-      "Cache-Control": "public, max-age=31536000, immutable",
+      "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
     },
   });
 }

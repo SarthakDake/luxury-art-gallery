@@ -40,6 +40,7 @@ async function saveToBlob(
   await put(pathname, buffer, {
     access: getBlobAccess(),
     addRandomSuffix: false,
+    allowOverwrite: true,
     contentType,
   });
 
@@ -63,6 +64,11 @@ function replaceExtension(filename: string, extension: string): string {
   return `${base}${extension}`;
 }
 
+export function withImageCacheVersion(virtualPath: string): string {
+  const separator = virtualPath.includes("?") ? "&" : "?";
+  return `${virtualPath}${separator}v=${Date.now()}`;
+}
+
 export async function uploadContentImage(options: {
   directory: string;
   filename: string;
@@ -80,11 +86,12 @@ export async function uploadContentImage(options: {
       ? `${options.directory}/${path.basename(filename)}`
       : path.basename(filename);
 
-    return saveToBlob(
+    const virtualPath = await saveToBlob(
       pathname,
       normalized.buffer,
       getContentType(normalized.extension),
     );
+    return withImageCacheVersion(virtualPath);
   }
 
   if (process.env.VERCEL === "1") {
@@ -93,5 +100,10 @@ export async function uploadContentImage(options: {
     );
   }
 
-  return saveToLocalFilesystem(options.directory, filename, normalized.buffer);
+  const localPath = saveToLocalFilesystem(
+    options.directory,
+    filename,
+    normalized.buffer,
+  );
+  return withImageCacheVersion(localPath);
 }

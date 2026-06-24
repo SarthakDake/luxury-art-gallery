@@ -32,7 +32,7 @@ export function buildArtworkImageFilename(
   }
 
   if (role === "video-poster") {
-    return `${safeSlug}-video-poster${extension}`;
+    return `${safeSlug}-video-poster-${index + 1}${extension}`;
   }
 
   return `${safeSlug}-${index + 1}${extension}`;

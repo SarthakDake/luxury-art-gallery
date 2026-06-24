@@ -1,6 +1,6 @@
 "use client";
 
-import { getArtworkImageSrc } from "@/lib/artwork-image";
+import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import { formatPriceFrom, isShowcaseOnly, type Artwork } from "@/types/artwork";
 import {
   ImageIcon,
@@ -11,7 +11,6 @@ import {
   Tag,
   Video,
 } from "lucide-react";
-import Image from "next/image";
 import type { ReactNode } from "react";
 
 export type ArtworkEditorStep = "details" | "photos" | "pricing" | "videos" | "more";
@@ -58,7 +57,7 @@ export function ArtworkSidebar({
 
       <ul className="studio-artwork-list">
         {artworks.map((item, index) => {
-          const thumbSrc = item.imageUrl ? getArtworkImageSrc(item.imageUrl) : null;
+          const thumbSrc = item.imageUrl ?? null;
 
           return (
             <li key={item.id || index}>
@@ -69,13 +68,13 @@ export function ArtworkSidebar({
               >
                 <span className="studio-artwork-list-thumb" aria-hidden>
                   {thumbSrc ? (
-                    <Image
+                    <ArtworkImage
+                      key={thumbSrc}
                       src={thumbSrc}
                       alt=""
                       width={56}
                       height={56}
                       className="studio-artwork-list-image"
-                      unoptimized
                     />
                   ) : (
                     <Layers className="h-5 w-5" strokeWidth={1.5} />
@@ -120,20 +119,20 @@ export function ArtworkEditorHero({
   artwork: Artwork;
   onDelete: () => void;
 }) {
-  const coverSrc = artwork.imageUrl ? getArtworkImageSrc(artwork.imageUrl) : null;
+  const coverSrc = artwork.imageUrl ?? null;
 
   return (
     <div className="studio-editor-hero">
       <div className="studio-editor-hero-main">
         <div className="studio-editor-hero-media">
           {coverSrc ? (
-            <Image
+            <ArtworkImage
+              key={coverSrc}
               src={coverSrc}
               alt=""
               width={120}
               height={120}
               className="studio-editor-hero-image"
-              unoptimized
             />
           ) : (
             <div className="studio-editor-hero-placeholder">

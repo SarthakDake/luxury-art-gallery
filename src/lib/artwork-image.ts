@@ -36,27 +36,44 @@ export function isRemoteImageUrl(src: string): boolean {
 
 export const CONTENT_STUDIO_IMAGE_PREFIXES = ["/artworks/", "/portraits/"] as const;
 
-function shouldProxyImagePath(src: string): boolean {
-  if (!src.startsWith("/") || src.startsWith("/api/")) {
+export function splitImagePathAndSearch(src: string): {
+  pathname: string;
+  search: string;
+} {
+  const queryIndex = src.indexOf("?");
+
+  if (queryIndex === -1) {
+    return { pathname: src, search: "" };
+  }
+
+  return {
+    pathname: src.slice(0, queryIndex),
+    search: src.slice(queryIndex),
+  };
+}
+
+function shouldProxyImagePath(pathname: string): boolean {
+  if (!pathname.startsWith("/") || pathname.startsWith("/api/")) {
     return false;
   }
 
   return (
-    isHeicImage(src) ||
-    CONTENT_STUDIO_IMAGE_PREFIXES.some((prefix) => src.startsWith(prefix)) ||
-    isSupportedArtworkImage(src)
+    isHeicImage(pathname) ||
+    CONTENT_STUDIO_IMAGE_PREFIXES.some((prefix) => pathname.startsWith(prefix)) ||
+    isSupportedArtworkImage(pathname)
   );
 }
 
 export function getArtworkImageSrc(src: string): string {
-  const blobPath = isRemoteImageUrl(src) ? getBlobPathnameFromUrl(src) : null;
+  const { pathname, search } = splitImagePathAndSearch(src);
+  const blobPath = isRemoteImageUrl(pathname) ? getBlobPathnameFromUrl(pathname) : null;
 
   if (blobPath) {
-    return `/api/artwork-image/${blobPath}`;
+    return `/api/artwork-image/${blobPath}${search}`;
   }
 
-  if (shouldProxyImagePath(src)) {
-    return `/api/artwork-image/${src.slice(1)}`;
+  if (shouldProxyImagePath(pathname)) {
+    return `/api/artwork-image/${pathname.slice(1)}${search}`;
   }
 
   return src;

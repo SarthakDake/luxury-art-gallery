@@ -37,6 +37,7 @@ export async function POST(request: Request) {
   const kind = String(formData.get("kind") ?? "artwork");
   const slug = String(formData.get("slug") ?? "artwork").trim();
   const galleryIndex = Number(formData.get("galleryIndex") ?? "0");
+  const videoIndex = Number(formData.get("videoIndex") ?? "0");
 
   if (!(file instanceof File)) {
     return Response.json({ error: "Choose an image file to upload." }, { status: 400 });
@@ -99,7 +100,12 @@ export async function POST(request: Request) {
     }
 
     if (kind === "video-poster") {
-      const filename = buildArtworkImageFilename(slug, "video-poster", extension);
+      const filename = buildArtworkImageFilename(
+        slug,
+        "video-poster",
+        extension,
+        Number.isFinite(videoIndex) ? videoIndex : 0,
+      );
       const publicPath = await uploadContentImage({
         directory: "artworks",
         filename,
