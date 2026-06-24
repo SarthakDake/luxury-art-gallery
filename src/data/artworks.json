@@ -16,7 +16,8 @@
     "subcategory": "Landscape",
     "material": "Oil on linen",
     "inStock": true,
-    "showcaseOnly": false,
+    "showcaseOnly": true,
+    "showcaseEnquireLabel": "Get Custom Design Quote",
     "description": "A restrained study of coastal light, where a single horizon divides muted sky from deep water.",
     "sizes": [
       {
