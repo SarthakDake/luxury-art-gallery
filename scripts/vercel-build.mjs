@@ -15,7 +15,7 @@ async function main() {
   if (isCiBuild) {
     if (hasDatabaseUrl) {
       console.log("[build] Syncing database schema…");
-      deployMigrations();
+      await deployMigrations();
       console.log("[build] Seeding site content if needed…");
       await seedSiteContent();
     } else {
