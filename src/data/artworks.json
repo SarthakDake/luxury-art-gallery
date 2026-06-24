@@ -184,5 +184,27 @@
       }
     ],
     "defaultSelectedSizeIndex": 0
+  },
+  {
+    "id": "art-006",
+    "title": "test",
+    "slug": "test",
+    "imageUrl": "/artworks/test-cover.webp?v=1782284306827",
+    "galleryImages": [
+      "/artworks/test-1.webp?v=1782284277018"
+    ],
+    "category": "asd",
+    "subcategory": "asd",
+    "material": "asd",
+    "inStock": true,
+    "showcaseOnly": false,
+    "description": "asd",
+    "sizes": [
+      {
+        "size": "24x36 inches",
+        "price": 2500
+      }
+    ],
+    "defaultSelectedSizeIndex": 0
   }
 ]
