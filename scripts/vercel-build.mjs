@@ -10,6 +10,8 @@ async function main() {
   const isCiBuild = Boolean(process.env.VERCEL || process.env.CI);
   const hasDatabaseUrl = Boolean(process.env.DATABASE_URL);
 
+  run("npx prisma generate");
+
   if (isCiBuild) {
     if (hasDatabaseUrl) {
       console.log("[build] Syncing database schema…");
@@ -23,7 +25,6 @@ async function main() {
     }
   }
 
-  run("npx prisma generate");
   run("npx next build");
 }
 

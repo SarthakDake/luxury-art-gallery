@@ -1,6 +1,5 @@
-import { PrismaClient } from "../src/generated/prisma/client.js";
-import { PrismaPg } from "@prisma/adapter-pg";
 import config from "../src/data/config.json" with { type: "json" };
+import { withPgClient } from "./db-pg.mjs";
 
 function parseEmailList(value) {
   if (!value?.trim()) {
@@ -29,40 +28,27 @@ const adminEmails = (() => {
     : ["sarthaksdake@gmail.com", "colorsnjoybyaish@gmail.com"];
 })();
 
-const connectionString = process.env.DATABASE_URL;
-
-if (!connectionString) {
-  console.error("DATABASE_URL is not set.");
-  process.exit(1);
-}
-
-const adapter = new PrismaPg({ connectionString });
-const prisma = new PrismaClient({ adapter });
-
 try {
   let promoted = 0;
   const missing = [];
 
-  for (const adminEmail of adminEmails) {
-    const result = await prisma.user.updateMany({
-      where: {
-        email: {
-          equals: adminEmail,
-          mode: "insensitive",
-        },
-      },
-      data: {
-        role: "ADMIN",
-      },
-    });
+  await withPgClient(async (client) => {
+    for (const adminEmail of adminEmails) {
+      const result = await client.query(
+        `UPDATE "User"
+         SET role = 'ADMIN'::"UserRole", "updatedAt" = NOW()
+         WHERE LOWER(email) = LOWER($1)`,
+        [adminEmail],
+      );
 
-    if (result.count === 0) {
-      missing.push(adminEmail);
-    } else {
-      promoted += result.count;
-      console.log(`Promoted ${result.count} user(s) to ADMIN for ${adminEmail}.`);
+      if (result.rowCount === 0) {
+        missing.push(adminEmail);
+      } else {
+        promoted += result.rowCount;
+        console.log(`Promoted ${result.rowCount} user(s) to ADMIN for ${adminEmail}.`);
+      }
     }
-  }
+  });
 
   if (missing.length > 0) {
     console.warn(
@@ -75,6 +61,7 @@ try {
   } else {
     console.log(`Done. ${promoted} admin user(s) updated.`);
   }
-} finally {
-  await prisma.$disconnect();
+} catch (error) {
+  console.error("Failed to promote admin users:", error);
+  process.exit(1);
 }

@@ -2,8 +2,7 @@ import { writeFileSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { head } from "@vercel/blob";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../src/generated/prisma/client.js";
+import { withPgClient } from "./db-pg.mjs";
 
 const contentFiles = [
   { key: "artworks", file: "src/data/artworks.json", blobPath: "site-content/artworks.json" },
@@ -11,50 +10,37 @@ const contentFiles = [
   { key: "profile", file: "src/data/profile.json", blobPath: "site-content/profile.json" },
 ];
 
-function createPrisma() {
-  const connectionString = process.env.DATABASE_URL;
-
-  if (!connectionString) {
-    throw new Error("DATABASE_URL is required to sync site content from the database.");
-  }
-
-  const adapter = new PrismaPg({ connectionString });
-  return new PrismaClient({ adapter });
-}
-
 function writeContentFile(relativePath, data) {
   const filePath = path.join(process.cwd(), relativePath);
   writeFileSync(filePath, `${JSON.stringify(data, null, 2)}\n`, "utf8");
 }
 
 export async function syncSiteContentFromDatabase() {
-  const prisma = createPrisma();
   const mirrored = [];
 
-  try {
+  await withPgClient(async (client) => {
     for (const entry of contentFiles) {
-      const row = await prisma.siteContent.findUnique({
-        where: { key: entry.key },
-      });
+      const result = await client.query(
+        'SELECT data FROM "SiteContent" WHERE key = $1',
+        [entry.key],
+      );
 
-      if (!row) {
+      if (result.rowCount === 0) {
         console.warn(`[sync] No database row for ${entry.key}, skipping.`);
         continue;
       }
 
-      writeContentFile(entry.file, row.data);
+      writeContentFile(entry.file, result.rows[0].data);
       mirrored.push(entry.file);
       console.log(`[sync] Wrote ${entry.file} from database`);
     }
+  });
 
-    if (mirrored.length === 0) {
-      throw new Error("No site content rows found in the database.");
-    }
-
-    console.log(`[sync] Mirrored ${mirrored.length} file(s) from database.`);
-  } finally {
-    await prisma.$disconnect();
+  if (mirrored.length === 0) {
+    throw new Error("No site content rows found in the database.");
   }
+
+  console.log(`[sync] Mirrored ${mirrored.length} file(s) from database.`);
 }
 
 export async function syncSiteContentFromBlob() {
