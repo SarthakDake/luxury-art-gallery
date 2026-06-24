@@ -1,9 +1,14 @@
 import { getArtworks } from "@/lib/site-data";
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import ShopPageContent from "./ShopPageContent";
 
-/** ISR fallback (seconds). CMS saves trigger on-demand revalidation immediately. */
 export const revalidate = 3600;
+
+export const metadata: Metadata = {
+  title: "Gallery",
+  description: "Browse the full collection of original artworks.",
+};
 
 export default async function ShopPage() {
   const artworks = await getArtworks();

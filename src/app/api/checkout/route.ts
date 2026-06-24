@@ -8,6 +8,7 @@ import {
   resolvePaymentGateway,
 } from "@/lib/payments/gateway";
 import { prisma } from "@/lib/prisma";
+import { captureServerError } from "@/lib/sentry";
 import { enforceRateLimit } from "@/lib/rate-limit";
 import { getRazorpayClient } from "@/lib/razorpay";
 import { getServerSession } from "next-auth";
@@ -175,6 +176,7 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error("Checkout failed:", error);
+    captureServerError(error, { route: "checkout" });
     return NextResponse.json(
       { error: "Unable to create checkout order." },
       { status: 500 },

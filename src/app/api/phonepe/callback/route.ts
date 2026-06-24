@@ -1,6 +1,7 @@
 import { sendNewOrderConfirmedEmail } from "@/lib/mailer";
 import { verifyPhonePePayment } from "@/lib/payments/phonepe";
 import { prisma } from "@/lib/prisma";
+import { captureServerError } from "@/lib/sentry";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -88,6 +89,7 @@ export async function GET(request: Request) {
     return NextResponse.redirect(baseRedirect);
   } catch (error) {
     console.error("PhonePe callback verification failed:", error);
+    captureServerError(error, { route: "phonepe-callback", orderId });
     baseRedirect.searchParams.set("payment", "failed");
     baseRedirect.searchParams.set("orderId", order.id);
     return NextResponse.redirect(baseRedirect);

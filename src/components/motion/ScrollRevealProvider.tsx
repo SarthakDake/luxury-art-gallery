@@ -10,6 +10,10 @@ function setupScrollReveal(root: ParentNode) {
   html.classList.toggle("reveal-enabled", !reduced);
   html.classList.toggle("reveal-reduced", reduced);
 
+  root.querySelectorAll("[data-reveal-immediate]").forEach((element) => {
+    element.classList.add("is-revealed");
+  });
+
   if (reduced) {
     root.querySelectorAll("[data-reveal]").forEach((element) => {
       element.classList.add("is-revealed");

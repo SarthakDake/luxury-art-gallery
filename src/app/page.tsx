@@ -4,6 +4,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { TrustBadges } from "@/components/ui/TrustBadges";
 import { getArtworks, getSiteConfig } from "@/lib/site-data";
 import fs from "fs";
+import Image from "next/image";
 import Link from "next/link";
 import path from "path";
 
@@ -19,15 +20,21 @@ export default async function Home() {
   const featuredArtworks = artworks.slice(0, 4);
   return (
     <>
-      <section
-        className={`hero-block ${hasHeroImage ? "hero-block--image" : ""}`}
-        style={
-          hasHeroImage
-            ? { backgroundImage: "url(/hero-banner.jpg)" }
-            : undefined
-        }
-      >
-        {hasHeroImage && <div className="hero-overlay" aria-hidden />}
+      <section className={`hero-block ${hasHeroImage ? "hero-block--image" : ""}`}>
+        {hasHeroImage ? (
+          <>
+            <Image
+              src="/hero-banner.jpg"
+              alt=""
+              fill
+              priority
+              fetchPriority="high"
+              sizes="100vw"
+              className="hero-media object-cover"
+            />
+            <div className="hero-overlay" aria-hidden />
+          </>
+        ) : null}
 
         <div className="site-container hero-inner">
           <div className="hero-content">

@@ -1,7 +1,7 @@
 "use client";
 
+import { useArtworks } from "@/components/providers/artworks-provider";
 import { searchArtworks } from "@/lib/artwork-search";
-import type { Artwork } from "@/types/artwork";
 import { Search, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -23,28 +23,7 @@ export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState(false);
-  const [artworks, setArtworks] = useState<Artwork[]>([]);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    fetch("/api/site/artworks")
-      .then((response) => response.json())
-      .then((payload: { artworks?: Artwork[] }) => {
-        if (!cancelled && payload.artworks) {
-          setArtworks(payload.artworks);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setArtworks([]);
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const artworks = useArtworks();
 
   const hasQuery = query.length > 0;
 

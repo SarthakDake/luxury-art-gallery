@@ -22,7 +22,15 @@ export async function getArtworkById(id: string) {
   return artworks.find((artwork) => artwork.id === id);
 }
 
-export async function verifyCartLine(item: CartLineInput): Promise<VerifiedCartLine | null> {
+export async function getArtworkTitle(artworkId: string) {
+  const artwork = await getArtworkById(artworkId);
+  return artwork?.title ?? artworkId;
+}
+
+function verifyCartLineAgainstCatalog(
+  item: CartLineInput,
+  catalogById: Map<string, Awaited<ReturnType<typeof getArtworks>>[number]>,
+): VerifiedCartLine | null {
   if (
     typeof item.id !== "string" ||
     item.id.length === 0 ||
@@ -36,15 +44,13 @@ export async function verifyCartLine(item: CartLineInput): Promise<VerifiedCartL
     return null;
   }
 
-  const artwork = await getArtworkById(item.id);
+  const artwork = catalogById.get(item.id);
 
   if (!artwork || !artwork.inStock || artwork.showcaseOnly) {
     return null;
   }
 
-  const sizeOption = artwork.sizes.find(
-    (entry) => entry.size === item.selectedSize,
-  );
+  const sizeOption = artwork.sizes.find((entry) => entry.size === item.selectedSize);
 
   if (!sizeOption) {
     return null;
@@ -58,6 +64,12 @@ export async function verifyCartLine(item: CartLineInput): Promise<VerifiedCartL
   };
 }
 
+export async function verifyCartLine(item: CartLineInput): Promise<VerifiedCartLine | null> {
+  const artworks = await getArtworks();
+  const catalogById = new Map(artworks.map((artwork) => [artwork.id, artwork]));
+  return verifyCartLineAgainstCatalog(item, catalogById);
+}
+
 export async function verifyCartItems(
   items: CartLineInput[],
 ): Promise<VerifiedCartLine[] | null> {
@@ -65,10 +77,12 @@ export async function verifyCartItems(
     return null;
   }
 
+  const artworks = await getArtworks();
+  const catalogById = new Map(artworks.map((artwork) => [artwork.id, artwork]));
   const verifiedLines: VerifiedCartLine[] = [];
 
   for (const item of items) {
-    const verified = await verifyCartLine(item);
+    const verified = verifyCartLineAgainstCatalog(item, catalogById);
 
     if (!verified) {
       return null;
@@ -78,9 +92,4 @@ export async function verifyCartItems(
   }
 
   return verifiedLines;
-}
-
-export async function getArtworkTitle(artworkId: string) {
-  const artwork = await getArtworkById(artworkId);
-  return artwork?.title ?? artworkId;
 }

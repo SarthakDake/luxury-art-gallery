@@ -2,7 +2,7 @@ import { put } from "@vercel/blob";
 import fs from "fs";
 import path from "path";
 import { getBlobAccess, isBlobStorageEnabled, toBlobVirtualPath } from "@/lib/blob-storage";
-import { convertHeicToPng } from "@/lib/heic-to-image";
+import { normalizeImageToWebp } from "@/lib/image-processing";
 
 function getContentType(extension: string): string {
   switch (extension) {
@@ -10,9 +10,6 @@ function getContentType(extension: string): string {
       return "image/png";
     case ".webp":
       return "image/webp";
-    case ".heic":
-    case ".heif":
-      return "image/png";
     default:
       return "image/jpeg";
   }
@@ -47,18 +44,6 @@ async function saveToBlob(
   return toBlobVirtualPath(pathname);
 }
 
-async function normalizeUploadBuffer(
-  buffer: Buffer,
-  extension: string,
-): Promise<{ buffer: Buffer; extension: string }> {
-  if ((extension === ".heic" || extension === ".heif") && isBlobStorageEnabled()) {
-    const png = await convertHeicToPng(buffer);
-    return { buffer: png, extension: ".png" };
-  }
-
-  return { buffer, extension };
-}
-
 function replaceExtension(filename: string, extension: string): string {
   const base = filename.replace(/\.[^.]+$/, "");
   return `${base}${extension}`;
@@ -75,11 +60,8 @@ export async function uploadContentImage(options: {
   buffer: Buffer;
   extension: string;
 }): Promise<string> {
-  const normalized = await normalizeUploadBuffer(options.buffer, options.extension);
-  const filename =
-    normalized.extension === options.extension
-      ? options.filename
-      : replaceExtension(options.filename, normalized.extension);
+  const normalized = await normalizeImageToWebp(options.buffer, options.extension);
+  const filename = replaceExtension(options.filename, normalized.extension);
 
   if (isBlobStorageEnabled()) {
     const pathname = options.directory

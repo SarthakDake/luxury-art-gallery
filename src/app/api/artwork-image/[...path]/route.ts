@@ -1,5 +1,6 @@
 import { get } from "@vercel/blob";
-import fs from "fs";
+import fs from "node:fs";
+import { readFile } from "node:fs/promises";
 import path from "path";
 import { ARTWORK_IMAGE_EXTENSIONS } from "@/lib/artwork-image";
 import { getBlobAccess, isBlobStorageEnabled } from "@/lib/blob-storage";
@@ -127,7 +128,7 @@ export async function GET(
   }
 
   const extension = path.extname(filePath).toLowerCase();
-  const input = fs.readFileSync(filePath);
+  const input = await readFile(filePath);
   const shouldConvert = extension === ".heic" || extension === ".heif";
 
   let output: Buffer;

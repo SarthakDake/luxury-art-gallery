@@ -1,14 +1,16 @@
+import { processPhonePeWebhook } from "@/lib/phonepe-webhook";
+import { captureServerError } from "@/lib/sentry";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
   try {
-    const payload = await request.text();
-    console.info("PhonePe webhook received:", payload.slice(0, 500));
+    const result = await processPhonePeWebhook(request);
+    return NextResponse.json(result.body, { status: result.status });
   } catch (error) {
-    console.error("PhonePe webhook parse failed:", error);
+    console.error("[phonepe-webhook] failed:", error);
+    captureServerError(error, { route: "phonepe-webhook" });
+    return NextResponse.json({ error: "Webhook processing failed." }, { status: 500 });
   }
-
-  return NextResponse.json({ received: true });
 }

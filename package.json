@@ -25,9 +25,12 @@
     "@phonepe-pg/pg-sdk-node": "^2.0.6",
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
+    "@sentry/nextjs": "^10.60.0",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.38.0",
+    "@vercel/analytics": "^2.0.1",
     "@vercel/blob": "^2.4.1",
+    "@vercel/speed-insights": "^2.0.0",
     "heic-convert": "^2.1.0",
     "lucide-react": "^1.21.0",
     "next": "16.2.9",
@@ -40,6 +43,7 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "server-only": "^0.0.1",
+    "sharp": "^0.35.2",
     "zustand": "^5.0.14"
   },
   "overrides": {

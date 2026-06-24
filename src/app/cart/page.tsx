@@ -1,6 +1,7 @@
 "use client";
 
 import { useSiteConfig } from "@/components/providers/site-config-provider";
+import { useArtworks } from "@/components/providers/artworks-provider";
 import { CartPromoCode } from "@/components/cart/CartPromoCode";
 import { Reveal } from "@/components/motion/Reveal";
 import { applyPromoCode } from "@/lib/promo-codes";
@@ -11,7 +12,8 @@ import {
 } from "@/lib/whatsapp-checkout";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
-import { formatPrice, getShowcaseArtworkIds, type Artwork } from "@/types/artwork";
+import { formatCartSyncNotice } from "@/lib/cart-catalog-sync";
+import { formatPrice, getShowcaseArtworkIds } from "@/types/artwork";
 import type { RazorpaySuccessResponse } from "@/types/razorpay";
 import { Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -48,11 +50,10 @@ function CartPageContent() {
   const hydrated = useCartHydrated();
   const items = useCartStore((state) => state.items);
   const removeFromCart = useCartStore((state) => state.removeFromCart);
-  const removeItemsByArtworkIds = useCartStore((state) => state.removeItemsByArtworkIds);
+  const reconcileWithCatalog = useCartStore((state) => state.reconcileWithCatalog);
   const clearCart = useCartStore((state) => state.clearCart);
 
-  const [artworks, setArtworks] = useState<Artwork[]>([]);
-  const [artworksLoaded, setArtworksLoaded] = useState(false);
+  const artworks = useArtworks();
 
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
@@ -62,6 +63,7 @@ function CartPageContent() {
   const [gatewayLoading, setGatewayLoading] = useState(true);
   const [appliedPromoCode, setAppliedPromoCode] = useState<string | null>(null);
   const [whatsAppCheckoutComplete, setWhatsAppCheckoutComplete] = useState(false);
+  const [cartSyncNotice, setCartSyncNotice] = useState<string | null>(null);
 
   const showcaseArtworkIds = useMemo(
     () => getShowcaseArtworkIds(artworks),
@@ -107,35 +109,18 @@ function CartPageContent() {
         (!usesRazorpay || razorpayReady)));
 
   useEffect(() => {
-    async function loadArtworks() {
-      try {
-        const response = await fetch("/api/site/artworks");
-        const payload = (await response.json()) as { artworks?: Artwork[] };
-
-        if (payload.artworks) {
-          setArtworks(payload.artworks);
-        }
-      } catch {
-        setArtworks([]);
-      } finally {
-        setArtworksLoaded(true);
-      }
-    }
-
-    void loadArtworks();
-  }, []);
-
-  useEffect(() => {
     if (!hydrated || artworks.length === 0) {
       return;
     }
 
-    const showcaseIds = [...getShowcaseArtworkIds(artworks)];
+    const result = reconcileWithCatalog(artworks);
+    const notice = formatCartSyncNotice(result);
+    const frame = requestAnimationFrame(() => {
+      setCartSyncNotice(notice);
+    });
 
-    if (showcaseIds.length > 0) {
-      removeItemsByArtworkIds(showcaseIds);
-    }
-  }, [artworks, hydrated, removeItemsByArtworkIds]);
+    return () => cancelAnimationFrame(frame);
+  }, [artworks, hydrated, reconcileWithCatalog]);
 
   useEffect(() => {
     async function loadGateway() {
@@ -456,7 +441,7 @@ function CartPageContent() {
     );
   }
 
-  if (!hydrated || (items.length > 0 && !artworksLoaded)) {
+  if (!hydrated) {
     return (
       <div className="site-container page-shell">
         <Breadcrumbs
@@ -513,6 +498,11 @@ function CartPageContent() {
           <p className="body-text">
             Review your selected works before completing secure checkout.
           </p>
+          {cartSyncNotice ? (
+            <p className="cart-notice" role="status">
+              {cartSyncNotice}
+            </p>
+          ) : null}
         </Reveal>
 
         <div className="cart-layout">

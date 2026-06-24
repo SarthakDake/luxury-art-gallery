@@ -2,6 +2,7 @@ import { getArtistProfile, getSiteConfig } from "@/lib/site-data";
 import { Reveal } from "@/components/motion/Reveal";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
+import type { Metadata } from "next";
 import Link from "next/link";
 
 interface PressFeature {
@@ -11,6 +12,11 @@ interface PressFeature {
 }
 
 export const revalidate = 3600;
+
+export const metadata: Metadata = {
+  title: "About the Artist",
+  description: "Biography, exhibitions, and press for the studio.",
+};
 
 export default async function AboutPage() {
   const config = await getSiteConfig();

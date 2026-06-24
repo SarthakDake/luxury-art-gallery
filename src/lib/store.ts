@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useIsClient } from "@/hooks/use-is-client";
+import { syncCartWithCatalog, type CartCatalogSyncResult } from "@/lib/cart-catalog-sync";
+import type { Artwork } from "@/types/artwork";
 import { useEffect, useState } from "react";
 
 export interface CartItem {
@@ -20,6 +22,7 @@ interface CartStore {
   addToCart: (item: AddToCartInput) => void;
   removeFromCart: (id: string, selectedSize: string) => void;
   removeItemsByArtworkIds: (ids: string[]) => void;
+  reconcileWithCatalog: (artworks: Artwork[]) => CartCatalogSyncResult;
   clearCart: () => void;
 }
 
@@ -75,6 +78,17 @@ export const useCartStore = create<CartStore>()(
             items: state.items.filter((cartItem) => !blocked.has(cartItem.id)),
           };
         }),
+
+      reconcileWithCatalog: (artworks) => {
+        const state = useCartStore.getState();
+        const result = syncCartWithCatalog(state.items, artworks);
+
+        if (result.changed) {
+          set({ items: result.items });
+        }
+
+        return result;
+      },
 
       clearCart: () => set({ items: [] }),
     }),

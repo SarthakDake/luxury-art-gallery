@@ -1,5 +1,6 @@
 "use client";
 
+import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { MobileAuthActions } from "./AuthActions";
 import { GlobalSearch } from "./GlobalSearch";
 import { Menu, Moon, Sun, X } from "lucide-react";
@@ -7,7 +8,7 @@ import { useTheme } from "next-themes";
 import { useMounted } from "@/hooks/use-mounted";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -21,8 +22,19 @@ export function MobileNav() {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const mounted = useMounted();
   const [open, setOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLElement>(null);
 
   const isDark = mounted && (resolvedTheme ?? theme) === "dark";
+
+  const closeMenu = useCallback(() => {
+    setOpen(false);
+  }, []);
+
+  useFocusTrap(panelRef, open, {
+    onEscape: closeMenu,
+    returnFocusRef: menuButtonRef,
+  });
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -31,13 +43,10 @@ export function MobileNav() {
     };
   }, [open]);
 
-  function closeMenu() {
-    setOpen(false);
-  }
-
   return (
     <div className="mobile-nav">
       <button
+        ref={menuButtonRef}
         type="button"
         aria-label={open ? "Close menu" : "Open menu"}
         aria-expanded={open}
@@ -52,17 +61,21 @@ export function MobileNav() {
         )}
       </button>
 
-      {open && (
+      {open ? (
         <>
           <button
             type="button"
             aria-label="Close menu overlay"
             className="mobile-nav-overlay"
             onClick={closeMenu}
+            tabIndex={-1}
           />
           <nav
+            ref={panelRef}
             id="mobile-nav-panel"
-            aria-label="Mobile primary"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile menu"
             className="mobile-nav-panel"
           >
             <div className="site-container mobile-nav-inner">
@@ -123,7 +136,7 @@ export function MobileNav() {
             </div>
           </nav>
         </>
-      )}
+      ) : null}
     </div>
   );
 }

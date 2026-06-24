@@ -1,6 +1,7 @@
 "use client";
 
 import { useIsClient } from "@/hooks/use-is-client";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -18,6 +19,7 @@ export function ProductGallery({ images, title }: ProductGalleryProps) {
   const [isZooming, setIsZooming] = useState(false);
   const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 });
   const stageRef = useRef<HTMLButtonElement>(null);
+  const lightboxRef = useRef<HTMLDivElement>(null);
   const scrollLockRef = useRef(0);
 
   const activeImage = images[activeIndex] ?? images[0];
@@ -39,6 +41,11 @@ export function ProductGallery({ images, title }: ProductGalleryProps) {
     setActiveIndex((current) => (current === images.length - 1 ? 0 : current + 1));
   }, [images.length]);
 
+  useFocusTrap(lightboxRef, lightboxOpen, {
+    onEscape: closeLightbox,
+    returnFocusRef: stageRef,
+  });
+
   const handleStageMouseMove = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
       if (!stageRef.current) return;
@@ -59,10 +66,6 @@ export function ProductGallery({ images, title }: ProductGalleryProps) {
     if (!lightboxOpen) return;
 
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        closeLightbox();
-      }
-
       if (event.key === "ArrowLeft" && hasMultiple) {
         showPrevious();
       }
@@ -98,6 +101,7 @@ export function ProductGallery({ images, title }: ProductGalleryProps) {
 
   const lightbox = lightboxOpen ? (
     <div
+      ref={lightboxRef}
       className="product-lightbox"
       role="dialog"
       aria-modal="true"
