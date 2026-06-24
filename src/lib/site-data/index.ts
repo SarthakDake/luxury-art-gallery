@@ -7,6 +7,10 @@ import {
   readSiteConfigFromFile,
 } from "@/lib/site-data/files";
 import {
+  SITE_CONTENT_ISR_SECONDS,
+  SITE_CONTENT_TAGS,
+} from "@/lib/site-data/cache";
+import {
   summarizeMirrorResults,
   type ContentMirrorResult,
 } from "@/lib/content-json-mirror";
@@ -16,24 +20,31 @@ import path from "path";
 import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 
 const getArtworksCached = unstable_cache(
-  async () =>
-    loadSiteContent<Artwork[]>("artworks", readArtworksFromFile),
-  ["site-content", "artworks"],
-  { tags: ["site-content-artworks"] },
+  async () => loadSiteContent<Artwork[]>("artworks", readArtworksFromFile),
+  ["site-content", SITE_CONTENT_TAGS.artworks],
+  {
+    tags: [SITE_CONTENT_TAGS.artworks],
+    revalidate: SITE_CONTENT_ISR_SECONDS,
+  },
 );
 
 const getSiteConfigCached = unstable_cache(
-  async () =>
-    loadSiteContent<SiteConfig>("config", readSiteConfigFromFile),
-  ["site-content", "config"],
-  { tags: ["site-content-config"] },
+  async () => loadSiteContent<SiteConfig>("config", readSiteConfigFromFile),
+  ["site-content", SITE_CONTENT_TAGS.config],
+  {
+    tags: [SITE_CONTENT_TAGS.config],
+    revalidate: SITE_CONTENT_ISR_SECONDS,
+  },
 );
 
 const getArtistProfileCached = unstable_cache(
   async () =>
     loadSiteContent<ArtistProfile>("profile", readArtistProfileFromFile),
-  ["site-content", "profile"],
-  { tags: ["site-content-profile"] },
+  ["site-content", SITE_CONTENT_TAGS.profile],
+  {
+    tags: [SITE_CONTENT_TAGS.profile],
+    revalidate: SITE_CONTENT_ISR_SECONDS,
+  },
 );
 
 export async function getArtworks(): Promise<Artwork[]> {
@@ -50,26 +61,43 @@ export async function getArtistProfile(): Promise<ArtistProfile> {
 
 export type { ContentMirrorResult };
 export { summarizeMirrorResults };
+export { SITE_CONTENT_ISR_SECONDS, SITE_CONTENT_TAGS };
+
+function revalidateArtworkRoutes(artworks: Artwork[]) {
+  revalidatePath("/", "layout");
+  revalidatePath("/");
+  revalidatePath("/shop");
+  revalidatePath("/api/site/artworks");
+
+  for (const artwork of artworks) {
+    if (artwork.slug) {
+      revalidatePath(`/art/${artwork.slug}`);
+    }
+  }
+}
 
 export async function saveArtworks(artworks: Artwork[]) {
   const mirrors = await persistSiteContent("artworks", artworks);
-  revalidateTag("site-content-artworks", "max");
-  revalidatePath("/");
-  revalidatePath("/shop");
+  revalidateTag(SITE_CONTENT_TAGS.artworks, "max");
+  revalidateArtworkRoutes(artworks);
   return mirrors;
 }
 
 export async function saveSiteConfig(config: SiteConfig) {
   const mirrors = await persistSiteContent("config", config);
-  revalidateTag("site-content-config", "max");
+  revalidateTag(SITE_CONTENT_TAGS.config, "max");
   revalidatePath("/", "layout");
+  revalidatePath("/");
+  revalidatePath("/shop");
+  revalidatePath("/about");
   return mirrors;
 }
 
 export async function saveArtistProfile(profile: ArtistProfile) {
   const mirrors = await persistSiteContent("profile", profile);
-  revalidateTag("site-content-profile", "max");
+  revalidateTag(SITE_CONTENT_TAGS.profile, "max");
   revalidatePath("/about");
+  revalidatePath("/", "layout");
   return mirrors;
 }
 

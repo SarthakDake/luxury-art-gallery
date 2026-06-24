@@ -10,6 +10,9 @@ import path from "path";
 const heroImagePath = path.join(process.cwd(), "public/hero-banner.jpg");
 const hasHeroImage = fs.existsSync(heroImagePath);
 
+/** ISR fallback (seconds). CMS saves trigger on-demand revalidation immediately. */
+export const revalidate = 3600;
+
 export default async function Home() {
   const config = await getSiteConfig();
   const artworks = await getArtworks();

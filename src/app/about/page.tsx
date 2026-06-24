@@ -10,6 +10,8 @@ interface PressFeature {
   link: string;
 }
 
+export const revalidate = 3600;
+
 export default async function AboutPage() {
   const config = await getSiteConfig();
   const profile = await getArtistProfile();

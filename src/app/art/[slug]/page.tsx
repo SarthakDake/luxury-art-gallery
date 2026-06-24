@@ -2,7 +2,16 @@ import { ArtworkDetailClient } from "@/app/art/[slug]/ArtworkDetailClient";
 import { getArtworks, getSiteConfig } from "@/lib/site-data";
 import { notFound } from "next/navigation";
 
-export const dynamic = "force-dynamic";
+/** ISR fallback (seconds). CMS saves trigger on-demand revalidation immediately. */
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const artworks = await getArtworks();
+
+  return artworks.map((artwork) => ({
+    slug: artwork.slug,
+  }));
+}
 
 interface ArtworkPageProps {
   params: Promise<{ slug: string }>;

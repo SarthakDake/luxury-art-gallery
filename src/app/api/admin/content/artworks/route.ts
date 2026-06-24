@@ -51,8 +51,8 @@ function normalizeArtwork(raw: Artwork, existing: Artwork[]): Artwork {
     subcategory: raw.subcategory.trim(),
     material: raw.material.trim(),
     inStock: Boolean(raw.inStock),
-    showcaseOnly: Boolean(raw.showcaseOnly),
-    ...(raw.showcaseOnly && raw.showcaseEnquireLabel?.trim()
+    showcaseOnly: raw.showcaseOnly === true,
+    ...(raw.showcaseOnly === true && raw.showcaseEnquireLabel?.trim()
       ? { showcaseEnquireLabel: raw.showcaseEnquireLabel.trim() }
       : {}),
     description: raw.description.trim(),

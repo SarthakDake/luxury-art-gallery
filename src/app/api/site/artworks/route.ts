@@ -1,7 +1,15 @@
 import { getArtworks } from "@/lib/site-data";
-
-export const dynamic = "force-dynamic";
+import { STOREFRONT_API_CACHE_CONTROL } from "@/lib/storefront-cache";
 
 export async function GET() {
-  return Response.json({ artworks: await getArtworks() });
+  const artworks = await getArtworks();
+
+  return Response.json(
+    { artworks },
+    {
+      headers: {
+        "Cache-Control": STOREFRONT_API_CACHE_CONTROL,
+      },
+    },
+  );
 }

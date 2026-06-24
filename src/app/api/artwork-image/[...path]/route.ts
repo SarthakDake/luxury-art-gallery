@@ -59,7 +59,20 @@ function isAllowedImagePath(relativePath: string): boolean {
   );
 }
 
-async function readFromBlob(relativePath: string): Promise<Response | null> {
+function getImageCacheControl(request: Request): string {
+  const version = new URL(request.url).searchParams.get("v");
+
+  if (version) {
+    return "public, max-age=31536000, immutable";
+  }
+
+  return "private, no-cache, no-store, must-revalidate";
+}
+
+async function readFromBlob(
+  relativePath: string,
+  cacheControl: string,
+): Promise<Response | null> {
   if (!isBlobStorageEnabled()) {
     return null;
   }
@@ -74,7 +87,7 @@ async function readFromBlob(relativePath: string): Promise<Response | null> {
     return new Response(result.stream, {
       headers: {
         "Content-Type": result.blob.contentType ?? getContentType(path.extname(relativePath)),
-        "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
+        "Cache-Control": cacheControl,
       },
     });
   } catch (error) {
@@ -93,6 +106,7 @@ export async function GET(
     return rateLimitResponse;
   }
 
+  const cacheControl = getImageCacheControl(request);
   const { path: segments } = await context.params;
   const relativePath = path.posix.join(...segments);
 
@@ -100,7 +114,7 @@ export async function GET(
     return new Response("Not found", { status: 404 });
   }
 
-  const blobResponse = await readFromBlob(relativePath);
+  const blobResponse = await readFromBlob(relativePath, cacheControl);
 
   if (blobResponse) {
     return blobResponse;
@@ -132,7 +146,7 @@ export async function GET(
   return new Response(new Uint8Array(output), {
     headers: {
       "Content-Type": getContentType(extension),
-      "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
+      "Cache-Control": cacheControl,
     },
   });
 }
