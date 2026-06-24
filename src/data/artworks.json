@@ -106,12 +106,13 @@
     "imageUrl": "/artworks/brown_2.heic",
     "galleryImages": [
       "/artworks/brown_2.heic",
-      "/artworks/brown_3.heic"
+      "/artworks/brown_3.heic",
+      "/artworks/veil-of-dawn-3.jpg?v=1782279325024"
     ],
     "category": "Ready to hang Arts",
     "subcategory": "Abstract",
     "material": "Acrylic on canvas",
-    "inStock": false,
+    "inStock": true,
     "showcaseOnly": false,
     "description": "Layered translucent washes evoke the first minutes of morning before the city fully wakes.",
     "sizes": [
