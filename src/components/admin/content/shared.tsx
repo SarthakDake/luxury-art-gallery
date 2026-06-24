@@ -330,6 +330,7 @@ export function ImageUploadField({
 
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("mimeType", file.type);
     formData.append("kind", kind);
     formData.append("slug", slug);
     if (galleryIndex !== undefined) {

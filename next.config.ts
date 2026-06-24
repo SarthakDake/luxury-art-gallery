@@ -35,7 +35,7 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ["@phonepe-pg/pg-sdk-node", "heic-convert", "sharp"],
+  serverExternalPackages: ["@phonepe-pg/pg-sdk-node", "heic-decode", "libheif-js", "sharp"],
   images: {
     formats: ["image/avif", "image/webp"],
     localPatterns: [

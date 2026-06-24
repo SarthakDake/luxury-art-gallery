@@ -2,6 +2,7 @@ import { put } from "@vercel/blob";
 import fs from "fs";
 import path from "path";
 import { getBlobAccess, isBlobStorageEnabled, toBlobVirtualPath } from "@/lib/blob-storage";
+import { toSafeBuffer } from "@/lib/buffer-utils";
 import { normalizeImageToWebp } from "@/lib/image-processing";
 
 function getContentType(extension: string): string {
@@ -34,7 +35,9 @@ async function saveToBlob(
   buffer: Buffer,
   contentType: string,
 ): Promise<string> {
-  await put(pathname, buffer, {
+  const body = toSafeBuffer(buffer);
+
+  await put(pathname, body, {
     access: getBlobAccess(),
     addRandomSuffix: false,
     allowOverwrite: true,
@@ -70,7 +73,7 @@ export async function uploadContentImage(options: {
 
     const virtualPath = await saveToBlob(
       pathname,
-      normalized.buffer,
+      toSafeBuffer(normalized.buffer),
       getContentType(normalized.extension),
     );
     return withImageCacheVersion(virtualPath);
@@ -85,7 +88,7 @@ export async function uploadContentImage(options: {
   const localPath = saveToLocalFilesystem(
     options.directory,
     filename,
-    normalized.buffer,
+    toSafeBuffer(normalized.buffer),
   );
   return withImageCacheVersion(localPath);
 }

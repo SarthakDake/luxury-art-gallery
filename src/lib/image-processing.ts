@@ -1,35 +1,44 @@
-import convert from "heic-convert";
 import sharp from "sharp";
+import { toSafeBuffer } from "@/lib/buffer-utils";
+import { decodeHeicToRaster } from "@/lib/heic-decode-server";
+import { isHeicBuffer, isHeicExtension } from "@/lib/image-format";
 
 const WEBP_QUALITY = 85;
 
-export async function convertHeicToRaster(buffer: Buffer): Promise<Buffer> {
-  const output = await convert({
-    buffer,
-    format: "PNG",
-  });
+async function rasterizeToWebp(input: Buffer): Promise<Buffer> {
+  const safeInput = toSafeBuffer(input);
 
-  return Buffer.from(output);
+  return toSafeBuffer(
+    await sharp(safeInput)
+      .rotate()
+      .webp({ quality: WEBP_QUALITY })
+      .toBuffer(),
+  );
+}
+
+export async function convertHeicToRaster(buffer: Buffer): Promise<Buffer> {
+  return decodeHeicToRaster(buffer);
 }
 
 export async function normalizeImageToWebp(
   buffer: Buffer,
   extension: string,
 ): Promise<{ buffer: Buffer; extension: string }> {
-  let input = buffer;
+  const safeInput = toSafeBuffer(buffer);
+  const needsHeicDecode = isHeicExtension(extension) || isHeicBuffer(safeInput);
 
-  if (extension === ".heic" || extension === ".heif") {
-    input = await convertHeicToRaster(buffer);
+  let raster = safeInput;
+
+  if (needsHeicDecode) {
+    raster = await decodeHeicToRaster(safeInput);
   }
 
-  if (extension === ".webp") {
-    return { buffer: input, extension: ".webp" };
+  if (extension === ".webp" && !needsHeicDecode) {
+    return { buffer: raster, extension: ".webp" };
   }
 
-  const webp = await sharp(input)
-    .rotate()
-    .webp({ quality: WEBP_QUALITY })
-    .toBuffer();
-
-  return { buffer: webp, extension: ".webp" };
+  return {
+    buffer: await rasterizeToWebp(raster),
+    extension: ".webp",
+  };
 }

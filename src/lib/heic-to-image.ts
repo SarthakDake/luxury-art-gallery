@@ -1,10 +1,5 @@
-import convert from "heic-convert";
+import { decodeHeicToRaster } from "@/lib/heic-decode-server";
 
 export async function convertHeicToPng(input: Buffer): Promise<Buffer> {
-  const output = await convert({
-    buffer: input,
-    format: "PNG",
-  });
-
-  return Buffer.from(output);
+  return decodeHeicToRaster(input);
 }

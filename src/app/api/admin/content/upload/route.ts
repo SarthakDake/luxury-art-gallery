@@ -1,22 +1,17 @@
 import { assertAdminSession } from "@/lib/admin";
-import { ARTWORK_IMAGE_EXTENSIONS } from "@/lib/artwork-image";
 import { uploadContentImage } from "@/lib/content-upload";
+import { toSafeBuffer } from "@/lib/buffer-utils";
+import { resolveUploadImageExtension } from "@/lib/image-format";
 import {
   buildArtworkImageFilename,
   buildPortraitFilename,
 } from "@/lib/site-data/slug";
-import path from "path";
+import { ARTWORK_IMAGE_EXTENSIONS } from "@/lib/artwork-image";
 
 const MAX_UPLOAD_BYTES = 15 * 1024 * 1024;
 
-function getExtension(filename: string): string | null {
-  const extension = path.extname(filename).toLowerCase();
-  return ARTWORK_IMAGE_EXTENSIONS.includes(
-    extension as (typeof ARTWORK_IMAGE_EXTENSIONS)[number],
-  )
-    ? extension
-    : null;
-}
+export const runtime = "nodejs";
+export const maxDuration = 60;
 
 export async function POST(request: Request) {
   try {
@@ -38,6 +33,7 @@ export async function POST(request: Request) {
   const slug = String(formData.get("slug") ?? "artwork").trim();
   const galleryIndex = Number(formData.get("galleryIndex") ?? "0");
   const videoIndex = Number(formData.get("videoIndex") ?? "0");
+  const mimeType = String(formData.get("mimeType") ?? "");
 
   if (!(file instanceof File)) {
     return Response.json({ error: "Choose an image file to upload." }, { status: 400 });
@@ -47,7 +43,12 @@ export async function POST(request: Request) {
     return Response.json({ error: "Image must be 15 MB or smaller." }, { status: 400 });
   }
 
-  const extension = getExtension(file.name);
+  const buffer = toSafeBuffer(new Uint8Array(await file.arrayBuffer()));
+  const extension = resolveUploadImageExtension(
+    buffer,
+    file.name,
+    mimeType || file.type,
+  );
 
   if (!extension) {
     return Response.json(
@@ -57,8 +58,6 @@ export async function POST(request: Request) {
       { status: 400 },
     );
   }
-
-  const buffer = Buffer.from(await file.arrayBuffer());
 
   try {
     if (kind === "portrait") {
