@@ -163,7 +163,7 @@ function ArtworkDetailContent({
                   <p className="eyebrow">
                     {artwork.category} | {artwork.subcategory}
                   </p>
-                  {!artwork.inStock && (
+                  {!artwork.inStock && !showcaseOnly && (
                     <span className="stock-badge stock-badge-sold">
                       Sold Out
                     </span>
@@ -188,33 +188,33 @@ function ArtworkDetailContent({
               />
 
               {purchasable ? (
-                <>
-                  <QuantityStepper quantity={quantity} onChange={setQuantity} />
+                <QuantityStepper quantity={quantity} onChange={setQuantity} />
+              ) : null}
 
-                  <p className="dispatch-note">{dispatchNote}</p>
+              <p className="dispatch-note">{dispatchNote}</p>
 
-                  <div className="space-y-3">
-                    <button
-                      type="button"
-                      onClick={handleAddToCart}
-                      className="btn-primary btn-block"
-                    >
-                      Add to Cart
-                    </button>
+              {purchasable ? (
+                <div className="space-y-3">
+                  <button
+                    type="button"
+                    onClick={handleAddToCart}
+                    className="btn-primary btn-block"
+                  >
+                    Add to Cart
+                  </button>
 
-                    <div
-                      aria-live="polite"
-                      className={`flex min-h-6 items-center justify-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[var(--foreground)] transition-all duration-500 ${
-                        itemAdded
-                          ? "translate-y-0 opacity-100"
-                          : "pointer-events-none translate-y-1 opacity-0"
-                      }`}
-                    >
-                      <Check className="h-4 w-4" strokeWidth={1.5} />
-                      Item Added
-                    </div>
+                  <div
+                    aria-live="polite"
+                    className={`flex min-h-6 items-center justify-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[var(--foreground)] transition-all duration-500 ${
+                      itemAdded
+                        ? "translate-y-0 opacity-100"
+                        : "pointer-events-none translate-y-1 opacity-0"
+                    }`}
+                  >
+                    <Check className="h-4 w-4" strokeWidth={1.5} />
+                    Item Added
                   </div>
-                </>
+                </div>
               ) : null}
 
               {showcaseOnly && showcaseEnquireHref ? (

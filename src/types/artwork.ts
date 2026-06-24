@@ -69,6 +69,12 @@ export function getShowcaseEnquireLabel(artwork: Artwork): string {
   return label || DEFAULT_SHOWCASE_ENQUIRE_LABEL;
 }
 
+export function getShowcaseArtworkIds(artworks: Artwork[]): Set<string> {
+  return new Set(
+    artworks.filter((artwork) => isShowcaseOnly(artwork)).map((artwork) => artwork.id),
+  );
+}
+
 export function getStartingPrice(artwork: Artwork): number {
   return Math.min(...artwork.sizes.map((size) => size.price));
 }
@@ -81,5 +87,9 @@ export function formatPrice(price: number): string {
 }
 
 export function formatPriceFrom(artwork: Artwork): string {
+  if (isShowcaseOnly(artwork)) {
+    return "";
+  }
+
   return `From ${formatPrice(getStartingPrice(artwork))}`;
 }

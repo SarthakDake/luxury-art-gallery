@@ -11,7 +11,7 @@ import {
 } from "@/lib/whatsapp-checkout";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
-import { formatPrice } from "@/types/artwork";
+import { formatPrice, getShowcaseArtworkIds, type Artwork } from "@/types/artwork";
 import type { RazorpaySuccessResponse } from "@/types/razorpay";
 import { Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -48,7 +48,11 @@ function CartPageContent() {
   const hydrated = useCartHydrated();
   const items = useCartStore((state) => state.items);
   const removeFromCart = useCartStore((state) => state.removeFromCart);
+  const removeItemsByArtworkIds = useCartStore((state) => state.removeItemsByArtworkIds);
   const clearCart = useCartStore((state) => state.clearCart);
+
+  const [artworks, setArtworks] = useState<Artwork[]>([]);
+  const [artworksLoaded, setArtworksLoaded] = useState(false);
 
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
@@ -59,11 +63,21 @@ function CartPageContent() {
   const [appliedPromoCode, setAppliedPromoCode] = useState<string | null>(null);
   const [whatsAppCheckoutComplete, setWhatsAppCheckoutComplete] = useState(false);
 
+  const showcaseArtworkIds = useMemo(
+    () => getShowcaseArtworkIds(artworks),
+    [artworks],
+  );
+
+  const purchasableItems = useMemo(
+    () => items.filter((item) => !showcaseArtworkIds.has(item.id)),
+    [items, showcaseArtworkIds],
+  );
+
   const paymentStatus = searchParams.get("payment");
   const paymentOrderId = searchParams.get("orderId");
   const paymentSucceeded = checkoutSuccess;
 
-  const subtotal = items.reduce(
+  const subtotal = purchasableItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0,
   );
@@ -91,6 +105,37 @@ function CartPageContent() {
         paymentConfigured &&
         status === "authenticated" &&
         (!usesRazorpay || razorpayReady)));
+
+  useEffect(() => {
+    async function loadArtworks() {
+      try {
+        const response = await fetch("/api/site/artworks");
+        const payload = (await response.json()) as { artworks?: Artwork[] };
+
+        if (payload.artworks) {
+          setArtworks(payload.artworks);
+        }
+      } catch {
+        setArtworks([]);
+      } finally {
+        setArtworksLoaded(true);
+      }
+    }
+
+    void loadArtworks();
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated || artworks.length === 0) {
+      return;
+    }
+
+    const showcaseIds = [...getShowcaseArtworkIds(artworks)];
+
+    if (showcaseIds.length > 0) {
+      removeItemsByArtworkIds(showcaseIds);
+    }
+  }, [artworks, hydrated, removeItemsByArtworkIds]);
 
   useEffect(() => {
     async function loadGateway() {
@@ -212,7 +257,7 @@ function CartPageContent() {
   }
 
   function redirectToWhatsAppCheckout() {
-    const url = buildWhatsAppCheckoutUrl(items, subtotal, config, {
+    const url = buildWhatsAppCheckoutUrl(purchasableItems, subtotal, config, {
       discount,
       promoCode: appliedPromo?.code,
       finalTotal,
@@ -233,7 +278,7 @@ function CartPageContent() {
   }
 
   async function handleCheckout() {
-    if (items.length === 0 || isCheckingOut) return;
+    if (purchasableItems.length === 0 || isCheckingOut) return;
 
     if (!usesWhatsAppCheckout && isSessionLoading) return;
 
@@ -280,7 +325,7 @@ function CartPageContent() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          items: items.map((item) => ({
+          items: purchasableItems.map((item) => ({
             id: item.id,
             selectedSize: item.selectedSize,
             price: item.price,
@@ -411,7 +456,7 @@ function CartPageContent() {
     );
   }
 
-  if (!hydrated) {
+  if (!hydrated || (items.length > 0 && !artworksLoaded)) {
     return (
       <div className="site-container page-shell">
         <Breadcrumbs
@@ -428,7 +473,7 @@ function CartPageContent() {
     );
   }
 
-  if (items.length === 0) {
+  if (purchasableItems.length === 0) {
     return (
       <div className="site-container page-shell flex min-h-[60vh] flex-col items-center justify-center text-center">
         <Reveal variant="slide-up" className="flex flex-col items-center text-center">
@@ -477,7 +522,7 @@ function CartPageContent() {
             </h2>
 
             <ul className="border-t border-[var(--border)]" data-reveal-stagger>
-              {items.map((item) => (
+              {purchasableItems.map((item) => (
                 <li
                   key={`${item.id}-${item.selectedSize}`}
                   className="cart-item-row border-b border-[var(--border)] last:border-b-0"

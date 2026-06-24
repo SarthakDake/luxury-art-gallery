@@ -19,6 +19,7 @@ interface CartStore {
   items: CartItem[];
   addToCart: (item: AddToCartInput) => void;
   removeFromCart: (id: string, selectedSize: string) => void;
+  removeItemsByArtworkIds: (ids: string[]) => void;
   clearCart: () => void;
 }
 
@@ -61,6 +62,19 @@ export const useCartStore = create<CartStore>()(
               !(cartItem.id === id && cartItem.selectedSize === selectedSize),
           ),
         })),
+
+      removeItemsByArtworkIds: (ids) =>
+        set((state) => {
+          const blocked = new Set(ids);
+
+          if (blocked.size === 0) {
+            return state;
+          }
+
+          return {
+            items: state.items.filter((cartItem) => !blocked.has(cartItem.id)),
+          };
+        }),
 
       clearCart: () => set({ items: [] }),
     }),
