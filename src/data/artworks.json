@@ -7,12 +7,16 @@
     "galleryImages": [
       "/artworks/brown_1.heic",
       "/artworks/brown_2.heic",
-      "/artworks/brown_3.heic"
+      "/artworks/brown_3.heic",
+      "/artworks/horizon-line-no-7-4.png",
+      "/artworks/horizon-line-no-7-5.jpg",
+      "/artworks/horizon-line-no-7-6.png"
     ],
     "category": "Ready to hang Arts",
     "subcategory": "Landscape",
     "material": "Oil on linen",
     "inStock": true,
+    "showcaseOnly": false,
     "description": "A restrained study of coastal light, where a single horizon divides muted sky from deep water.",
     "sizes": [
       {
@@ -65,6 +69,7 @@
     "subcategory": "Bronze Sculpture",
     "material": "Cast bronze",
     "inStock": true,
+    "showcaseOnly": false,
     "description": "An upright bronze form with a hand-polished surface that catches ambient light from every angle.",
     "sizes": [
       {
@@ -106,6 +111,7 @@
     "subcategory": "Abstract",
     "material": "Acrylic on canvas",
     "inStock": false,
+    "showcaseOnly": false,
     "description": "Layered translucent washes evoke the first minutes of morning before the city fully wakes.",
     "sizes": [
       {
@@ -132,6 +138,7 @@
     "subcategory": "Works on Paper",
     "material": "Graphite and gesso on paper",
     "inStock": true,
+    "showcaseOnly": false,
     "description": "A monochrome composition that treats emptiness as the primary subject rather than the figure.",
     "sizes": [
       {
@@ -158,6 +165,7 @@
     "subcategory": "Marble Sculpture",
     "material": "Carrara marble",
     "inStock": true,
+    "showcaseOnly": false,
     "description": "A curved marble piece suggesting motion held in stillness, finished with a satin surface.",
     "sizes": [
       {
