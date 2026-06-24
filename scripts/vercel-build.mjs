@@ -1,5 +1,6 @@
 import { execSync } from "node:child_process";
 import { deployMigrations } from "./db-baseline.mjs";
+import { normalizeDatabaseUrl } from "./pg-connection.mjs";
 import { seedSiteContent } from "./seed-site-content.mjs";
 
 function run(command) {
@@ -7,6 +8,9 @@ function run(command) {
 }
 
 async function main() {
+  if (process.env.DATABASE_URL) {
+    process.env.DATABASE_URL = normalizeDatabaseUrl(process.env.DATABASE_URL);
+  }
   const isCiBuild = Boolean(process.env.VERCEL || process.env.CI);
   const hasDatabaseUrl = Boolean(process.env.DATABASE_URL);
 

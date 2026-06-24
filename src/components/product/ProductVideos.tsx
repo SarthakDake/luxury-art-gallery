@@ -10,7 +10,6 @@ import {
 } from "@/lib/artwork-video";
 import type { Artwork } from "@/types/artwork";
 import { Play, Volume2, VolumeX } from "lucide-react";
-import Image from "next/image";
 import {
   useEffect,
   useRef,
@@ -97,19 +96,6 @@ function VideoPoster({
 }) {
   if (!posterUrl) {
     return <div className="product-video-poster product-video-poster-empty" aria-hidden />;
-  }
-
-  if (posterUrl.startsWith("http")) {
-    return (
-      <Image
-        src={posterUrl}
-        alt={title ? `${title} preview` : "Video preview"}
-        fill
-        unoptimized
-        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-        className="product-video-poster object-cover"
-      />
-    );
   }
 
   return (

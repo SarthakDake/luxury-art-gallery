@@ -1,3 +1,5 @@
+import { getBlobPathnameFromUrl } from "@/lib/blob-storage";
+
 export const ARTWORK_IMAGE_EXTENSIONS = [
   ".jpg",
   ".jpeg",
@@ -32,16 +34,28 @@ export function isRemoteImageUrl(src: string): boolean {
   return src.startsWith("http://") || src.startsWith("https://");
 }
 
+export const CONTENT_STUDIO_IMAGE_PREFIXES = ["/artworks/", "/portraits/"] as const;
+
+function shouldProxyImagePath(src: string): boolean {
+  if (!src.startsWith("/") || src.startsWith("/api/")) {
+    return false;
+  }
+
+  return (
+    isHeicImage(src) ||
+    CONTENT_STUDIO_IMAGE_PREFIXES.some((prefix) => src.startsWith(prefix)) ||
+    isSupportedArtworkImage(src)
+  );
+}
+
 export function getArtworkImageSrc(src: string): string {
-  if (isRemoteImageUrl(src)) {
-    return src;
+  const blobPath = isRemoteImageUrl(src) ? getBlobPathnameFromUrl(src) : null;
+
+  if (blobPath) {
+    return `/api/artwork-image/${blobPath}`;
   }
 
-  if (!src.startsWith("/")) {
-    return src;
-  }
-
-  if (isHeicImage(src)) {
+  if (shouldProxyImagePath(src)) {
     return `/api/artwork-image/${src.slice(1)}`;
   }
 

@@ -1,7 +1,7 @@
 import { getArtistProfile, getSiteConfig } from "@/lib/site-data";
 import { Reveal } from "@/components/motion/Reveal";
+import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
-import Image from "next/image";
 import Link from "next/link";
 
 interface PressFeature {
@@ -45,7 +45,7 @@ export default async function AboutPage() {
             <Reveal variant="slide-right" className="about-portrait-wrap">
               <div className="art-image-frame">
                 {profile.portraitImageUrl ? (
-                  <Image
+                  <ArtworkImage
                     src={profile.portraitImageUrl}
                     alt={`Portrait of ${profile.artistName}`}
                     fill

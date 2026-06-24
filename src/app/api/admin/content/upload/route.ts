@@ -63,7 +63,7 @@ export async function POST(request: Request) {
     if (kind === "portrait") {
       const filename = buildPortraitFilename(extension);
       const publicPath = await uploadContentImage({
-        directory: "",
+        directory: "portraits",
         filename,
         buffer,
         extension,

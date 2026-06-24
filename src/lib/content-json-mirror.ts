@@ -1,6 +1,7 @@
 import "server-only";
 
 import { put } from "@vercel/blob";
+import { getBlobAccess } from "@/lib/blob-storage";
 import {
   CONTENT_REPO_PATHS,
   type SiteContentKey,
@@ -64,7 +65,7 @@ async function mirrorContentJsonToBlob(
     const body = serializeContentJson(data);
 
     await put(blobPathnameForKey(key), body, {
-      access: "public",
+      access: getBlobAccess(),
       addRandomSuffix: false,
       contentType: "application/json",
     });

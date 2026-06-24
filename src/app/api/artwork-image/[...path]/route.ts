@@ -1,20 +1,21 @@
+import { get } from "@vercel/blob";
 import fs from "fs";
 import path from "path";
 import { ARTWORK_IMAGE_EXTENSIONS } from "@/lib/artwork-image";
+import { getBlobAccess, isBlobStorageEnabled } from "@/lib/blob-storage";
 import { convertHeicToPng } from "@/lib/heic-to-image";
 import { enforceRateLimit } from "@/lib/rate-limit";
 
-const ARTWORKS_DIR = path.join(
+const PUBLIC_DIR = path.join(
   /* turbopackIgnore: true */ process.cwd(),
   "public",
-  "artworks",
 );
 
-function resolveArtworkFile(filename: string): string | null {
-  const safeName = path.basename(filename);
-  const resolved = path.resolve(ARTWORKS_DIR, safeName);
+function resolvePublicFile(relativePath: string): string | null {
+  const normalized = path.posix.normalize(relativePath).replace(/^(\.\.(\/|\\|$))+/, "");
+  const resolved = path.resolve(PUBLIC_DIR, normalized);
 
-  if (!resolved.startsWith(ARTWORKS_DIR)) {
+  if (!resolved.startsWith(PUBLIC_DIR)) {
     return null;
   }
 
@@ -22,15 +23,18 @@ function resolveArtworkFile(filename: string): string | null {
     return resolved;
   }
 
-  if (!fs.existsSync(ARTWORKS_DIR)) {
+  const parentDir = path.dirname(resolved);
+  const filename = path.basename(resolved);
+
+  if (!fs.existsSync(parentDir)) {
     return null;
   }
 
   const match = fs
-    .readdirSync(ARTWORKS_DIR)
-    .find((entry) => entry.toLowerCase() === safeName.toLowerCase());
+    .readdirSync(parentDir)
+    .find((entry) => entry.toLowerCase() === filename.toLowerCase());
 
-  return match ? path.join(ARTWORKS_DIR, match) : null;
+  return match ? path.join(parentDir, match) : null;
 }
 
 function getContentType(extension: string): string {
@@ -47,6 +51,38 @@ function getContentType(extension: string): string {
   }
 }
 
+function isAllowedImagePath(relativePath: string): boolean {
+  const extension = path.extname(relativePath).toLowerCase();
+
+  return ARTWORK_IMAGE_EXTENSIONS.includes(
+    extension as (typeof ARTWORK_IMAGE_EXTENSIONS)[number],
+  );
+}
+
+async function readFromBlob(relativePath: string): Promise<Response | null> {
+  if (!isBlobStorageEnabled()) {
+    return null;
+  }
+
+  try {
+    const result = await get(relativePath, { access: getBlobAccess() });
+
+    if (!result || result.statusCode !== 200 || !result.stream) {
+      return null;
+    }
+
+    return new Response(result.stream, {
+      headers: {
+        "Content-Type": result.blob.contentType ?? getContentType(path.extname(relativePath)),
+        "Cache-Control": "public, max-age=31536000, immutable",
+      },
+    });
+  } catch (error) {
+    console.error("[artwork-image] blob fetch failed:", error);
+    return null;
+  }
+}
+
 export async function GET(
   request: Request,
   context: { params: Promise<{ path: string[] }> },
@@ -58,27 +94,25 @@ export async function GET(
   }
 
   const { path: segments } = await context.params;
+  const relativePath = path.posix.join(...segments);
 
-  if (segments.length !== 2 || segments[0] !== "artworks") {
+  if (!relativePath || relativePath.includes("..") || !isAllowedImagePath(relativePath)) {
     return new Response("Not found", { status: 404 });
   }
 
-  const filePath = resolveArtworkFile(segments[1]);
+  const blobResponse = await readFromBlob(relativePath);
+
+  if (blobResponse) {
+    return blobResponse;
+  }
+
+  const filePath = resolvePublicFile(relativePath);
 
   if (!filePath) {
     return new Response("Not found", { status: 404 });
   }
 
   const extension = path.extname(filePath).toLowerCase();
-
-  if (
-    !ARTWORK_IMAGE_EXTENSIONS.includes(
-      extension as (typeof ARTWORK_IMAGE_EXTENSIONS)[number],
-    )
-  ) {
-    return new Response("Unsupported format", { status: 415 });
-  }
-
   const input = fs.readFileSync(filePath);
   const shouldConvert = extension === ".heic" || extension === ".heif";
 

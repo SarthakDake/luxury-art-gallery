@@ -1,13 +1,8 @@
 import pg from "pg";
+import { getDatabaseUrl } from "./pg-connection.mjs";
 
 export async function withPgClient(run) {
-  const connectionString = process.env.DATABASE_URL;
-
-  if (!connectionString) {
-    throw new Error("DATABASE_URL is required.");
-  }
-
-  const client = new pg.Client({ connectionString });
+  const client = new pg.Client({ connectionString: getDatabaseUrl() });
   await client.connect();
 
   try {

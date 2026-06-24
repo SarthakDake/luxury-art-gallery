@@ -1,0 +1,38 @@
+const DEPRECATED_SSL_MODES = new Set(["prefer", "require", "verify-ca"]);
+
+/**
+ * pg v8 warns when sslmode is prefer/require/verify-ca because those are
+ * currently treated as verify-full. Normalize to verify-full explicitly.
+ */
+export function normalizeDatabaseUrl(connectionString: string): string {
+  if (!connectionString.trim()) {
+    return connectionString;
+  }
+
+  try {
+    const url = new URL(connectionString);
+    const sslmode = url.searchParams.get("sslmode")?.toLowerCase();
+
+    if (sslmode && DEPRECATED_SSL_MODES.has(sslmode)) {
+      url.searchParams.set("sslmode", "verify-full");
+      return url.toString();
+    }
+
+    return connectionString;
+  } catch {
+    return connectionString.replace(
+      /([?&])sslmode=(prefer|require|verify-ca)(&|$)/gi,
+      "$1sslmode=verify-full$3",
+    );
+  }
+}
+
+export function getDatabaseUrl(): string {
+  const connectionString = process.env.DATABASE_URL;
+
+  if (!connectionString) {
+    throw new Error("DATABASE_URL is not configured.");
+  }
+
+  return normalizeDatabaseUrl(connectionString);
+}

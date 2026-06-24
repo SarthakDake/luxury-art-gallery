@@ -3,6 +3,7 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { head } from "@vercel/blob";
 import { withPgClient } from "./db-pg.mjs";
+import { getBlobAccess } from "./blob-storage.mjs";
 
 const contentFiles = [
   { key: "artworks", file: "src/data/artworks.json", blobPath: "site-content/artworks.json" },
@@ -52,7 +53,7 @@ export async function syncSiteContentFromBlob() {
 
   for (const entry of contentFiles) {
     try {
-      const metadata = await head(entry.blobPath);
+      const metadata = await head(entry.blobPath, { access: getBlobAccess() });
       const response = await fetch(metadata.url);
 
       if (!response.ok) {

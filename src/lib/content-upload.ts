@@ -1,6 +1,7 @@
 import { put } from "@vercel/blob";
 import fs from "fs";
 import path from "path";
+import { getBlobAccess, isBlobStorageEnabled, toBlobVirtualPath } from "@/lib/blob-storage";
 import { convertHeicToPng } from "@/lib/heic-to-image";
 
 function getContentType(extension: string): string {
@@ -17,10 +18,6 @@ function getContentType(extension: string): string {
   }
 }
 
-function shouldUseBlobStorage(): boolean {
-  return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
-}
-
 function saveToLocalFilesystem(
   directory: string,
   filename: string,
@@ -30,7 +27,9 @@ function saveToLocalFilesystem(
   const targetDir = path.join(process.cwd(), "public", directory);
   fs.mkdirSync(targetDir, { recursive: true });
   fs.writeFileSync(path.join(targetDir, safeName), buffer);
-  return `/${directory}/${safeName}`.replace(/\/+/g, "/");
+  return directory
+    ? `/${directory}/${safeName}`.replace(/\/+/g, "/")
+    : `/${safeName}`;
 }
 
 async function saveToBlob(
@@ -38,20 +37,20 @@ async function saveToBlob(
   buffer: Buffer,
   contentType: string,
 ): Promise<string> {
-  const blob = await put(pathname, buffer, {
-    access: "public",
+  await put(pathname, buffer, {
+    access: getBlobAccess(),
     addRandomSuffix: false,
     contentType,
   });
 
-  return blob.url;
+  return toBlobVirtualPath(pathname);
 }
 
 async function normalizeUploadBuffer(
   buffer: Buffer,
   extension: string,
 ): Promise<{ buffer: Buffer; extension: string }> {
-  if ((extension === ".heic" || extension === ".heif") && shouldUseBlobStorage()) {
+  if ((extension === ".heic" || extension === ".heif") && isBlobStorageEnabled()) {
     const png = await convertHeicToPng(buffer);
     return { buffer: png, extension: ".png" };
   }
@@ -76,7 +75,7 @@ export async function uploadContentImage(options: {
       ? options.filename
       : replaceExtension(options.filename, normalized.extension);
 
-  if (shouldUseBlobStorage()) {
+  if (isBlobStorageEnabled()) {
     const pathname = options.directory
       ? `${options.directory}/${path.basename(filename)}`
       : path.basename(filename);

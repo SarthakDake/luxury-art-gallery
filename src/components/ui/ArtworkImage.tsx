@@ -7,12 +7,16 @@ type ArtworkImageProps = Omit<ImageProps, "src"> & {
 
 export function ArtworkImage({ src, alt, ...props }: ArtworkImageProps) {
   const resolvedSrc = getArtworkImageSrc(src);
+  const useUnoptimized =
+    isHeicImage(src) ||
+    isRemoteImageUrl(src) ||
+    resolvedSrc.startsWith("/api/");
 
   return (
     <Image
       src={resolvedSrc}
       alt={alt}
-      unoptimized={isHeicImage(src) || isRemoteImageUrl(src)}
+      unoptimized={useUnoptimized}
       {...props}
     />
   );
