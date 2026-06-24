@@ -9,7 +9,7 @@ const contentFiles = [
   { key: "artworks", file: "src/data/artworks.json", blobPath: "site-content/artworks.json" },
   { key: "config", file: "src/data/config.json", blobPath: "site-content/config.json" },
   { key: "profile", file: "src/data/profile.json", blobPath: "site-content/profile.json" },
-] as const;
+];
 
 function createPrisma() {
   const connectionString = process.env.DATABASE_URL;

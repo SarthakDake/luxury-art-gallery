@@ -8,7 +8,7 @@ const seeds = [
   { key: "artworks", file: "src/data/artworks.json" },
   { key: "config", file: "src/data/config.json" },
   { key: "profile", file: "src/data/profile.json" },
-] as const;
+];
 
 function createPrisma() {
   const connectionString = process.env.DATABASE_URL;
