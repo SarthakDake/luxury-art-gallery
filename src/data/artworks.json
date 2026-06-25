@@ -60,16 +60,16 @@
     "id": "art-002",
     "title": "Silent Column",
     "slug": "silent-column",
-    "imageUrl": "/artworks/green_leaf_1.jpg",
+    "imageUrl": "/artworks/silent-column-cover.webp?v=1782396083691",
     "galleryImages": [
       "/artworks/green_leaf_1.jpg",
-      "/artworks/green_leaf_2.heic",
-      "/artworks/green_leaf_3.heic"
+      "/artworks/silent-column-2.webp?v=1782396115778",
+      "/artworks/silent-column-3.webp?v=1782396125623"
     ],
     "category": "Statement Wall Art",
     "subcategory": "Bronze Sculpture",
     "material": "Cast bronze",
-    "inStock": true,
+    "inStock": false,
     "showcaseOnly": false,
     "description": "An upright bronze form with a hand-polished surface that catches ambient light from every angle.",
     "sizes": [
