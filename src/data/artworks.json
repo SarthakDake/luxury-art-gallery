@@ -1,62 +1,5 @@
 [
   {
-    "id": "art-001",
-    "title": "Horizon Line No. 7",
-    "slug": "horizon-line-no-7",
-    "imageUrl": "/artworks/horizon-line-no-7-cover.png?v=1782279224585",
-    "galleryImages": [
-      "/artworks/brown_1.heic",
-      "/artworks/brown_2.heic",
-      "/artworks/brown_3.heic",
-      "/artworks/horizon-line-no-7-4.png",
-      "/artworks/horizon-line-no-7-5.jpg",
-      "/artworks/horizon-line-no-7-6.png"
-    ],
-    "category": "Ready to hang Arts",
-    "subcategory": "Landscape",
-    "material": "Oil on linen",
-    "inStock": true,
-    "showcaseOnly": true,
-    "showcaseEnquireLabel": "Get Custom Design Quote",
-    "description": "A restrained study of coastal light, where a single horizon divides muted sky from deep water.",
-    "sizes": [
-      {
-        "size": "20x30 inches",
-        "price": 2500
-      },
-      {
-        "size": "24x36 inches",
-        "price": 2800
-      },
-      {
-        "size": "36x48 inches",
-        "price": 4200
-      },
-      {
-        "size": "48x60 inches",
-        "price": 5800
-      },
-      {
-        "size": "47x90 Inches",
-        "price": 220
-      }
-    ],
-    "defaultSelectedSizeIndex": 1,
-    "videos": [
-      {
-        "url": "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
-        "title": "Artist Process",
-        "type": "youtube"
-      },
-      {
-        "url": "https://www.instagram.com/p/fA9uwTtkSN/",
-        "title": "Studio Reel",
-        "poster": "/artworks/brown_3.heic",
-        "type": "instagram"
-      }
-    ]
-  },
-  {
     "id": "art-002",
     "title": "Silent Column",
     "slug": "silent-column",
@@ -101,8 +44,8 @@
   },
   {
     "id": "art-003",
-    "title": "Veil of Dawn",
-    "slug": "veil-of-dawn",
+    "title": "leaf",
+    "slug": "leaf",
     "imageUrl": "/artworks/veil-of-dawn-cover.png?v=1782279357219",
     "galleryImages": [
       "/artworks/brown_2.heic",
@@ -133,8 +76,8 @@
   },
   {
     "id": "art-004",
-    "title": "Negative Space Study",
-    "slug": "negative-space-study",
+    "title": "brown",
+    "slug": "brown",
     "imageUrl": "/artworks/brown_3.heic",
     "category": "Ready to hang Arts",
     "subcategory": "Works on Paper",
@@ -154,55 +97,6 @@
       {
         "size": "22x30 inches",
         "price": 2750
-      }
-    ],
-    "defaultSelectedSizeIndex": 0
-  },
-  {
-    "id": "art-005",
-    "title": "Arc of Balance",
-    "slug": "arc-of-balance",
-    "imageUrl": "/artworks/green_leaf_3.heic",
-    "category": "Statement Wall Art",
-    "subcategory": "Marble Sculpture",
-    "material": "Carrara marble",
-    "inStock": true,
-    "showcaseOnly": false,
-    "description": "A curved marble piece suggesting motion held in stillness, finished with a satin surface.",
-    "sizes": [
-      {
-        "size": "12 x 10 x 4 inches",
-        "price": 3200
-      },
-      {
-        "size": "18 x 14 x 6 inches",
-        "price": 5400
-      },
-      {
-        "size": "24 x 18 x 8 inches",
-        "price": 7600
-      }
-    ],
-    "defaultSelectedSizeIndex": 0
-  },
-  {
-    "id": "art-006",
-    "title": "test",
-    "slug": "test",
-    "imageUrl": "/artworks/test-cover.webp?v=1782284306827",
-    "galleryImages": [
-      "/artworks/test-1.webp?v=1782284277018"
-    ],
-    "category": "asd",
-    "subcategory": "asd",
-    "material": "asd",
-    "inStock": true,
-    "showcaseOnly": false,
-    "description": "asd",
-    "sizes": [
-      {
-        "size": "24x36 inches",
-        "price": 2500
       }
     ],
     "defaultSelectedSizeIndex": 0
