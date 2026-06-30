@@ -100,5 +100,38 @@
       }
     ],
     "defaultSelectedSizeIndex": 0
+  },
+  {
+    "id": "art-005",
+    "title": "Handcrafted 3D Coastal Wave Texture Wall Art",
+    "slug": "handcrafted-3d-coastal-wave-texture-wall-art",
+    "imageUrl": "/artworks/art-005-cover.webp?v=1782819288855",
+    "category": "Ready to hang Arts",
+    "subcategory": "Coastal wall Art",
+    "material": "Medium: Mixed Media (Texture Paste & Acrylic on Canvas) Surface: Premium Stretched Canvas Frame: Solid Wood Floating Frame (Walnut Finish) Finish: Matte Protective Coating Mounting: Ready to Hang",
+    "inStock": true,
+    "showcaseOnly": false,
+    "description": "Inspired by the serene beauty of ocean waves, this handcrafted 3D textured artwork brings warmth, depth, and timeless elegance to your space. Framed in premium walnut wood and ready to hang, it’s a perfect statement piece for modern living rooms, bedrooms, offices, and luxury interiors.\n\n* Handmade by Colors N Joy\n* Premium Canvas & Mixed Media\n* Sculpted 3D Texture\n* Walnut-Finish Floating Frame\n* Ready to Hang\n* Timeless Neutral Tones\n* Perfect for Modern & Luxury Interiors\n* Crafted for Lasting Beauty",
+    "sizes": [
+      {
+        "size": "24x36 inches",
+        "price": 12000
+      },
+      {
+        "size": "36 by 48 inch",
+        "price": 25000
+      },
+      {
+        "size": "20 by 30",
+        "price": 8000
+      }
+    ],
+    "defaultSelectedSizeIndex": 0,
+    "videos": [
+      {
+        "url": "https://www.instagram.com/reel/DJLquZfTMpf/?igsh=bHpycGFyd2Vqa3Iw",
+        "type": "instagram"
+      }
+    ]
   }
 ]
