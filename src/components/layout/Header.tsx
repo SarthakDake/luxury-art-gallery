@@ -1,16 +1,10 @@
 import type { SiteConfig } from "@/types/site-config";
+import { PRIMARY_NAV_LINKS } from "@/lib/nav-links";
 import Link from "next/link";
 import { AuthActions } from "./AuthActions";
 import { GlobalSearch } from "./GlobalSearch";
 import { HeaderActions } from "./HeaderActions";
 import { MobileNav } from "./MobileNav";
-
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/shop", label: "Shop" },
-  { href: "/about", label: "About us" },
-  { href: "/contact", label: "Contact us" },
-] as const;
 
 export function Header({ config }: { config: SiteConfig }) {
   return (
@@ -28,7 +22,7 @@ export function Header({ config }: { config: SiteConfig }) {
           </div>
 
           <nav aria-label="Primary" className="header-nav">
-            {navLinks.map((link) => (
+            {PRIMARY_NAV_LINKS.map((link) => (
               <Link key={link.href} href={link.href} className="nav-link">
                 {link.label}
               </Link>
@@ -37,8 +31,7 @@ export function Header({ config }: { config: SiteConfig }) {
         </div>
 
         <div className="header-actions">
-          <GlobalSearch variant="inline" />
-          <GlobalSearch variant="mobile" />
+          <GlobalSearch />
           <div className="header-actions-toolbar">
             <HeaderActions />
             <AuthActions />

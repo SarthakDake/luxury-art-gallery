@@ -2,6 +2,7 @@
 
 import { ArtworkDetailClient } from "@/app/art/[slug]/ArtworkDetailClient";
 import { CollectionsSection } from "@/components/home/CollectionsSection";
+import { CuratedWorksSection } from "@/components/home/CuratedWorksSection";
 import { FeaturedWorksSection } from "@/components/home/FeaturedWorksSection";
 import { FeaturesSection } from "@/components/home/FeaturesSection";
 import { HeroSection } from "@/components/home/HeroSection";
@@ -256,6 +257,18 @@ function SiteSettingsPreview({
           </PreviewRegion>
           <PreviewRegion id="featured" active={false}>
             <FeaturedWorksSection config={config} artworks={artworks} />
+          </PreviewRegion>
+          <PreviewRegion id="signatureWallArt" active={false}>
+            <CuratedWorksSection
+              copy={config.homepage.signatureWallArt}
+              artworks={artworks}
+            />
+          </PreviewRegion>
+          <PreviewRegion id="portfolio" active={false}>
+            <CuratedWorksSection
+              copy={config.homepage.portfolio}
+              artworks={artworks}
+            />
           </PreviewRegion>
         </>
       ) : null}

@@ -48,6 +48,8 @@ export type HomepageSectionId =
   | "trustBadges"
   | "collections"
   | "featured"
+  | "signatureWallArt"
+  | "portfolio"
   | "offers"
   | "features"
   | "testimonials";
@@ -77,11 +79,20 @@ export interface HomepageFeaturedCopy extends HomepageSectionCopy {
   limit: number;
 }
 
+/** Curated collection used on its dedicated page and as a homepage section. */
+export interface CuratedWorksCopy extends HomepageFeaturedCopy {
+  subtitle: string;
+  /** Optional filter matched against category, subcategory, or title. */
+  categoryFilter: string;
+}
+
 export interface SiteHomepageConfig {
   sections: HomepageSectionConfig[];
   hero: HomepageHeroContent;
   collections: HomepageSectionCopy;
   featured: HomepageFeaturedCopy;
+  signatureWallArt: CuratedWorksCopy;
+  portfolio: CuratedWorksCopy;
   offers: HomepageSectionCopy;
   features: HomepageSectionCopy;
   testimonials: HomepageSectionCopy;

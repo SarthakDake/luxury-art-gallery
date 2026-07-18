@@ -1,6 +1,7 @@
 "use client";
 
 import { useFocusTrap } from "@/hooks/use-focus-trap";
+import { PRIMARY_NAV_LINKS } from "@/lib/nav-links";
 import { MobileAuthActions } from "./AuthActions";
 import { GlobalSearch } from "./GlobalSearch";
 import { Menu, Moon, Sun, X } from "lucide-react";
@@ -9,13 +10,6 @@ import { useMounted } from "@/hooks/use-mounted";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/shop", label: "Shop" },
-  { href: "/about", label: "About us" },
-  { href: "/contact", label: "Contact us" },
-] as const;
 
 export function MobileNav() {
   const pathname = usePathname();
@@ -80,7 +74,7 @@ export function MobileNav() {
           >
             <div className="site-container mobile-nav-inner">
               <ul className="mobile-nav-list">
-                {navLinks.map((link) => {
+                {PRIMARY_NAV_LINKS.map((link) => {
                   const isActive =
                     link.href === "/"
                       ? pathname === "/"

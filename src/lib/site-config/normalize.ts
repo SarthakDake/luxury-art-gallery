@@ -164,37 +164,83 @@ function mergeSectionCopy(
   };
 }
 
+function mergeCuratedWorksCopy(
+  raw: unknown,
+  fallback: SiteHomepageConfig["signatureWallArt"],
+): SiteHomepageConfig["signatureWallArt"] {
+  const source = isRecord(raw) ? raw : {};
+  return {
+    ...mergeSectionCopy(source, fallback),
+    subtitle: asString(source.subtitle, fallback.subtitle),
+    limit: asPositiveInt(source.limit, fallback.limit),
+    categoryFilter: asString(source.categoryFilter, fallback.categoryFilter),
+  };
+}
+
 function mergeHomepage(raw: unknown): SiteHomepageConfig {
   const source = isRecord(raw) ? raw : {};
   const heroSource = isRecord(source.hero) ? source.hero : {};
   const featuredSource = isRecord(source.featured) ? source.featured : {};
 
+  const rawPrimaryLabel = asString(
+    heroSource.primaryCtaLabel,
+    DEFAULT_HOMEPAGE.hero.primaryCtaLabel,
+  );
+  const rawSecondaryLabel = asString(
+    heroSource.secondaryCtaLabel,
+    DEFAULT_HOMEPAGE.hero.secondaryCtaLabel,
+  );
+  const rawPrimaryHref = asString(
+    heroSource.primaryCtaHref,
+    DEFAULT_HOMEPAGE.hero.primaryCtaHref,
+  );
+  const rawSecondaryHref = asString(
+    heroSource.secondaryCtaHref,
+    DEFAULT_HOMEPAGE.hero.secondaryCtaHref,
+  );
+  // Upgrade previous homepage CTA pairs to Signature Wall Art + Shop.
+  const legacyHeroCta =
+    (rawPrimaryLabel === "Shop Gallery" ||
+      (rawPrimaryLabel === "Shop" && rawPrimaryHref === "/shop")) &&
+    (rawSecondaryLabel === "About the Artist" ||
+      rawSecondaryLabel === "About us") &&
+    (rawSecondaryHref === "/about" || rawSecondaryHref === "");
+
+  const primaryCtaLabel = legacyHeroCta
+    ? DEFAULT_HOMEPAGE.hero.primaryCtaLabel
+    : rawPrimaryLabel;
+  const primaryCtaHref = legacyHeroCta
+    ? DEFAULT_HOMEPAGE.hero.primaryCtaHref
+    : rawPrimaryHref;
+  const secondaryCtaLabel = legacyHeroCta
+    ? DEFAULT_HOMEPAGE.hero.secondaryCtaLabel
+    : rawSecondaryLabel;
+  const secondaryCtaHref = legacyHeroCta
+    ? DEFAULT_HOMEPAGE.hero.secondaryCtaHref
+    : rawSecondaryHref;
+
   return {
     sections: mergeHomepageSections(source.sections),
     hero: {
       imageUrl: asString(heroSource.imageUrl, DEFAULT_HOMEPAGE.hero.imageUrl),
-      primaryCtaLabel: asString(
-        heroSource.primaryCtaLabel,
-        DEFAULT_HOMEPAGE.hero.primaryCtaLabel,
-      ),
-      primaryCtaHref: asString(
-        heroSource.primaryCtaHref,
-        DEFAULT_HOMEPAGE.hero.primaryCtaHref,
-      ),
-      secondaryCtaLabel: asString(
-        heroSource.secondaryCtaLabel,
-        DEFAULT_HOMEPAGE.hero.secondaryCtaLabel,
-      ),
-      secondaryCtaHref: asString(
-        heroSource.secondaryCtaHref,
-        DEFAULT_HOMEPAGE.hero.secondaryCtaHref,
-      ),
+      primaryCtaLabel,
+      primaryCtaHref,
+      secondaryCtaLabel,
+      secondaryCtaHref,
     },
     collections: mergeSectionCopy(source.collections, DEFAULT_HOMEPAGE.collections),
     featured: {
       ...mergeSectionCopy(source.featured, DEFAULT_HOMEPAGE.featured),
       limit: asPositiveInt(featuredSource.limit, DEFAULT_HOMEPAGE.featured.limit),
     },
+    signatureWallArt: mergeCuratedWorksCopy(
+      source.signatureWallArt,
+      DEFAULT_HOMEPAGE.signatureWallArt,
+    ),
+    portfolio: mergeCuratedWorksCopy(
+      source.portfolio,
+      DEFAULT_HOMEPAGE.portfolio,
+    ),
     offers: mergeSectionCopy(source.offers, DEFAULT_HOMEPAGE.offers),
     features: mergeSectionCopy(source.features, DEFAULT_HOMEPAGE.features),
     testimonials: mergeSectionCopy(

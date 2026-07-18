@@ -96,6 +96,8 @@ export async function saveSiteConfig(config: SiteConfig) {
   revalidatePath("/", "layout");
   revalidatePath("/");
   revalidatePath("/shop");
+  revalidatePath("/signature-wall-art");
+  revalidatePath("/portfolio");
   revalidatePath("/about");
   return mirrors;
 }
@@ -104,6 +106,7 @@ export async function saveArtistProfile(profile: ArtistProfile) {
   const mirrors = await persistSiteContent("profile", profile);
   revalidateTag(SITE_CONTENT_TAGS.profile, "max");
   revalidatePath("/about");
+  revalidatePath("/portfolio");
   revalidatePath("/", "layout");
   return mirrors;
 }
