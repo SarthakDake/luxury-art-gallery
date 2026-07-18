@@ -293,7 +293,7 @@
   ],
   "features": {
     "homepageOffers": false,
-    "homepageFeatures": false,
+    "homepageFeatures": true,
     "homepageTestimonials": true
   }
 }
