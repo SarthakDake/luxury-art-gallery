@@ -73,7 +73,7 @@
     "accentForeground": "#171717",
     "background": "#ffffff",
     "foreground": "#171717",
-    "muted": "#6b7280",
+    "muted": "#858a93",
     "surface": "#f9fafb",
     "border": "#e5e7eb",
     "darkAccent": "#d4a017",
@@ -81,20 +81,41 @@
     "darkForeground": "#e5e5e5",
     "darkMuted": "#9ca3af",
     "darkSurface": "#1a1a1a",
-    "darkBorder": "#2d2d2d",
+    "darkBorder": "#000000",
     "radiusSm": "0.25rem",
     "radiusMd": "0.5rem",
     "radiusLg": "0.75rem"
   },
   "homepage": {
     "sections": [
-      { "id": "hero", "enabled": true },
-      { "id": "trustBadges", "enabled": true },
-      { "id": "collections", "enabled": true },
-      { "id": "featured", "enabled": true },
-      { "id": "offers", "enabled": false },
-      { "id": "features", "enabled": false },
-      { "id": "testimonials", "enabled": false }
+      {
+        "id": "hero",
+        "enabled": true
+      },
+      {
+        "id": "trustBadges",
+        "enabled": true
+      },
+      {
+        "id": "collections",
+        "enabled": true
+      },
+      {
+        "id": "featured",
+        "enabled": true
+      },
+      {
+        "id": "offers",
+        "enabled": false
+      },
+      {
+        "id": "features",
+        "enabled": false
+      },
+      {
+        "id": "testimonials",
+        "enabled": false
+      }
     ],
     "hero": {
       "primaryCtaLabel": "Shop Gallery",
