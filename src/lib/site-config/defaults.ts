@@ -53,6 +53,7 @@ export const DEFAULT_HOMEPAGE: SiteHomepageConfig = {
     { id: "testimonials", enabled: false },
   ],
   hero: {
+    imageUrl: "/hero-banner.jpg",
     primaryCtaLabel: "Shop",
     primaryCtaHref: "/shop",
     secondaryCtaLabel: "About us",

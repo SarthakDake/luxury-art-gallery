@@ -118,6 +118,7 @@
       }
     ],
     "hero": {
+      "imageUrl": "/hero-banner.jpg",
       "primaryCtaLabel": "Shop",
       "primaryCtaHref": "/shop",
       "secondaryCtaLabel": "About us",

@@ -61,7 +61,11 @@ export function isRemoteImageUrl(src: string): boolean {
   return src.startsWith("http://") || src.startsWith("https://");
 }
 
-export const CONTENT_STUDIO_IMAGE_PREFIXES = ["/artworks/", "/portraits/"] as const;
+export const CONTENT_STUDIO_IMAGE_PREFIXES = [
+  "/artworks/",
+  "/portraits/",
+  "/site/",
+] as const;
 
 export function splitImagePathAndSearch(src: string): {
   pathname: string;

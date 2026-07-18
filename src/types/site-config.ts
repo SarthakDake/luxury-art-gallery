@@ -58,6 +58,8 @@ export interface HomepageSectionConfig {
 }
 
 export interface HomepageHeroContent {
+  /** Public path for the landing-page hero background image. */
+  imageUrl: string;
   primaryCtaLabel: string;
   primaryCtaHref: string;
   secondaryCtaLabel: string;

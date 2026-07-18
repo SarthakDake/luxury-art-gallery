@@ -49,6 +49,9 @@ const nextConfig: NextConfig = {
         pathname: "/portraits/**",
       },
       {
+        pathname: "/site/**",
+      },
+      {
         pathname: "/hero-banner.jpg",
       },
     ],

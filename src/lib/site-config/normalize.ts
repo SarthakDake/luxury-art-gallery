@@ -172,6 +172,7 @@ function mergeHomepage(raw: unknown): SiteHomepageConfig {
   return {
     sections: mergeHomepageSections(source.sections),
     hero: {
+      imageUrl: asString(heroSource.imageUrl, DEFAULT_HOMEPAGE.hero.imageUrl),
       primaryCtaLabel: asString(
         heroSource.primaryCtaLabel,
         DEFAULT_HOMEPAGE.hero.primaryCtaLabel,

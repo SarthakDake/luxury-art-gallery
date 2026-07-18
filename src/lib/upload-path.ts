@@ -2,10 +2,17 @@ import { ARTWORK_IMAGE_EXTENSIONS, type ArtworkImageExtension } from "@/lib/artw
 import { getImageContentType } from "@/lib/image-format";
 import {
   buildArtworkImageFilename,
+  buildHeroFilename,
   buildPortraitFilename,
 } from "@/lib/site-data/slug";
 
-export type UploadKind = "portrait" | "cover" | "gallery" | "video-poster" | "artwork";
+export type UploadKind =
+  | "portrait"
+  | "hero"
+  | "cover"
+  | "gallery"
+  | "video-poster"
+  | "artwork";
 
 /** Prefer the server FormData route under this size — avoids flaky client Blob multipart for typical iPhone HEIC (~1–3MB). */
 export const SERVER_UPLOAD_PREFERRED_MAX_BYTES = 4 * 1024 * 1024;
@@ -78,6 +85,15 @@ export function buildUploadPathname(options: {
     };
   }
 
+  if (kind === "hero") {
+    const filename = buildHeroFilename(options.extension);
+    return {
+      directory: "site",
+      filename,
+      pathname: `site/${filename}`,
+    };
+  }
+
   const filename =
     kind === "cover"
       ? buildArtworkImageFilename(options.slug, "cover", options.extension)
@@ -106,7 +122,11 @@ export function isAllowedUploadPathname(pathname: string): boolean {
   const normalized = pathname.replace(/^\/+/, "");
   if (
     normalized.includes("..") ||
-    !(normalized.startsWith("artworks/") || normalized.startsWith("portraits/"))
+    !(
+      normalized.startsWith("artworks/") ||
+      normalized.startsWith("portraits/") ||
+      normalized.startsWith("site/")
+    )
   ) {
     return false;
   }
