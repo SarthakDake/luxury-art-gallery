@@ -83,6 +83,38 @@ function mergeFeatureFlags(raw: unknown): SiteFeatureFlags {
   };
 }
 
+/** Previous default content order from the Signature/Portfolio launch. */
+const LEGACY_CONTENT_SECTION_ORDER: HomepageSectionId[] = [
+  "collections",
+  "featured",
+  "signatureWallArt",
+  "portfolio",
+];
+
+const PREFERRED_CONTENT_SECTION_ORDER: HomepageSectionId[] = [
+  "signatureWallArt",
+  "featured",
+  "collections",
+  "portfolio",
+];
+
+function upgradeLegacyContentSectionOrder(
+  order: HomepageSectionId[],
+): HomepageSectionId[] {
+  const contentIds = new Set(PREFERRED_CONTENT_SECTION_ORDER);
+  const contentInOrder = order.filter((id) => contentIds.has(id));
+
+  if (
+    contentInOrder.length === LEGACY_CONTENT_SECTION_ORDER.length &&
+    contentInOrder.every((id, index) => id === LEGACY_CONTENT_SECTION_ORDER[index])
+  ) {
+    const queue = [...PREFERRED_CONTENT_SECTION_ORDER];
+    return order.map((id) => (contentIds.has(id) ? (queue.shift() as HomepageSectionId) : id));
+  }
+
+  return order;
+}
+
 function mergeHomepageSections(raw: unknown): HomepageSectionConfig[] {
   const byId = new Map<HomepageSectionId, boolean>();
 
@@ -129,7 +161,9 @@ function mergeHomepageSections(raw: unknown): HomepageSectionConfig[] {
       }
     }
 
-    return customOrder.map((id) => ({
+    const upgradedOrder = upgradeLegacyContentSectionOrder(customOrder);
+
+    return upgradedOrder.map((id) => ({
       id,
       enabled: byId.has(id)
         ? Boolean(byId.get(id))

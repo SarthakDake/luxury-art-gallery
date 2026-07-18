@@ -35,9 +35,9 @@ export const DEFAULT_FEATURE_FLAGS: SiteFeatureFlags = {
 export const DEFAULT_HOMEPAGE_SECTION_ORDER: HomepageSectionId[] = [
   "hero",
   "trustBadges",
-  "collections",
-  "featured",
   "signatureWallArt",
+  "featured",
+  "collections",
   "portfolio",
   "offers",
   "features",
@@ -48,9 +48,9 @@ export const DEFAULT_HOMEPAGE: SiteHomepageConfig = {
   sections: [
     { id: "hero", enabled: true },
     { id: "trustBadges", enabled: true },
-    { id: "collections", enabled: true },
-    { id: "featured", enabled: true },
     { id: "signatureWallArt", enabled: true },
+    { id: "featured", enabled: true },
+    { id: "collections", enabled: true },
     { id: "portfolio", enabled: true },
     { id: "offers", enabled: false },
     { id: "features", enabled: false },
