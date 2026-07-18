@@ -1,4 +1,5 @@
 import { Reveal } from "@/components/motion/Reveal";
+import { RichText } from "@/components/ui/RichText";
 import type { SiteConfig } from "@/types/site-config";
 
 export function OffersSection({ config }: { config: SiteConfig }) {
@@ -24,7 +25,9 @@ export function OffersSection({ config }: { config: SiteConfig }) {
             <li key={offer.code} className="home-offer-item" data-reveal="slide-up">
               <p className="home-offer-headline">{offer.headline}</p>
               <p className="home-offer-code">{offer.code}</p>
-              <p className="home-offer-detail">{offer.detail}</p>
+              {offer.detail.trim() ? (
+                <RichText content={offer.detail} className="home-offer-detail-rich" />
+              ) : null}
             </li>
           ))}
         </ul>

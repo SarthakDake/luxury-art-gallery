@@ -1,4 +1,5 @@
 import { Reveal } from "@/components/motion/Reveal";
+import { RichText } from "@/components/ui/RichText";
 import type { SiteConfig } from "@/types/site-config";
 import {
   Gem,
@@ -38,7 +39,10 @@ export function FeaturesSection({ config }: { config: SiteConfig }) {
 
                 <div className="feature-card-copy">
                   <h3 className="feature-card-title">{feature.title}</h3>
-                  <p className="feature-card-text">{feature.description}</p>
+                  <RichText
+                    content={feature.description}
+                    className="feature-card-rich"
+                  />
                 </div>
               </article>
             );

@@ -2,11 +2,18 @@
 
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { RichText } from "@/components/ui/RichText";
+
+export interface AccordionFact {
+  label: string;
+  value: string;
+}
 
 export interface AccordionItem {
   id: string;
   title: string;
   content: string;
+  facts?: AccordionFact[];
 }
 
 interface ProductAccordionProps {
@@ -14,17 +21,29 @@ interface ProductAccordionProps {
   defaultOpenId?: string;
 }
 
-function AccordionContent({ content }: { content: string }) {
-  const paragraphs = content
-    .split(/\n\n+/)
-    .map((paragraph) => paragraph.trim())
-    .filter(Boolean);
-
+function AccordionContent({
+  content,
+  facts,
+}: {
+  content: string;
+  facts?: AccordionFact[];
+}) {
   return (
     <div className="detail-text">
-      {paragraphs.map((paragraph, index) => (
-        <p key={index}>{paragraph}</p>
-      ))}
+      {content.trim() ? (
+        <RichText content={content} className="detail-rich-text" />
+      ) : null}
+
+      {facts && facts.length > 0 ? (
+        <dl className="detail-facts">
+          {facts.map((fact) => (
+            <div key={fact.label} className="detail-fact">
+              <dt className="detail-fact-label">{fact.label}</dt>
+              <dd className="detail-fact-value">{fact.value}</dd>
+            </div>
+          ))}
+        </dl>
+      ) : null}
     </div>
   );
 }
@@ -64,7 +83,7 @@ export function ProductAccordion({
               aria-hidden={!isOpen}
             >
               <div className="accordion-panel-inner">
-                <AccordionContent content={item.content} />
+                <AccordionContent content={item.content} facts={item.facts} />
               </div>
             </div>
           </div>

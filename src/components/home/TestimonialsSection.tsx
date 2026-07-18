@@ -1,4 +1,5 @@
 import { Reveal } from "@/components/motion/Reveal";
+import { RichText } from "@/components/ui/RichText";
 import type { SiteConfig } from "@/types/site-config";
 
 export function TestimonialsSection({ config }: { config: SiteConfig }) {
@@ -21,8 +22,14 @@ export function TestimonialsSection({ config }: { config: SiteConfig }) {
 
         <ul className="home-testimonials-grid" data-reveal-stagger>
           {testimonials.map((item) => (
-            <li key={`${item.name}-${item.quote.slice(0, 24)}`} className="home-testimonial" data-reveal="slide-up">
-              <blockquote className="home-testimonial-quote">“{item.quote}”</blockquote>
+            <li
+              key={`${item.name}-${item.quote.slice(0, 24)}`}
+              className="home-testimonial"
+              data-reveal="slide-up"
+            >
+              <blockquote className="home-testimonial-quote">
+                <RichText content={item.quote} className="home-testimonial-rich" />
+              </blockquote>
               <p className="home-testimonial-name">{item.name}</p>
               {item.role ? <p className="home-testimonial-role">{item.role}</p> : null}
             </li>

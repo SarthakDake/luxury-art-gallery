@@ -1,5 +1,6 @@
 import { getArtworkImageSrc } from "@/lib/artwork-image";
 import { getSiteUrl } from "@/lib/auth-url";
+import { stripRichTextToPlain } from "@/lib/rich-text";
 import { getStartingPrice, isShowcaseOnly, type Artwork } from "@/types/artwork";
 
 export function ArtworkJsonLd({ artwork }: { artwork: Artwork }) {
@@ -12,7 +13,7 @@ export function ArtworkJsonLd({ artwork }: { artwork: Artwork }) {
     "@context": "https://schema.org",
     "@type": "Product",
     name: artwork.title,
-    description: artwork.description,
+    description: stripRichTextToPlain(artwork.description),
     image,
     category: artwork.category,
     material: artwork.material,

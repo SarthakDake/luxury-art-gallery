@@ -19,9 +19,9 @@ import {
   StudioSelect,
   StudioShell,
   StudioStepFooter,
-  StudioTextarea,
   StudioToggle,
 } from "./shared";
+import { RichTextEditor } from "./RichTextEditor";
 import { nextArtworkId, slugify } from "@/lib/site-data/slug";
 import { useState } from "react";
 import {
@@ -296,18 +296,25 @@ export function ArtworksTab({
             </datalist>
           </StudioGroup>
 
-          <StudioGroup eyebrow="Step 3" title="About this piece">
+          <StudioGroup
+            eyebrow="Step 3"
+            title="About this piece"
+            description="Formatting is preserved on the product page. Use headings, bold, lists, and blank lines."
+          >
             <StudioField label="Description" fullWidth>
-              <StudioTextarea
+              <RichTextEditor
                 value={artwork.description}
-                onChange={(event) =>
+                onChange={(description) =>
                   onChange(
                     updateArtwork(artworks, artworkIndex, {
-                      description: event.target.value,
+                      description,
                     }),
                   )
                 }
-                placeholder="Describe the mood, medium, and story behind this piece…"
+                placeholder={
+                  "## About this piece\n\nDescribe the mood, medium, and story.\n\n- Handmade\n- Ready to hang"
+                }
+                rows={10}
               />
             </StudioField>
           </StudioGroup>
@@ -614,62 +621,69 @@ export function ArtworksTab({
           <StudioGroup
             eyebrow="Overrides"
             title="Custom product copy"
-            description="Leave blank to use the defaults from Site Settings."
+            description="Leave blank to use the defaults from Site Settings. Formatting matches the Product Details accordion."
           >
-            <StudioFormGrid>
-              <StudioField label="Dispatch note">
-                <StudioTextarea
-                  value={artwork.dispatchNote ?? ""}
-                  onChange={(event) =>
-                    onChange(
-                      updateArtwork(artworks, artworkIndex, {
-                        dispatchNote: event.target.value,
-                      }),
-                    )
-                  }
-                  placeholder="Site default"
-                />
-              </StudioField>
-              <StudioField label="Care guide">
-                <StudioTextarea
-                  value={artwork.careGuide ?? ""}
-                  onChange={(event) =>
-                    onChange(
-                      updateArtwork(artworks, artworkIndex, {
-                        careGuide: event.target.value,
-                      }),
-                    )
-                  }
-                  placeholder="Site default"
-                />
-              </StudioField>
-              <StudioField label="Shipping & returns">
-                <StudioTextarea
-                  value={artwork.shippingReturns ?? ""}
-                  onChange={(event) =>
-                    onChange(
-                      updateArtwork(artworks, artworkIndex, {
-                        shippingReturns: event.target.value,
-                      }),
-                    )
-                  }
-                  placeholder="Site default"
-                />
-              </StudioField>
-              <StudioField label="Before you buy">
-                <StudioTextarea
-                  value={artwork.beforeYouBuy ?? ""}
-                  onChange={(event) =>
-                    onChange(
-                      updateArtwork(artworks, artworkIndex, {
-                        beforeYouBuy: event.target.value,
-                      }),
-                    )
-                  }
-                  placeholder="Site default"
-                />
-              </StudioField>
-            </StudioFormGrid>
+            <StudioField label="Dispatch note" fullWidth>
+              <RichTextEditor
+                value={artwork.dispatchNote ?? ""}
+                onChange={(dispatchNote) =>
+                  onChange(
+                    updateArtwork(artworks, artworkIndex, {
+                      dispatchNote,
+                    }),
+                  )
+                }
+                placeholder="Site default"
+                rows={4}
+                compact
+                showHint={false}
+              />
+            </StudioField>
+            <StudioField label="Care guide" fullWidth>
+              <RichTextEditor
+                value={artwork.careGuide ?? ""}
+                onChange={(careGuide) =>
+                  onChange(
+                    updateArtwork(artworks, artworkIndex, {
+                      careGuide,
+                    }),
+                  )
+                }
+                placeholder="Site default"
+                rows={8}
+                compact
+              />
+            </StudioField>
+            <StudioField label="Shipping & returns" fullWidth>
+              <RichTextEditor
+                value={artwork.shippingReturns ?? ""}
+                onChange={(shippingReturns) =>
+                  onChange(
+                    updateArtwork(artworks, artworkIndex, {
+                      shippingReturns,
+                    }),
+                  )
+                }
+                placeholder="Site default"
+                rows={8}
+                compact
+              />
+            </StudioField>
+            <StudioField label="Before you buy" fullWidth>
+              <RichTextEditor
+                value={artwork.beforeYouBuy ?? ""}
+                onChange={(beforeYouBuy) =>
+                  onChange(
+                    updateArtwork(artworks, artworkIndex, {
+                      beforeYouBuy,
+                    }),
+                  )
+                }
+                placeholder="Site default"
+                rows={8}
+                compact
+              />
+            </StudioField>
           </StudioGroup>
 
           <StudioStepFooter

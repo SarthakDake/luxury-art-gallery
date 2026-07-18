@@ -344,11 +344,19 @@
     white-space: pre-wrap;
   }
 
+  .rich-text-editor--compact .rich-text-editor-input {
+    min-height: 8rem;
+  }
+
   .rich-text-editor-preview {
     min-height: 18rem;
     padding: 1rem 1.125rem;
     border: 1px solid var(--border);
     background: var(--background);
+  }
+
+  .rich-text-editor--compact .rich-text-editor-preview {
+    min-height: 8rem;
   }
 
   .rich-text-editor-hint code {

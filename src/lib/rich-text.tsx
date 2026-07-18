@@ -200,6 +200,20 @@ export function renderRichText(source: string): ReactNode {
   });
 }
 
+/** Strip markdown markers for SEO, JSON-LD, and other plain-text contexts. */
+export function stripRichTextToPlain(source: string): string {
+  return source
+    .replace(/\r\n/g, "\n")
+    .replace(/^#{1,3}\s+/gm, "")
+    .replace(/\*\*([^*]+)\*\*/g, "$1")
+    .replace(/\*([^*]+)\*/g, "$1")
+    .replace(/^[-*]\s+/gm, "")
+    .replace(/^(-{3,}|\u2014{3,}|⸻+)$/gm, "")
+    .replace(/\n{2,}/g, "\n")
+    .replace(/[ \t]+\n/g, "\n")
+    .trim();
+}
+
 /** Wrap the current selection (or insert at caret) with markdown markers. */
 export function wrapSelection(
   value: string,
