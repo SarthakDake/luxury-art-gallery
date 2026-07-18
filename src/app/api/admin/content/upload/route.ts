@@ -4,6 +4,7 @@ import { toSafeBuffer } from "@/lib/buffer-utils";
 import { resolveUploadImageExtension } from "@/lib/image-format";
 import {
   buildArtworkImageFilename,
+  buildHeroFilename,
   buildPortraitFilename,
 } from "@/lib/site-data/slug";
 import { ARTWORK_IMAGE_EXTENSIONS } from "@/lib/artwork-image";
@@ -63,6 +64,17 @@ export async function POST(request: Request) {
       const filename = buildPortraitFilename(extension);
       const publicPath = await uploadContentImage({
         directory: "portraits",
+        filename,
+        buffer,
+        extension,
+      });
+      return Response.json({ path: publicPath, filename });
+    }
+
+    if (kind === "hero") {
+      const filename = buildHeroFilename(extension);
+      const publicPath = await uploadContentImage({
+        directory: "site",
         filename,
         buffer,
         extension,

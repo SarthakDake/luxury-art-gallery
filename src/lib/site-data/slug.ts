@@ -41,3 +41,7 @@ export function buildArtworkImageFilename(
 export function buildPortraitFilename(extension: string): string {
   return `artist-portrait${extension}`;
 }
+
+export function buildHeroFilename(extension: string): string {
+  return `hero-banner${extension}`;
+}

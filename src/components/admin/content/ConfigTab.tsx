@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  ImageUploadField,
   StudioColorField,
   StudioField,
   StudioFormGrid,
@@ -104,6 +105,22 @@ export function ConfigTab({
               onChange={(event) => onChange({ ...config, heroSubtitle: event.target.value })}
             />
           </StudioField>
+          <ImageUploadField
+            label="Hero image"
+            path={config.homepage.hero.imageUrl}
+            slug="homepage"
+            kind="hero"
+            hint="Full-bleed background on the homepage hero. Upload a wide photo for best results."
+            onUploaded={(path) =>
+              onChange({
+                ...config,
+                homepage: {
+                  ...config.homepage,
+                  hero: { ...config.homepage.hero, imageUrl: path },
+                },
+              })
+            }
+          />
         </StudioGroup>
 
         <StudioGroup
