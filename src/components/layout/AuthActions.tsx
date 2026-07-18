@@ -1,6 +1,7 @@
 "use client";
 
 import { useMounted } from "@/hooks/use-mounted";
+import { isLocalAdminBypassEnabled } from "@/lib/local-admin-bypass";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { FilePenLine, LayoutDashboard, LogIn, User } from "lucide-react";
 import Link from "next/link";
@@ -14,9 +15,14 @@ function AuthActionsPlaceholder() {
   );
 }
 
+function canShowContentStudio(role: string | undefined) {
+  return role === "ADMIN" || isLocalAdminBypassEnabled();
+}
+
 export function AuthActions() {
   const mounted = useMounted();
   const { data: session, status } = useSession();
+  const showStudio = canShowContentStudio(session?.user?.role);
 
   if (!mounted || status === "loading") {
     return <AuthActionsPlaceholder />;
@@ -25,7 +31,7 @@ export function AuthActions() {
   if (session?.user) {
     return (
       <div className="header-auth-actions">
-        {session.user.role === "ADMIN" ? (
+        {showStudio ? (
           <>
             <Link
               href="/admin/content"
@@ -54,6 +60,23 @@ export function AuthActions() {
     );
   }
 
+  if (showStudio) {
+    return (
+      <div className="header-auth-actions">
+        <Link
+          href="/admin/content"
+          aria-label="Content studio"
+          className="icon-btn"
+        >
+          <FilePenLine className="h-[18px] w-[18px]" strokeWidth={1.5} />
+        </Link>
+        <Link href="/signin" aria-label="Sign in" className="icon-btn">
+          <LogIn className="h-[18px] w-[18px]" strokeWidth={1.5} />
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <Link href="/signin" aria-label="Sign in" className="icon-btn">
       <LogIn className="h-[18px] w-[18px]" strokeWidth={1.5} />
@@ -76,6 +99,7 @@ export function SignOutButton({ className }: { className?: string }) {
 export function MobileAuthActions({ onNavigate }: { onNavigate?: () => void }) {
   const mounted = useMounted();
   const { data: session, status } = useSession();
+  const showStudio = canShowContentStudio(session?.user?.role);
 
   if (!mounted || status === "loading") {
     return null;
@@ -84,7 +108,7 @@ export function MobileAuthActions({ onNavigate }: { onNavigate?: () => void }) {
   if (session?.user) {
     return (
       <>
-        {session.user.role === "ADMIN" ? (
+        {showStudio ? (
           <>
             <li>
               <Link
@@ -132,11 +156,24 @@ export function MobileAuthActions({ onNavigate }: { onNavigate?: () => void }) {
   }
 
   return (
-    <li>
-      <Link href="/signin" onClick={onNavigate} className="mobile-nav-link">
-        Sign In
-      </Link>
-    </li>
+    <>
+      {showStudio ? (
+        <li>
+          <Link
+            href="/admin/content"
+            onClick={onNavigate}
+            className="mobile-nav-link"
+          >
+            Content Studio
+          </Link>
+        </li>
+      ) : null}
+      <li>
+        <Link href="/signin" onClick={onNavigate} className="mobile-nav-link">
+          Sign In
+        </Link>
+      </li>
+    </>
   );
 }
 
