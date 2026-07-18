@@ -57,7 +57,7 @@
     }
   ],
   "visitorCounter": {
-    "eyebrow": "Shop Reach",
+    "eyebrow": "Gallery Reach",
     "singularLabel": "guest has explored our collection",
     "pluralLabel": "guests have explored our collection"
   },
@@ -118,10 +118,10 @@
       }
     ],
     "hero": {
-      "imageUrl": "/hero-banner.jpg",
-      "primaryCtaLabel": "Shop",
+      "imageUrl": "/site/hero-banner.png?v=1784362778820",
+      "primaryCtaLabel": "Shop Gallery",
       "primaryCtaHref": "/shop",
-      "secondaryCtaLabel": "About us",
+      "secondaryCtaLabel": "About the Artist",
       "secondaryCtaHref": "/about"
     },
     "collections": {
@@ -133,7 +133,7 @@
     "featured": {
       "eyebrow": "Featured Collection",
       "title": "Selected Works",
-      "actionLabel": "View Shop",
+      "actionLabel": "View Full Gallery",
       "actionHref": "/shop",
       "limit": 4
     },
