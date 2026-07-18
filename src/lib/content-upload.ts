@@ -3,18 +3,7 @@ import fs from "fs";
 import path from "path";
 import { getBlobAccess, isBlobStorageEnabled, toBlobVirtualPath } from "@/lib/blob-storage";
 import { toSafeBuffer } from "@/lib/buffer-utils";
-import { normalizeImageToWebp } from "@/lib/image-processing";
-
-function getContentType(extension: string): string {
-  switch (extension) {
-    case ".png":
-      return "image/png";
-    case ".webp":
-      return "image/webp";
-    default:
-      return "image/jpeg";
-  }
-}
+import { getImageContentType } from "@/lib/image-format";
 
 function saveToLocalFilesystem(
   directory: string,
@@ -47,35 +36,32 @@ async function saveToBlob(
   return toBlobVirtualPath(pathname);
 }
 
-function replaceExtension(filename: string, extension: string): string {
-  const base = filename.replace(/\.[^.]+$/, "");
-  return `${base}${extension}`;
-}
-
 export function withImageCacheVersion(virtualPath: string): string {
   const separator = virtualPath.includes("?") ? "&" : "?";
   return `${virtualPath}${separator}v=${Date.now()}`;
 }
 
+/**
+ * Persist the artist upload byte-for-byte (no format conversion or resize).
+ * Web delivery optimization happens at request time via Next/Image + the
+ * artwork-image proxy for non-browser formats (HEIC, TIFF, BMP).
+ */
 export async function uploadContentImage(options: {
   directory: string;
   filename: string;
   buffer: Buffer;
   extension: string;
 }): Promise<string> {
-  const normalized = await normalizeImageToWebp(options.buffer, options.extension);
-  const filename = replaceExtension(options.filename, normalized.extension);
+  const filename = path.basename(options.filename);
+  const contentType = getImageContentType(options.extension);
+  const original = toSafeBuffer(options.buffer);
 
   if (isBlobStorageEnabled()) {
     const pathname = options.directory
-      ? `${options.directory}/${path.basename(filename)}`
-      : path.basename(filename);
+      ? `${options.directory}/${filename}`
+      : filename;
 
-    const virtualPath = await saveToBlob(
-      pathname,
-      toSafeBuffer(normalized.buffer),
-      getContentType(normalized.extension),
-    );
+    const virtualPath = await saveToBlob(pathname, original, contentType);
     return withImageCacheVersion(virtualPath);
   }
 
@@ -85,10 +71,6 @@ export async function uploadContentImage(options: {
     );
   }
 
-  const localPath = saveToLocalFilesystem(
-    options.directory,
-    filename,
-    toSafeBuffer(normalized.buffer),
-  );
+  const localPath = saveToLocalFilesystem(options.directory, filename, original);
   return withImageCacheVersion(localPath);
 }

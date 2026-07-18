@@ -14,7 +14,7 @@ export interface Artwork {
   id: string;
   title: string;
   slug: string;
-  /** Public path under /artworks — .jpg, .jpeg, .png, .webp, .heic, or .heif */
+  /** Public path under /artworks — original upload (jpg/png/webp/avif/gif/heic/heif/tiff/bmp) */
   imageUrl: string;
   galleryImages?: string[];
   category: string;

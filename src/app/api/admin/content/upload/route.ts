@@ -8,10 +8,9 @@ import {
 } from "@/lib/site-data/slug";
 import { ARTWORK_IMAGE_EXTENSIONS } from "@/lib/artwork-image";
 
-const MAX_UPLOAD_BYTES = 15 * 1024 * 1024;
-
 export const runtime = "nodejs";
-export const maxDuration = 60;
+/** Large iPhone originals can take longer to stream into Blob storage. */
+export const maxDuration = 300;
 
 export async function POST(request: Request) {
   try {
@@ -39,8 +38,8 @@ export async function POST(request: Request) {
     return Response.json({ error: "Choose an image file to upload." }, { status: 400 });
   }
 
-  if (file.size > MAX_UPLOAD_BYTES) {
-    return Response.json({ error: "Image must be 15 MB or smaller." }, { status: 400 });
+  if (file.size <= 0) {
+    return Response.json({ error: "The selected file is empty." }, { status: 400 });
   }
 
   const buffer = toSafeBuffer(new Uint8Array(await file.arrayBuffer()));
@@ -53,7 +52,7 @@ export async function POST(request: Request) {
   if (!extension) {
     return Response.json(
       {
-        error: `Use ${ARTWORK_IMAGE_EXTENSIONS.join(", ")} images only.`,
+        error: `Unsupported image type. Use ${ARTWORK_IMAGE_EXTENSIONS.join(", ")}.`,
       },
       { status: 400 },
     );

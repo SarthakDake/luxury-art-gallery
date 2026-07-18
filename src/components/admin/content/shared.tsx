@@ -1,8 +1,13 @@
 "use client";
 
+import { upload } from "@vercel/blob/client";
 import { ChevronDown, ImageIcon, Plus, Trash2, Upload } from "lucide-react";
 import { useState, type ReactNode, type SelectHTMLAttributes } from "react";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
+import {
+  buildUploadPathname,
+  resolveClientImageExtension,
+} from "@/lib/upload-path";
 
 export function StudioTabs({
   tabs,
@@ -320,14 +325,7 @@ export function ImageUploadField({
 }) {
   const [uploading, setUploading] = useState(false);
 
-  async function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    if (!file) {
-      return;
-    }
-
-    setUploading(true);
-
+  async function uploadViaServer(file: File): Promise<string> {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("mimeType", file.type);
@@ -340,21 +338,81 @@ export function ImageUploadField({
       formData.append("videoIndex", String(videoIndex));
     }
 
+    const response = await fetch("/api/admin/content/upload", {
+      method: "POST",
+      credentials: "same-origin",
+      body: formData,
+    });
+
+    const payload = (await response.json()) as { path?: string; error?: string };
+
+    if (!response.ok || !payload.path) {
+      throw new Error(payload.error ?? "Upload failed.");
+    }
+
+    return payload.path;
+  }
+
+  async function uploadViaDirectBlob(file: File): Promise<string | null> {
+    const capabilitiesResponse = await fetch("/api/admin/content/upload/capabilities", {
+      credentials: "same-origin",
+    });
+
+    if (!capabilitiesResponse.ok) {
+      return null;
+    }
+
+    const capabilities = (await capabilitiesResponse.json()) as {
+      directBlob?: boolean;
+      access?: "public" | "private";
+    };
+
+    if (!capabilities.directBlob) {
+      return null;
+    }
+
+    const extension = resolveClientImageExtension(file.name, file.type);
+    if (!extension) {
+      throw new Error(
+        "Unsupported image type. Use JPG, PNG, WebP, AVIF, GIF, HEIC/HEIF, TIFF, or BMP.",
+      );
+    }
+
+    const { pathname } = buildUploadPathname({
+      kind,
+      slug,
+      extension,
+      galleryIndex,
+      videoIndex,
+    });
+
+    await upload(pathname, file, {
+      access: capabilities.access ?? "private",
+      handleUploadUrl: "/api/admin/content/upload/blob",
+      multipart: true,
+      contentType: file.type || undefined,
+    });
+
+    // Store virtual path (not the signed blob URL) so the site proxy can serve it.
+    return `/${pathname}?v=${Date.now()}`;
+  }
+
+  async function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    setUploading(true);
+
     try {
-      const response = await fetch("/api/admin/content/upload", {
-        method: "POST",
-        credentials: "same-origin",
-        body: formData,
-      });
-
-      const payload = (await response.json()) as { path?: string; error?: string };
-
-      if (!response.ok || !payload.path) {
-        window.alert(payload.error ?? "Upload failed.");
+      const directPath = await uploadViaDirectBlob(file);
+      if (directPath) {
+        onUploaded(directPath);
         return;
       }
 
-      onUploaded(payload.path);
+      onUploaded(await uploadViaServer(file));
     } catch (error) {
       console.error("[ImageUploadField] upload failed:", error);
       window.alert(
@@ -393,7 +451,8 @@ export function ImageUploadField({
             {uploading ? "Uploading…" : previewSrc ? "Replace image" : "Upload image"}
           </span>
           <span className="studio-field-hint">
-            JPG, PNG, WebP, or HEIC · stored immediately · click Save Artworks to publish
+            Any image format (incl. iPhone HEIC/HEIF) · stored as-is, no size limit ·
+            click Save to publish
           </span>
           {path ? <span className="studio-upload-path">{path}</span> : null}
         </span>
@@ -403,7 +462,12 @@ export function ImageUploadField({
           Choose file
         </span>
 
-        <input type="file" accept="image/*,.heic,.heif" hidden onChange={handleChange} />
+        <input
+          type="file"
+          accept="image/*,.heic,.heif,.tif,.tiff,.avif,.bmp"
+          hidden
+          onChange={handleChange}
+        />
       </label>
     </StudioField>
   );
