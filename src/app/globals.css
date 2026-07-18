@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @source "../**/*.{js,ts,jsx,tsx,mdx}";
 
+@import "./styles/tokens.css";
 @import "./styles/base.css";
 @import "./styles/components/shell.css";
 @import "./styles/components/storefront.css";

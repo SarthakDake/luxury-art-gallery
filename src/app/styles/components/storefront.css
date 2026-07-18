@@ -526,6 +526,104 @@
     opacity: 0.88;
   }
 
+  /* ── Homepage offers (feature-flagged) ── */
+  .home-offers-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  @media (min-width: 768px) {
+    .home-offers-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-8);
+    }
+  }
+
+  .home-offer-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding-block: var(--space-2);
+    border-top: 1px solid var(--border);
+  }
+
+  .home-offer-headline {
+    margin: 0;
+    font-family: var(--font-serif), ui-serif, Georgia, serif;
+    font-size: 1.375rem;
+    font-weight: 400;
+    line-height: 1.3;
+    color: var(--foreground);
+  }
+
+  .home-offer-code {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .home-offer-detail {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+
+  /* ── Homepage testimonials (feature-flagged) ── */
+  .home-testimonials-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-10);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  @media (min-width: 768px) {
+    .home-testimonials-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-12);
+    }
+  }
+
+  .home-testimonial {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    max-width: 36rem;
+  }
+
+  .home-testimonial-quote {
+    margin: 0;
+    font-family: var(--font-serif), ui-serif, Georgia, serif;
+    font-size: clamp(1.25rem, 2.4vw, 1.625rem);
+    font-weight: 400;
+    line-height: 1.45;
+    color: var(--foreground);
+  }
+
+  .home-testimonial-name {
+    margin: 0;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--foreground);
+  }
+
+  .home-testimonial-role {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
   /* ── Section headers ── */
   .section-header {
     display: flex;

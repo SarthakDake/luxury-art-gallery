@@ -11,6 +11,7 @@ import { ArtworksProvider } from "@/components/providers/artworks-provider";
 import { SessionProvider } from "@/components/providers/session-provider";
 import { SiteConfigProvider } from "@/components/providers/site-config-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { brandTokensToCssVars } from "@/lib/site-config";
 import { getArtworks, getSiteConfig } from "@/lib/site-data";
 import { buildSiteMetadata } from "@/lib/seo";
 import "./globals.css";
@@ -47,6 +48,7 @@ export default async function RootLayout({
       suppressHydrationWarning
       data-scroll-behavior="smooth"
       className={`${dmSans.variable} ${cormorant.variable} h-full antialiased`}
+      style={brandTokensToCssVars(config.brand)}
     >
       <body
         suppressHydrationWarning

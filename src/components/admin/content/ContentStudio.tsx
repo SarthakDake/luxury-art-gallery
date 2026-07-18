@@ -17,7 +17,7 @@ const TABS = [
   {
     id: "config",
     label: "Site Settings",
-    description: "Update branding, contact details, offers, and social links.",
+    description: "Update branding, theme tokens, homepage sections, offers, and feature flags.",
   },
   {
     id: "profile",

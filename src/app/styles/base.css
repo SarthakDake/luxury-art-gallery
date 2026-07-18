@@ -1,45 +1,4 @@
 @layer base {
-  :root {
-    --background: #ffffff;
-    --foreground: #171717;
-    --muted: #6b7280;
-    --border: #e5e7eb;
-    --surface: #f9fafb;
-    --surface-elevated: #ffffff;
-    --accent: #c9a227;
-    --accent-foreground: #171717;
-    --announcement-bg: #171717;
-    --announcement-text: #f3f3f3;
-    --announcement-muted: #a3a3a3;
-    --announcement-divider: color-mix(in srgb, var(--accent) 55%, transparent);
-    --announcement-border: color-mix(in srgb, var(--accent) 28%, transparent);
-    --whatsapp: #25d366;
-    --header-height: 4.5rem;
-    --announcement-height: 2.5rem;
-    --container-max: 80rem;
-    --btn-height: 3rem;
-    --input-height: 3rem;
-    --fab-size: 3.5rem;
-    --fab-clearance: 5rem;
-    --sticky-top: calc(var(--header-height) + 1.5rem);
-  }
-
-  .dark {
-    --background: #111111;
-    --foreground: #e5e5e5;
-    --muted: #9ca3af;
-    --border: #2d2d2d;
-    --surface: #1a1a1a;
-    --surface-elevated: #1f1f1f;
-    --accent: #d4a017;
-    --accent-foreground: #171717;
-    --announcement-bg: #0f0f0f;
-    --announcement-text: #ececec;
-    --announcement-muted: #9ca3af;
-    --announcement-divider: color-mix(in srgb, var(--accent) 45%, transparent);
-    --announcement-border: color-mix(in srgb, var(--accent) 22%, var(--border));
-  }
-
   html {
     scroll-behavior: smooth;
     overflow-x: clip;

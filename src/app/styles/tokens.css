@@ -1,0 +1,101 @@
+/*
+  Design tokens — single source for colors, type, spacing, and radii.
+  Brand colors/radii can be overridden at runtime from config.json via BrandTheme.
+*/
+
+:root {
+  /* Color */
+  --background: #ffffff;
+  --foreground: #171717;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --surface: #f9fafb;
+  --surface-elevated: #ffffff;
+  --accent: #c9a227;
+  --accent-foreground: #171717;
+  --announcement-bg: #171717;
+  --announcement-text: #f3f3f3;
+  --announcement-muted: #a3a3a3;
+  --announcement-divider: color-mix(in srgb, var(--accent) 55%, transparent);
+  --announcement-border: color-mix(in srgb, var(--accent) 28%, transparent);
+  --whatsapp: #25d366;
+
+  /* Dark brand defaults (applied under .dark) */
+  --brand-dark-background: #111111;
+  --brand-dark-foreground: #e5e5e5;
+  --brand-dark-muted: #9ca3af;
+  --brand-dark-border: #2d2d2d;
+  --brand-dark-surface: #1a1a1a;
+  --brand-dark-accent: #d4a017;
+
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-section: var(--space-16);
+  --space-section-lg: var(--space-24);
+
+  /* Radii */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-pill: 9999px;
+
+  /* Layout / chrome */
+  --header-height: 4.5rem;
+  --announcement-height: 2.5rem;
+  --container-max: 80rem;
+  --btn-height: 3rem;
+  --input-height: 3rem;
+  --fab-size: 3.5rem;
+  --fab-clearance: 5rem;
+  --sticky-top: calc(var(--header-height) + 1.5rem);
+}
+
+.dark {
+  --background: var(--brand-dark-background);
+  --foreground: var(--brand-dark-foreground);
+  --muted: var(--brand-dark-muted);
+  --border: var(--brand-dark-border);
+  --surface: var(--brand-dark-surface);
+  --surface-elevated: #1f1f1f;
+  --accent: var(--brand-dark-accent);
+  --accent-foreground: #171717;
+  --announcement-bg: #0f0f0f;
+  --announcement-text: #ececec;
+  --announcement-muted: #9ca3af;
+  --announcement-divider: color-mix(in srgb, var(--accent) 45%, transparent);
+  --announcement-border: color-mix(in srgb, var(--accent) 22%, var(--border));
+}
+
+/* Tailwind v4 theme bridge — utilities like bg-accent, text-muted, rounded-md */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  /* Fonts stay on next/font CSS variables (--font-sans / --font-serif). */
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+
+  --spacing-section: var(--space-section);
+  --spacing-section-lg: var(--space-section-lg);
+}
