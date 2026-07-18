@@ -2,6 +2,7 @@ import { getArtistProfile, getSiteConfig } from "@/lib/site-data";
 import { Reveal } from "@/components/motion/Reveal";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
+import { RichText } from "@/components/ui/RichText";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -25,8 +26,6 @@ export default async function AboutPage() {
   const exhibitions = [...profile.exhibitions].sort((a, b) => b.year - a.year);
   const careerStart = Math.min(...profile.exhibitions.map((item) => item.year));
   const careerYears = new Date().getFullYear() - careerStart;
-  const biographyLead = profile.biography.split(".")[0] + ".";
-  const biographyRest = profile.biography.slice(biographyLead.length).trim();
 
   return (
     <>
@@ -77,8 +76,7 @@ export default async function AboutPage() {
             </Reveal>
 
             <Reveal variant="slide-left" className="about-bio-content">
-              <p className="about-bio-lead">{biographyLead}</p>
-              {biographyRest && <p className="body-text">{biographyRest}</p>}
+              <RichText content={profile.biography} className="about-bio-rich" />
 
               <div className="about-studio-note">
                 <p className="eyebrow">Studio</p>
