@@ -2,9 +2,13 @@ import { get } from "@vercel/blob";
 import fs from "node:fs";
 import { readFile } from "node:fs/promises";
 import path from "path";
-import { ARTWORK_IMAGE_EXTENSIONS } from "@/lib/artwork-image";
+import {
+  ARTWORK_IMAGE_EXTENSIONS,
+  needsBrowserRasterization,
+} from "@/lib/artwork-image";
 import { getBlobAccess, isBlobStorageEnabled } from "@/lib/blob-storage";
-import { convertHeicToPng } from "@/lib/heic-to-image";
+import { getImageContentType } from "@/lib/image-format";
+import { rasterizeForBrowserDisplay } from "@/lib/image-processing";
 import { enforceRateLimit } from "@/lib/rate-limit";
 
 const PUBLIC_DIR = path.join(
@@ -38,20 +42,6 @@ function resolvePublicFile(relativePath: string): string | null {
   return match ? path.join(parentDir, match) : null;
 }
 
-function getContentType(extension: string): string {
-  switch (extension) {
-    case ".png":
-      return "image/png";
-    case ".webp":
-      return "image/webp";
-    case ".heic":
-    case ".heif":
-      return "image/png";
-    default:
-      return "image/jpeg";
-  }
-}
-
 function isAllowedImagePath(relativePath: string): boolean {
   const extension = path.extname(relativePath).toLowerCase();
 
@@ -70,7 +60,7 @@ function getImageCacheControl(request: Request): string {
   return "private, no-cache, no-store, must-revalidate";
 }
 
-async function readFromBlob(
+async function streamFromBlob(
   relativePath: string,
   cacheControl: string,
 ): Promise<Response | null> {
@@ -85,9 +75,38 @@ async function readFromBlob(
       return null;
     }
 
-    return new Response(result.stream, {
+    const extension = path.extname(relativePath).toLowerCase();
+
+    // Browser-native formats can stream as-is (Next/Image still resizes).
+    if (!needsBrowserRasterization(`file${extension}`)) {
+      return new Response(result.stream, {
+        headers: {
+          "Content-Type":
+            result.blob.contentType ?? getImageContentType(extension),
+          "Cache-Control": cacheControl,
+        },
+      });
+    }
+
+    const reader = result.stream.getReader();
+    const chunks: Uint8Array[] = [];
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) {
+        break;
+      }
+      if (value) {
+        chunks.push(value);
+      }
+    }
+
+    const input = Buffer.concat(chunks.map((chunk) => Buffer.from(chunk)));
+    const output = await rasterizeForBrowserDisplay(input, extension);
+
+    return new Response(new Uint8Array(output), {
       headers: {
-        "Content-Type": result.blob.contentType ?? getContentType(path.extname(relativePath)),
+        "Content-Type": "image/webp",
         "Cache-Control": cacheControl,
       },
     });
@@ -115,7 +134,7 @@ export async function GET(
     return new Response("Not found", { status: 404 });
   }
 
-  const blobResponse = await readFromBlob(relativePath, cacheControl);
+  const blobResponse = await streamFromBlob(relativePath, cacheControl);
 
   if (blobResponse) {
     return blobResponse;
@@ -129,25 +148,26 @@ export async function GET(
 
   const extension = path.extname(filePath).toLowerCase();
   const input = await readFile(filePath);
-  const shouldConvert = extension === ".heic" || extension === ".heif";
 
-  let output: Buffer;
-
-  if (shouldConvert) {
-    try {
-      output = await convertHeicToPng(input);
-    } catch (error) {
-      console.error("HEIC conversion failed:", error);
-      return new Response("Failed to convert image", { status: 500 });
-    }
-  } else {
-    output = input;
+  if (!needsBrowserRasterization(`file${extension}`)) {
+    return new Response(new Uint8Array(input), {
+      headers: {
+        "Content-Type": getImageContentType(extension),
+        "Cache-Control": cacheControl,
+      },
+    });
   }
 
-  return new Response(new Uint8Array(output), {
-    headers: {
-      "Content-Type": getContentType(extension),
-      "Cache-Control": cacheControl,
-    },
-  });
+  try {
+    const output = await rasterizeForBrowserDisplay(input, extension);
+    return new Response(new Uint8Array(output), {
+      headers: {
+        "Content-Type": "image/webp",
+        "Cache-Control": cacheControl,
+      },
+    });
+  } catch (error) {
+    console.error("[artwork-image] rasterization failed:", error);
+    return new Response("Failed to convert image for display", { status: 500 });
+  }
 }

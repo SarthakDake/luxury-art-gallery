@@ -1,0 +1,101 @@
+import { ARTWORK_IMAGE_EXTENSIONS, type ArtworkImageExtension } from "@/lib/artwork-image";
+import {
+  buildArtworkImageFilename,
+  buildPortraitFilename,
+} from "@/lib/site-data/slug";
+
+export type UploadKind = "portrait" | "cover" | "gallery" | "video-poster" | "artwork";
+
+const MIME_TO_EXTENSION: Record<string, ArtworkImageExtension> = {
+  "image/jpeg": ".jpg",
+  "image/jpg": ".jpg",
+  "image/png": ".png",
+  "image/webp": ".webp",
+  "image/avif": ".avif",
+  "image/gif": ".gif",
+  "image/heic": ".heic",
+  "image/heif": ".heif",
+  "image/tiff": ".tiff",
+  "image/tif": ".tif",
+  "image/bmp": ".bmp",
+  "image/x-ms-bmp": ".bmp",
+};
+
+export const ALLOWED_UPLOAD_CONTENT_TYPES = Object.keys(MIME_TO_EXTENSION);
+
+export function resolveClientImageExtension(
+  filename: string,
+  mimeType?: string,
+): ArtworkImageExtension | null {
+  const match = filename.match(/(\.[a-z0-9]+)$/i);
+  if (match) {
+    const extension = match[1].toLowerCase() as ArtworkImageExtension;
+    if (ARTWORK_IMAGE_EXTENSIONS.includes(extension)) {
+      return extension;
+    }
+  }
+
+  if (mimeType) {
+    return MIME_TO_EXTENSION[mimeType.trim().toLowerCase()] ?? null;
+  }
+
+  return null;
+}
+
+export function buildUploadPathname(options: {
+  kind: UploadKind | string;
+  slug: string;
+  extension: ArtworkImageExtension;
+  galleryIndex?: number;
+  videoIndex?: number;
+}): { directory: string; filename: string; pathname: string } {
+  const kind = options.kind;
+
+  if (kind === "portrait") {
+    const filename = buildPortraitFilename(options.extension);
+    return {
+      directory: "portraits",
+      filename,
+      pathname: `portraits/${filename}`,
+    };
+  }
+
+  const filename =
+    kind === "cover"
+      ? buildArtworkImageFilename(options.slug, "cover", options.extension)
+      : kind === "video-poster"
+        ? buildArtworkImageFilename(
+            options.slug,
+            "video-poster",
+            options.extension,
+            options.videoIndex ?? 0,
+          )
+        : buildArtworkImageFilename(
+            options.slug,
+            "gallery",
+            options.extension,
+            options.galleryIndex ?? 0,
+          );
+
+  return {
+    directory: "artworks",
+    filename,
+    pathname: `artworks/${filename}`,
+  };
+}
+
+export function isAllowedUploadPathname(pathname: string): boolean {
+  const normalized = pathname.replace(/^\/+/, "");
+  if (
+    normalized.includes("..") ||
+    !(normalized.startsWith("artworks/") || normalized.startsWith("portraits/"))
+  ) {
+    return false;
+  }
+
+  const extension = normalized.match(/(\.[a-z0-9]+)$/i)?.[1]?.toLowerCase();
+  return Boolean(
+    extension &&
+      ARTWORK_IMAGE_EXTENSIONS.includes(extension as ArtworkImageExtension),
+  );
+}

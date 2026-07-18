@@ -3,42 +3,33 @@ import { toSafeBuffer } from "@/lib/buffer-utils";
 import { decodeHeicToRaster } from "@/lib/heic-decode-server";
 import { isHeicBuffer, isHeicExtension } from "@/lib/image-format";
 
-const WEBP_QUALITY = 85;
+const DISPLAY_WEBP_QUALITY = 90;
 
-async function rasterizeToWebp(input: Buffer): Promise<Buffer> {
-  const safeInput = toSafeBuffer(input);
+/**
+ * Convert formats browsers cannot display (HEIC/HEIF/TIFF/BMP) into WebP for
+ * delivery only. The original upload remains untouched on disk/blob.
+ */
+export async function rasterizeForBrowserDisplay(
+  buffer: Buffer,
+  extension: string,
+): Promise<Buffer> {
+  const safeInput = toSafeBuffer(buffer);
+  const needsHeicDecode = isHeicExtension(extension) || isHeicBuffer(safeInput);
+
+  if (needsHeicDecode) {
+    const raster = await decodeHeicToRaster(safeInput);
+    return toSafeBuffer(
+      await sharp(raster)
+        .rotate()
+        .webp({ quality: DISPLAY_WEBP_QUALITY })
+        .toBuffer(),
+    );
+  }
 
   return toSafeBuffer(
     await sharp(safeInput)
       .rotate()
-      .webp({ quality: WEBP_QUALITY })
+      .webp({ quality: DISPLAY_WEBP_QUALITY })
       .toBuffer(),
   );
-}
-
-export async function convertHeicToRaster(buffer: Buffer): Promise<Buffer> {
-  return decodeHeicToRaster(buffer);
-}
-
-export async function normalizeImageToWebp(
-  buffer: Buffer,
-  extension: string,
-): Promise<{ buffer: Buffer; extension: string }> {
-  const safeInput = toSafeBuffer(buffer);
-  const needsHeicDecode = isHeicExtension(extension) || isHeicBuffer(safeInput);
-
-  let raster = safeInput;
-
-  if (needsHeicDecode) {
-    raster = await decodeHeicToRaster(safeInput);
-  }
-
-  if (extension === ".webp" && !needsHeicDecode) {
-    return { buffer: raster, extension: ".webp" };
-  }
-
-  return {
-    buffer: await rasterizeToWebp(raster),
-    extension: ".webp",
-  };
 }

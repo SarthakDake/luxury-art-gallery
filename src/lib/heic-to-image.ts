@@ -1,5 +1,6 @@
-import { decodeHeicToRaster } from "@/lib/heic-decode-server";
+import { rasterizeForBrowserDisplay } from "@/lib/image-processing";
 
+/** @deprecated Prefer rasterizeForBrowserDisplay — kept for older call sites. */
 export async function convertHeicToPng(input: Buffer): Promise<Buffer> {
-  return decodeHeicToRaster(input);
+  return rasterizeForBrowserDisplay(input, ".heic");
 }

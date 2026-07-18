@@ -1,29 +1,56 @@
 import { getBlobPathnameFromUrl } from "@/lib/blob-storage";
 
+/** Formats artists can upload and store as-is (including iPhone HEIC/HEIF). */
 export const ARTWORK_IMAGE_EXTENSIONS = [
   ".jpg",
   ".jpeg",
   ".png",
   ".webp",
+  ".avif",
+  ".gif",
   ".heic",
   ".heif",
+  ".tif",
+  ".tiff",
+  ".bmp",
 ] as const;
 
 export type ArtworkImageExtension = (typeof ARTWORK_IMAGE_EXTENSIONS)[number];
 
-export function getArtworkImageExtension(src: string): string | null {
+/** Formats most browsers can display without server-side rasterization. */
+const BROWSER_NATIVE_EXTENSIONS = new Set<ArtworkImageExtension>([
+  ".jpg",
+  ".jpeg",
+  ".png",
+  ".webp",
+  ".avif",
+  ".gif",
+]);
+
+export function getArtworkImageExtension(src: string): ArtworkImageExtension | null {
   const match = src.match(/(\.[a-z0-9]+)(?:\?.*)?$/i);
   if (!match) return null;
 
-  const extension = match[1].toLowerCase();
-  return ARTWORK_IMAGE_EXTENSIONS.includes(extension as ArtworkImageExtension)
-    ? extension
-    : null;
+  const extension = match[1].toLowerCase() as ArtworkImageExtension;
+  return ARTWORK_IMAGE_EXTENSIONS.includes(extension) ? extension : null;
 }
 
 export function isHeicImage(src: string): boolean {
   const extension = getArtworkImageExtension(src);
   return extension === ".heic" || extension === ".heif";
+}
+
+export function isGifImage(src: string): boolean {
+  return getArtworkImageExtension(src) === ".gif";
+}
+
+/** True when the stored file needs on-the-fly conversion for web display. */
+export function needsBrowserRasterization(src: string): boolean {
+  const extension = getArtworkImageExtension(src);
+  if (!extension) {
+    return false;
+  }
+  return !BROWSER_NATIVE_EXTENSIONS.has(extension);
 }
 
 export function isSupportedArtworkImage(src: string): boolean {
@@ -58,7 +85,7 @@ function shouldProxyImagePath(pathname: string): boolean {
   }
 
   return (
-    isHeicImage(pathname) ||
+    needsBrowserRasterization(pathname) ||
     CONTENT_STUDIO_IMAGE_PREFIXES.some((prefix) => pathname.startsWith(prefix)) ||
     isSupportedArtworkImage(pathname)
   );
