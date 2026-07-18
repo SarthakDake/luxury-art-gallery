@@ -1,31 +1,9 @@
 import { assertAdminSession } from "@/lib/admin";
+import { normalizeArtistProfile } from "@/lib/artist-profile";
 import { getArtistProfile, summarizeMirrorResults, saveArtistProfile } from "@/lib/site-data";
 import type { ArtistProfile } from "@/types/site-config";
 
 export const dynamic = "force-dynamic";
-
-function normalizeProfile(raw: ArtistProfile): ArtistProfile {
-  return {
-    artistName: raw.artistName.trim(),
-    artistTagline: raw.artistTagline.trim(),
-    portraitImageUrl: raw.portraitImageUrl.trim(),
-    biography: raw.biography.trim(),
-    exhibitions: (raw.exhibitions ?? [])
-      .filter((entry) => entry.title.trim())
-      .map((entry) => ({
-        year: Number(entry.year),
-        title: entry.title.trim(),
-        location: entry.location.trim(),
-      })),
-    press: (raw.press ?? [])
-      .filter((entry) => entry.publication.trim())
-      .map((entry) => ({
-        publication: entry.publication.trim(),
-        year: Number(entry.year),
-        link: entry.link.trim(),
-      })),
-  };
-}
 
 export async function GET() {
   try {
@@ -56,7 +34,7 @@ export async function PUT(request: Request) {
     return Response.json({ error: "profile object is required." }, { status: 400 });
   }
 
-  const profile = normalizeProfile(payload.profile);
+  const profile = normalizeArtistProfile(payload.profile);
 
   if (!profile.artistName || !profile.biography) {
     return Response.json(

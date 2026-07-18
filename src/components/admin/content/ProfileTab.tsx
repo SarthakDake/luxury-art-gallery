@@ -80,6 +80,77 @@ export function ProfileTab({
             onUploaded={(path) => onChange({ ...profile, portraitImageUrl: path })}
           />
         </StudioGroup>
+
+        <StudioGroup
+          eyebrow="Stats"
+          title="About highlights"
+          description="Shown under your biography (for example Major Exhibitions, Years in Practice, Press Features). Add, edit, or remove as needed."
+        >
+          <StudioRepeaterHeader
+            title="Highlight stats"
+            addLabel="Add highlight"
+            onAdd={() =>
+              onChange({
+                ...profile,
+                highlights: [...(profile.highlights ?? []), { value: "", label: "" }],
+              })
+            }
+          />
+
+          {(profile.highlights ?? []).length === 0 ? (
+            <p className="studio-field-hint studio-step-empty-hint">
+              No highlights yet. Add stats like “1 / Major Exhibitions” or “2+ / Years in Practice”.
+            </p>
+          ) : null}
+
+          <div className="studio-repeater-list">
+            {(profile.highlights ?? []).map((highlight, index) => (
+              <StudioRepeaterItem
+                key={`highlight-${index}`}
+                index={index}
+                title={highlight.label || `Highlight ${index + 1}`}
+                removeLabel="Remove highlight"
+                onRemove={() =>
+                  onChange({
+                    ...profile,
+                    highlights: (profile.highlights ?? []).filter((_, i) => i !== index),
+                  })
+                }
+              >
+                <StudioFormGrid>
+                  <StudioField label="Value" hint='e.g. "1", "2+", "50M+"'>
+                    <StudioInput
+                      value={highlight.value}
+                      onChange={(event) => {
+                        const highlights = [...(profile.highlights ?? [])];
+                        highlights[index] = {
+                          ...highlights[index],
+                          value: event.target.value,
+                        };
+                        onChange({ ...profile, highlights });
+                      }}
+                      placeholder="2+"
+                    />
+                  </StudioField>
+                  <StudioField label="Label" hint='e.g. "Years in Practice"'>
+                    <StudioInput
+                      value={highlight.label}
+                      onChange={(event) => {
+                        const highlights = [...(profile.highlights ?? [])];
+                        highlights[index] = {
+                          ...highlights[index],
+                          label: event.target.value,
+                        };
+                        onChange({ ...profile, highlights });
+                      }}
+                      placeholder="Years in Practice"
+                    />
+                  </StudioField>
+                </StudioFormGrid>
+              </StudioRepeaterItem>
+            ))}
+          </div>
+        </StudioGroup>
       </StudioSection>
 
       <StudioSection

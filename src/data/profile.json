@@ -10,5 +10,19 @@
       "location": "Colors N Joy | Texture Art Studio"
     }
   ],
-  "press": []
+  "press": [],
+  "highlights": [
+    {
+      "value": "1",
+      "label": "Major Exhibitions"
+    },
+    {
+      "value": "2+",
+      "label": "Years in Practice"
+    },
+    {
+      "value": "3",
+      "label": "Press Features"
+    }
+  ]
 }

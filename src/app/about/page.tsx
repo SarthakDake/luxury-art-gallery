@@ -24,8 +24,7 @@ export default async function AboutPage() {
   const profile = await getArtistProfile();
   const pressFeatures = profile.press as PressFeature[];
   const exhibitions = [...profile.exhibitions].sort((a, b) => b.year - a.year);
-  const careerStart = Math.min(...profile.exhibitions.map((item) => item.year));
-  const careerYears = new Date().getFullYear() - careerStart;
+  const highlights = profile.highlights ?? [];
 
   return (
     <>
@@ -87,28 +86,23 @@ export default async function AboutPage() {
             </Reveal>
           </div>
 
-          <Reveal
-            variant="slide-up"
-            className="about-highlights"
-            aria-label="Artist highlights"
-          >
-            <div className="about-highlight-item">
-              <p className="about-highlight-value">
-                {profile.exhibitions.length}
-              </p>
-              <p className="about-highlight-label">Major Exhibitions</p>
-            </div>
-            <div className="about-highlight-item">
-              <p className="about-highlight-value">{careerYears}+</p>
-              <p className="about-highlight-label">Years in Practice</p>
-            </div>
-            {pressFeatures.length > 0 ? (
-              <div className="about-highlight-item">
-                <p className="about-highlight-value">{pressFeatures.length}</p>
-                <p className="about-highlight-label">Press Features</p>
-              </div>
-            ) : null}
-          </Reveal>
+          {highlights.length > 0 ? (
+            <Reveal
+              variant="slide-up"
+              className="about-highlights"
+              aria-label="Artist highlights"
+            >
+              {highlights.map((highlight) => (
+                <div
+                  key={`${highlight.label}-${highlight.value}`}
+                  className="about-highlight-item"
+                >
+                  <p className="about-highlight-value">{highlight.value}</p>
+                  <p className="about-highlight-label">{highlight.label}</p>
+                </div>
+              ))}
+            </Reveal>
+          ) : null}
         </section>
       </div>
 
