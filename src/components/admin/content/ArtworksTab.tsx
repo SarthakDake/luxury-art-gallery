@@ -23,7 +23,7 @@ import {
 } from "./shared";
 import { RichTextEditor } from "./RichTextEditor";
 import { nextArtworkId, slugify } from "@/lib/site-data/slug";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   DEFAULT_SHOWCASE_ENQUIRE_LABEL,
   type Artwork,
@@ -68,15 +68,22 @@ function getCategorySuggestions(artworks: Artwork[]): string[] {
 export function ArtworksTab({
   artworks,
   onChange,
+  onSelectedArtworkChange,
 }: {
   artworks: Artwork[];
   onChange: (artworks: Artwork[]) => void;
+  onSelectedArtworkChange?: (artwork: Artwork | null) => void;
 }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [editorStep, setEditorStep] = useState<ArtworkEditorStep>("details");
 
   const artworkIndex =
     artworks.length === 0 ? 0 : Math.min(selectedIndex, artworks.length - 1);
+  const selectedArtwork = artworks[artworkIndex] ?? null;
+
+  useEffect(() => {
+    onSelectedArtworkChange?.(selectedArtwork);
+  }, [selectedArtwork, onSelectedArtworkChange]);
 
   const categorySuggestions = getCategorySuggestions(artworks);
 

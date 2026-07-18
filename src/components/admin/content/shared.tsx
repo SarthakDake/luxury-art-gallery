@@ -143,16 +143,11 @@ export function StudioColorField({
   return (
     <StudioField label={label} hint={hint}>
       <div className="studio-color-field">
-        <span
-          className="studio-color-swatch"
-          style={{ backgroundColor: value || pickerValue }}
-          title={value}
-          aria-hidden
-        />
         <input
           type="color"
           className="studio-color-picker"
           value={pickerValue}
+          title={value}
           aria-label={`${label} color picker`}
           onChange={(event) => onChange(event.target.value)}
         />
