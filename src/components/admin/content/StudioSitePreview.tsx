@@ -11,6 +11,8 @@ import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { TradePartnersSection } from "@/components/home/TradePartnersSection";
 import { TrustBadgesSection } from "@/components/home/TrustBadgesSection";
 import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
+import { SignatureWallArtView } from "@/components/signature/SignatureWallArtView";
+import { ForInteriorDesignersView } from "@/components/trade/ForInteriorDesignersView";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import { RichText } from "@/components/ui/RichText";
 import { brandTokensToCssVars } from "@/lib/site-config/brand-style";
@@ -184,6 +186,88 @@ function SiteChrome({ config }: { config: SiteConfig }) {
   );
 }
 
+const SIGNATURE_FOCUS_SELECTORS: Record<
+  Exclude<Extract<StudioPreviewTarget, { scope: "signature" }>["region"], "homepage">,
+  string
+> = {
+  page: ".signature-page-hero, .signature-page-intro",
+  projects: ".signature-projects-section",
+  process: ".signature-process-section",
+  faq: ".signature-faq-section",
+  inquiry: ".signature-inquiry-section, #inquiry.signature-inquiry-section",
+};
+
+const TRADE_FOCUS_SELECTORS: Record<
+  Exclude<Extract<StudioPreviewTarget, { scope: "trade" }>["region"], "homepage">,
+  string
+> = {
+  page: ".trade-hero",
+  hero: ".trade-hero",
+  whyPartner: "[aria-labelledby='why-partner-heading']",
+  benefits: "[aria-labelledby='benefits-heading']",
+  process: "[aria-labelledby='trade-process-heading']",
+  pdf: "#portfolio-pdf",
+  inquiry: "#inquiry",
+};
+
+function SignaturePagePreview({
+  config,
+  region,
+}: {
+  config: SiteConfig;
+  region: Extract<StudioPreviewTarget, { scope: "signature" }>["region"];
+}) {
+  if (region === "homepage") {
+    return (
+      <PreviewRegion id="signature-homepage" active>
+        <SignatureShowcaseSection
+          copy={config.homepage.signatureWallArt}
+          page={config.signatureWallArtPage}
+        />
+      </PreviewRegion>
+    );
+  }
+
+  return (
+    <div
+      className="studio-preview-signature-page"
+      data-preview-focus={region}
+      data-preview-focus-selector={SIGNATURE_FOCUS_SELECTORS[region]}
+    >
+      <SignatureWallArtView page={config.signatureWallArtPage} siteConfig={config} />
+    </div>
+  );
+}
+
+function TradePagePreview({
+  config,
+  region,
+}: {
+  config: SiteConfig;
+  region: Extract<StudioPreviewTarget, { scope: "trade" }>["region"];
+}) {
+  if (region === "homepage") {
+    return (
+      <PreviewRegion id="trade-homepage" active>
+        <TradePartnersSection
+          copy={config.homepage.portfolio}
+          tradePage={config.forInteriorDesigners}
+        />
+      </PreviewRegion>
+    );
+  }
+
+  return (
+    <div
+      className="studio-preview-trade-page"
+      data-preview-focus={region}
+      data-preview-focus-selector={TRADE_FOCUS_SELECTORS[region]}
+    >
+      <ForInteriorDesignersView config={config} />
+    </div>
+  );
+}
+
 function SiteSettingsPreview({
   config,
   artworks,
@@ -332,7 +416,13 @@ export function StudioSitePreview({
     }
 
     const frameId = window.requestAnimationFrame(() => {
-      const focused = root.querySelector(".is-preview-focus");
+      const focused =
+        root.querySelector(".is-preview-focus") ??
+        (() => {
+          const host = root.querySelector<HTMLElement>("[data-preview-focus-selector]");
+          const selector = host?.dataset.previewFocusSelector;
+          return selector ? host.querySelector(selector) : null;
+        })();
       focused?.scrollIntoView({ block: "nearest", behavior: "smooth" });
     });
 
@@ -392,8 +482,9 @@ export function StudioSitePreview({
           <div className="studio-preview-idle">
             <p className="eyebrow">Ready when you are</p>
             <p className="body-text">
-              Use the Preview button on Details, Photos, Brand tokens, Artist identity, and other
-              sections to open a live view of that exact spot with your current changes.
+              Use the Preview button on Details, Photos, Brand tokens, Artist identity, Signature
+              Wall Art, For Interior Designers, and other sections to open a live view of that
+              exact spot with your current changes.
             </p>
           </div>
         ) : (
@@ -455,6 +546,17 @@ export function StudioSitePreview({
                 profile={deferredProfile}
                 focus={activePreview.region}
               />
+            ) : null}
+
+            {activePreview.scope === "signature" ? (
+              <SignaturePagePreview
+                config={deferredConfig}
+                region={activePreview.region}
+              />
+            ) : null}
+
+            {activePreview.scope === "trade" ? (
+              <TradePagePreview config={deferredConfig} region={activePreview.region} />
             ) : null}
           </div>
         )}

@@ -10,8 +10,8 @@ import {
   StudioRepeaterItem,
   StudioSection,
   StudioShell,
-  StudioTextarea,
 } from "./shared";
+import { RichTextEditor } from "./RichTextEditor";
 import type { StudioPreviewTarget } from "./preview-targets";
 import { DEFAULT_SIGNATURE_WALL_ART_PAGE } from "@/lib/site-config/defaults";
 import type {
@@ -64,6 +64,13 @@ export function SignatureWallArtTab({
     config.signatureWallArtPage ?? DEFAULT_SIGNATURE_WALL_ART_PAGE;
   const homepageCopy = config.homepage.signatureWallArt;
 
+  function preview(
+    region: Extract<StudioPreviewTarget, { scope: "signature" }>["region"],
+    label: string,
+  ) {
+    onRequestPreview?.({ scope: "signature", region, label });
+  }
+
   function commitPage(next: SignatureWallArtPageConfig) {
     onChange({
       ...config,
@@ -100,15 +107,9 @@ export function SignatureWallArtTab({
   return (
     <StudioShell>
       <StudioSection
-        title="Signature Wall Art"
-        subtitle="Showcase page — fully editable for the artist"
-        onPreview={() =>
-          onRequestPreview?.({
-            scope: "site",
-            region: "homepage",
-            label: "Signature Wall Art homepage teaser",
-          })
-        }
+        title="Page structure"
+        subtitle="Order of sections on Signature Wall Art"
+        onPreview={() => preview("page", "Signature Wall Art page")}
       >
         <StudioGroup
           eyebrow="Page order"
@@ -139,7 +140,13 @@ export function SignatureWallArtTab({
             ))}
           </div>
         </StudioGroup>
+      </StudioSection>
 
+      <StudioSection
+        title="Hero & Intro"
+        subtitle="Top of the Signature Wall Art page"
+        onPreview={() => preview("page", "Signature Wall Art — hero & intro")}
+      >
         <StudioGroup
           eyebrow="Hero Banner"
           title="Page hero image"
@@ -179,19 +186,27 @@ export function SignatureWallArtTab({
               />
             </StudioField>
           </StudioFormGrid>
-          <StudioField label="Subtitle">
-            <StudioTextarea
-              rows={3}
+          <StudioField label="Subtitle" fullWidth>
+            <RichTextEditor
               value={page.intro.subtitle}
-              onChange={(event) =>
+              onChange={(subtitle) =>
                 updatePage({
-                  intro: { ...page.intro, subtitle: event.target.value },
+                  intro: { ...page.intro, subtitle },
                 })
               }
+              rows={3}
+              compact
+              showHint={false}
             />
           </StudioField>
         </StudioGroup>
+      </StudioSection>
 
+      <StudioSection
+        title="Projects"
+        subtitle="Showcase project grid"
+        onPreview={() => preview("projects", "Signature Wall Art — projects")}
+      >
         <StudioGroup
           eyebrow="Projects"
           title="Showcase projects"
@@ -219,15 +234,17 @@ export function SignatureWallArtTab({
               />
             </StudioField>
           </StudioFormGrid>
-          <StudioField label="Section subtitle">
-            <StudioTextarea
-              rows={2}
+          <StudioField label="Section subtitle" fullWidth>
+            <RichTextEditor
               value={page.projects.subtitle}
-              onChange={(event) =>
+              onChange={(subtitle) =>
                 updatePage({
-                  projects: { ...page.projects, subtitle: event.target.value },
+                  projects: { ...page.projects, subtitle },
                 })
               }
+              rows={2}
+              compact
+              showHint={false}
             />
           </StudioField>
 
@@ -313,13 +330,13 @@ export function SignatureWallArtTab({
                     />
                   </StudioField>
                 </StudioFormGrid>
-                <StudioField label="Short summary">
-                  <StudioTextarea
-                    rows={2}
+                <StudioField label="Short summary" fullWidth>
+                  <RichTextEditor
                     value={project.summary}
-                    onChange={(event) =>
-                      updateProject(index, { summary: event.target.value })
-                    }
+                    onChange={(summary) => updateProject(index, { summary })}
+                    rows={2}
+                    compact
+                    showHint={false}
                   />
                 </StudioField>
                 <ImageUploadField
@@ -395,18 +412,20 @@ export function SignatureWallArtTab({
                           }}
                         />
                       </StudioField>
-                      <StudioField label="Description">
-                        <StudioTextarea
-                          rows={2}
+                      <StudioField label="Description" fullWidth>
+                        <RichTextEditor
                           value={style.description}
-                          onChange={(event) => {
+                          onChange={(description) => {
                             const designStyles = [...project.designStyles];
                             designStyles[styleIndex] = {
                               ...style,
-                              description: event.target.value,
+                              description,
                             };
                             updateProject(index, { designStyles });
                           }}
+                          rows={2}
+                          compact
+                          showHint={false}
                         />
                       </StudioField>
                       <ImageUploadField
@@ -541,18 +560,20 @@ export function SignatureWallArtTab({
                         })
                       }
                     >
-                      <StudioField label="Quote">
-                        <StudioTextarea
-                          rows={2}
+                      <StudioField label="Quote" fullWidth>
+                        <RichTextEditor
                           value={item.quote}
-                          onChange={(event) => {
+                          onChange={(quote) => {
                             const testimonials = [...project.testimonials];
                             testimonials[itemIndex] = {
                               ...item,
-                              quote: event.target.value,
+                              quote,
                             };
                             updateProject(index, { testimonials });
                           }}
+                          rows={2}
+                          compact
+                          showHint={false}
                         />
                       </StudioField>
                       <StudioFormGrid>
@@ -590,7 +611,13 @@ export function SignatureWallArtTab({
             ))}
           </div>
         </StudioGroup>
+      </StudioSection>
 
+      <StudioSection
+        title="Process"
+        subtitle="Steps for statement wall art"
+        onPreview={() => preview("process", "Signature Wall Art — process")}
+      >
         <StudioGroup eyebrow="Process" title="Our process for statement wall art">
           <StudioFormGrid>
             <StudioField label="Eyebrow">
@@ -614,15 +641,17 @@ export function SignatureWallArtTab({
               />
             </StudioField>
           </StudioFormGrid>
-          <StudioField label="Subtitle">
-            <StudioTextarea
-              rows={2}
+          <StudioField label="Subtitle" fullWidth>
+            <RichTextEditor
               value={page.process.subtitle}
-              onChange={(event) =>
+              onChange={(subtitle) =>
                 updatePage({
-                  process: { ...page.process, subtitle: event.target.value },
+                  process: { ...page.process, subtitle },
                 })
               }
+              rows={2}
+              compact
+              showHint={false}
             />
           </StudioField>
           <StudioRepeaterHeader
@@ -684,22 +713,30 @@ export function SignatureWallArtTab({
                     }}
                   />
                 </StudioField>
-                <StudioField label="Description">
-                  <StudioTextarea
-                    rows={2}
+                <StudioField label="Description" fullWidth>
+                  <RichTextEditor
                     value={step.description}
-                    onChange={(event) => {
+                    onChange={(description) => {
                       const steps = [...page.process.steps];
-                      steps[index] = { ...step, description: event.target.value };
+                      steps[index] = { ...step, description };
                       updatePage({ process: { ...page.process, steps } });
                     }}
+                    rows={2}
+                    compact
+                    showHint={false}
                   />
                 </StudioField>
               </StudioRepeaterItem>
             ))}
           </div>
         </StudioGroup>
+      </StudioSection>
 
+      <StudioSection
+        title="FAQ"
+        subtitle="Questions about statement wall arts"
+        onPreview={() => preview("faq", "Signature Wall Art — FAQ")}
+      >
         <StudioGroup eyebrow="FAQ" title="FAQ for statement wall arts">
           <StudioFormGrid>
             <StudioField label="Eyebrow">
@@ -719,15 +756,17 @@ export function SignatureWallArtTab({
               />
             </StudioField>
           </StudioFormGrid>
-          <StudioField label="Subtitle">
-            <StudioTextarea
-              rows={2}
+          <StudioField label="Subtitle" fullWidth>
+            <RichTextEditor
               value={page.faq.subtitle}
-              onChange={(event) =>
+              onChange={(subtitle) =>
                 updatePage({
-                  faq: { ...page.faq, subtitle: event.target.value },
+                  faq: { ...page.faq, subtitle },
                 })
               }
+              rows={2}
+              compact
+              showHint={false}
             />
           </StudioField>
           <StudioRepeaterHeader
@@ -789,22 +828,30 @@ export function SignatureWallArtTab({
                     }}
                   />
                 </StudioField>
-                <StudioField label="Answer">
-                  <StudioTextarea
-                    rows={3}
+                <StudioField label="Answer" fullWidth>
+                  <RichTextEditor
                     value={item.answer}
-                    onChange={(event) => {
+                    onChange={(answer) => {
                       const items = [...page.faq.items];
-                      items[index] = { ...item, answer: event.target.value };
+                      items[index] = { ...item, answer };
                       updatePage({ faq: { ...page.faq, items } });
                     }}
+                    rows={3}
+                    compact
+                    showHint={false}
                   />
                 </StudioField>
               </StudioRepeaterItem>
             ))}
           </div>
         </StudioGroup>
+      </StudioSection>
 
+      <StudioSection
+        title="Inquiry"
+        subtitle="Form & WhatsApp CTAs"
+        onPreview={() => preview("inquiry", "Signature Wall Art — inquiry")}
+      >
         <StudioGroup eyebrow="Inquiry" title="Inquiry form & WhatsApp">
           <StudioFormGrid>
             <StudioField label="Eyebrow">
@@ -884,33 +931,43 @@ export function SignatureWallArtTab({
               />
             </StudioField>
           </StudioFormGrid>
-          <StudioField label="Subtitle">
-            <StudioTextarea
-              rows={2}
+          <StudioField label="Subtitle" fullWidth>
+            <RichTextEditor
               value={page.inquiry.subtitle}
-              onChange={(event) =>
+              onChange={(subtitle) =>
                 updatePage({
-                  inquiry: { ...page.inquiry, subtitle: event.target.value },
+                  inquiry: { ...page.inquiry, subtitle },
                 })
               }
+              rows={2}
+              compact
+              showHint={false}
             />
           </StudioField>
-          <StudioField label="Success message">
-            <StudioTextarea
-              rows={2}
+          <StudioField label="Success message" fullWidth>
+            <RichTextEditor
               value={page.inquiry.successMessage}
-              onChange={(event) =>
+              onChange={(successMessage) =>
                 updatePage({
                   inquiry: {
                     ...page.inquiry,
-                    successMessage: event.target.value,
+                    successMessage,
                   },
                 })
               }
+              rows={2}
+              compact
+              showHint={false}
             />
           </StudioField>
         </StudioGroup>
+      </StudioSection>
 
+      <StudioSection
+        title="Homepage teaser"
+        subtitle="Signature Collection block on the homepage"
+        onPreview={() => preview("homepage", "Signature Wall Art homepage teaser")}
+      >
         <StudioGroup
           eyebrow="Homepage"
           title="Homepage Signature Collection teaser"
@@ -962,13 +1019,13 @@ export function SignatureWallArtTab({
               />
             </StudioField>
           </StudioFormGrid>
-          <StudioField label="Subtitle">
-            <StudioTextarea
-              rows={2}
+          <StudioField label="Subtitle" fullWidth>
+            <RichTextEditor
               value={homepageCopy.subtitle}
-              onChange={(event) =>
-                updateHomepageTeaser({ subtitle: event.target.value })
-              }
+              onChange={(subtitle) => updateHomepageTeaser({ subtitle })}
+              rows={2}
+              compact
+              showHint={false}
             />
           </StudioField>
         </StudioGroup>

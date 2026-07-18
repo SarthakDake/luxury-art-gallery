@@ -309,6 +309,24 @@
     background: color-mix(in srgb, var(--accent) 4%, transparent);
   }
 
+  /* Highlight Signature / Trade page sections without mutating view classNames */
+  .studio-preview-signature-page[data-preview-focus="page"] .signature-page-hero,
+  .studio-preview-signature-page[data-preview-focus="page"] .signature-page-intro,
+  .studio-preview-signature-page[data-preview-focus="projects"] .signature-projects-section,
+  .studio-preview-signature-page[data-preview-focus="process"] .signature-process-section,
+  .studio-preview-signature-page[data-preview-focus="faq"] .signature-faq-section,
+  .studio-preview-signature-page[data-preview-focus="inquiry"] .signature-inquiry-section,
+  .studio-preview-trade-page[data-preview-focus="page"] .trade-hero,
+  .studio-preview-trade-page[data-preview-focus="hero"] .trade-hero,
+  .studio-preview-trade-page[data-preview-focus="whyPartner"] [aria-labelledby="why-partner-heading"],
+  .studio-preview-trade-page[data-preview-focus="benefits"] [aria-labelledby="benefits-heading"],
+  .studio-preview-trade-page[data-preview-focus="process"] [aria-labelledby="trade-process-heading"],
+  .studio-preview-trade-page[data-preview-focus="pdf"] #portfolio-pdf,
+  .studio-preview-trade-page[data-preview-focus="inquiry"] #inquiry {
+    box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--accent) 70%, transparent);
+    background: color-mix(in srgb, var(--accent) 4%, transparent);
+  }
+
   .studio-preview-empty-inline,
   .studio-preview-footer-mock {
     padding: 1.25rem 2.5rem;
