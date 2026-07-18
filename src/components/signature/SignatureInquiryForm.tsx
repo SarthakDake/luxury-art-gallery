@@ -5,8 +5,13 @@ import { useState } from "react";
 
 export function SignatureInquiryForm({
   copy,
+  projectTitle,
+  idPrefix = "signature-inquiry",
 }: {
   copy: SignatureWallArtPageConfig["inquiry"];
+  /** When set, included in the email subject/body for project enquiries. */
+  projectTitle?: string;
+  idPrefix?: string;
 }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -22,6 +27,10 @@ export function SignatureInquiryForm({
     setError(null);
     setSuccess(false);
 
+    const subject = projectTitle
+      ? `${copy.defaultSubject}: ${projectTitle}`
+      : copy.defaultSubject;
+
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
@@ -29,8 +38,9 @@ export function SignatureInquiryForm({
         body: JSON.stringify({
           name,
           email,
-          subject: copy.defaultSubject,
+          subject,
           message: [
+            projectTitle ? `Project: ${projectTitle}` : "",
             spaceType ? `Space / project type: ${spaceType}` : "",
             message,
           ]
@@ -61,9 +71,9 @@ export function SignatureInquiryForm({
   return (
     <form className="form-stack signature-inquiry-form" onSubmit={handleSubmit}>
       <div className="form-field">
-        <label htmlFor="signature-inquiry-name">Name</label>
+        <label htmlFor={`${idPrefix}-name`}>Name</label>
         <input
-          id="signature-inquiry-name"
+          id={`${idPrefix}-name`}
           className="input-field"
           value={name}
           onChange={(event) => setName(event.target.value)}
@@ -72,9 +82,9 @@ export function SignatureInquiryForm({
         />
       </div>
       <div className="form-field">
-        <label htmlFor="signature-inquiry-email">Email</label>
+        <label htmlFor={`${idPrefix}-email`}>Email</label>
         <input
-          id="signature-inquiry-email"
+          id={`${idPrefix}-email`}
           type="email"
           className="input-field"
           value={email}
@@ -84,9 +94,9 @@ export function SignatureInquiryForm({
         />
       </div>
       <div className="form-field">
-        <label htmlFor="signature-inquiry-space">Space / project type</label>
+        <label htmlFor={`${idPrefix}-space`}>Space / project type</label>
         <input
-          id="signature-inquiry-space"
+          id={`${idPrefix}-space`}
           className="input-field"
           value={spaceType}
           onChange={(event) => setSpaceType(event.target.value)}
@@ -94,9 +104,9 @@ export function SignatureInquiryForm({
         />
       </div>
       <div className="form-field">
-        <label htmlFor="signature-inquiry-message">Message</label>
+        <label htmlFor={`${idPrefix}-message`}>Message</label>
         <textarea
-          id="signature-inquiry-message"
+          id={`${idPrefix}-message`}
           className="input-field"
           rows={4}
           value={message}

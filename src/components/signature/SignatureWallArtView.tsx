@@ -1,5 +1,6 @@
 import { Reveal } from "@/components/motion/Reveal";
 import { SignatureFaq } from "@/components/signature/SignatureFaq";
+import { SignatureHashScroll } from "@/components/signature/SignatureHashScroll";
 import { SignatureInquiryForm } from "@/components/signature/SignatureInquiryForm";
 import { SoftImage } from "@/components/ui/SoftImage";
 import { getArtworkImageSrc } from "@/lib/artwork-image";
@@ -221,6 +222,7 @@ export function SignatureWallArtView({
 
   return (
     <>
+      <SignatureHashScroll />
       <section
         className={`signature-page-hero ${heroImage ? "signature-page-hero--image" : ""}`}
         aria-label={resolved.intro.title}

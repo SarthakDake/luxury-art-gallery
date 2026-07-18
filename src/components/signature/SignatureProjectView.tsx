@@ -1,4 +1,5 @@
 import { Reveal } from "@/components/motion/Reveal";
+import { SignatureInquiryForm } from "@/components/signature/SignatureInquiryForm";
 import { SoftImage } from "@/components/ui/SoftImage";
 import { getArtworkImageSrc } from "@/lib/artwork-image";
 import { DEFAULT_SIGNATURE_WALL_ART_PAGE } from "@/lib/site-config/defaults";
@@ -21,10 +22,6 @@ export function SignatureProjectView({
     siteConfig.whatsappNumber,
     `Hi ${studio}, I'd like to enquire about the Signature Wall Art project "${project.title}".`,
   );
-  const formHref =
-    inquiry.formHref?.startsWith("#")
-      ? `/signature-wall-art${inquiry.formHref}`
-      : inquiry.formHref || "/signature-wall-art#inquiry";
 
   return (
     <div className="site-container page-shell page-section-end">
@@ -52,9 +49,9 @@ export function SignatureProjectView({
               {inquiry.whatsappLabel}
             </a>
           ) : null}
-          <Link href={formHref} className="btn-secondary btn-responsive">
+          <a href="#inquiry" className="btn-secondary btn-responsive">
             {inquiry.formCtaLabel}
-          </Link>
+          </a>
         </div>
       </Reveal>
 
@@ -169,21 +166,48 @@ export function SignatureProjectView({
         </Reveal>
       ) : null}
 
+      <Reveal
+        as="section"
+        id="inquiry"
+        variant="slide-up"
+        className="signature-inquiry-section section-divider-top"
+        aria-labelledby="signature-project-inquiry-heading"
+      >
+        <div className="signature-inquiry-layout">
+          <div className="section-header-copy">
+            <p className="eyebrow">{inquiry.eyebrow}</p>
+            <h2 id="signature-project-inquiry-heading" className="section-title">
+              {inquiry.title}
+            </h2>
+            {inquiry.subtitle ? (
+              <p className="body-text mt-3">{inquiry.subtitle}</p>
+            ) : null}
+            <p className="body-text mt-3 text-[var(--muted)]">
+              Enquiring about <strong>{project.title}</strong>
+            </p>
+            <div className="signature-inquiry-actions">
+              {whatsappHref ? (
+                <a
+                  href={whatsappHref}
+                  className="btn-secondary btn-responsive"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {inquiry.whatsappLabel}
+                </a>
+              ) : null}
+            </div>
+          </div>
+          <SignatureInquiryForm
+            copy={inquiry}
+            projectTitle={project.title}
+            idPrefix={`project-inquiry-${project.slug}`}
+          />
+        </div>
+      </Reveal>
+
       <Reveal variant="fade-in" className="signature-project-footer-cta">
         <div className="signature-project-cta-row">
-          {whatsappHref ? (
-            <a
-              href={whatsappHref}
-              className="btn-primary btn-responsive"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {inquiry.whatsappLabel}
-            </a>
-          ) : null}
-          <Link href={formHref} className="btn-secondary btn-responsive">
-            {inquiry.formCtaLabel}
-          </Link>
           <Link href="/signature-wall-art" className="btn-secondary btn-responsive">
             Back to all projects
           </Link>

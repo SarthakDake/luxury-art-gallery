@@ -1083,8 +1083,11 @@
   }
 
   .dispatch-note {
-    font-size: 0.8125rem;
-    letter-spacing: 0.04em;
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.875rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    line-height: 1.55;
     color: var(--muted);
   }
 
@@ -1092,24 +1095,34 @@
     gap: 0.35rem;
   }
 
-  .dispatch-note-rich .rich-text-paragraph {
-    font-size: inherit;
-    letter-spacing: inherit;
-    line-height: 1.55;
-    color: inherit;
-  }
-
-  .dispatch-note-rich .rich-text-heading {
-    font-size: 0.875rem;
+  .dispatch-note-rich .rich-text-paragraph,
+  .dispatch-note-rich .rich-text-heading,
+  .dispatch-note-rich .rich-text-heading--1,
+  .dispatch-note-rich .rich-text-heading--2,
+  .dispatch-note-rich .rich-text-heading--3 {
     margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+    line-height: inherit;
+    color: inherit;
   }
 
   .offer-detail-rich {
     gap: 0.25rem;
   }
 
-  .offer-detail-rich .rich-text-paragraph {
+  .offer-detail-rich .rich-text-paragraph,
+  .offer-detail-rich .rich-text-heading,
+  .offer-detail-rich .rich-text-heading--1,
+  .offer-detail-rich .rich-text-heading--2,
+  .offer-detail-rich .rich-text-heading--3 {
+    margin: 0;
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
     font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: normal;
     line-height: 1.55;
     color: var(--muted);
   }
@@ -1170,9 +1183,16 @@
     gap: 0.35rem;
   }
 
-  .home-offer-detail-rich .rich-text-paragraph {
+  .home-offer-detail-rich .rich-text-paragraph,
+  .home-offer-detail-rich .rich-text-heading,
+  .home-offer-detail-rich .rich-text-heading--1,
+  .home-offer-detail-rich .rich-text-heading--2,
+  .home-offer-detail-rich .rich-text-heading--3 {
     margin: 0;
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
     font-size: 0.875rem;
+    font-weight: 400;
+    letter-spacing: normal;
     line-height: 1.6;
     color: var(--muted);
   }
@@ -2918,6 +2938,10 @@
   .signature-faq-section,
   .signature-inquiry-section {
     padding-block: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  #inquiry.signature-inquiry-section {
+    scroll-margin-top: calc(var(--header-height, 5rem) + 1.5rem);
   }
 
   .signature-project-grid {
