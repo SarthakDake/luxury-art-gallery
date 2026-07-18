@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ArtworksTab } from "./ArtworksTab";
 import { ConfigTab } from "./ConfigTab";
 import { ProfileTab } from "./ProfileTab";
+import type { StudioPreviewTarget } from "./preview-targets";
 import { StudioSitePreview } from "./StudioSitePreview";
 import { StudioMessage, StudioTabs } from "./shared";
 import type { ArtistProfile, SiteConfig } from "@/types/site-config";
@@ -36,6 +37,7 @@ export function ContentStudio() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
   const [profile, setProfile] = useState<ArtistProfile | null>(null);
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
+  const [activePreview, setActivePreview] = useState<StudioPreviewTarget | null>(null);
   const [message, setMessage] = useState<{ tone: "success" | "error"; text: string } | null>(
     null,
   );
@@ -127,6 +129,7 @@ export function ContentStudio() {
   function handleTabChange(id: string) {
     setActiveTab(id as TabId);
     setMessage(null);
+    setActivePreview(null);
   }
 
   async function saveActiveTab() {
@@ -252,13 +255,22 @@ export function ContentStudio() {
                 artworks={artworks}
                 onChange={setArtworks}
                 onSelectedArtworkChange={setSelectedArtwork}
+                onRequestPreview={setActivePreview}
               />
             ) : null}
             {activeTab === "config" ? (
-              <ConfigTab config={config} onChange={setConfig} />
+              <ConfigTab
+                config={config}
+                onChange={setConfig}
+                onRequestPreview={setActivePreview}
+              />
             ) : null}
             {activeTab === "profile" ? (
-              <ProfileTab profile={profile} onChange={setProfile} />
+              <ProfileTab
+                profile={profile}
+                onChange={setProfile}
+                onRequestPreview={setActivePreview}
+              />
             ) : null}
           </div>
         </div>
@@ -289,13 +301,14 @@ export function ContentStudio() {
         </div>
       </div>
 
-      {/* Separate right-side preview — sibling, not nested in the editor UI */}
+      {/* Separate right-side preview — opens only when a section Preview is clicked */}
       <StudioSitePreview
         config={config}
         artworks={artworks}
         profile={profile}
-        activeTab={activeTab}
         selectedArtwork={selectedArtwork}
+        activePreview={activePreview}
+        onClose={() => setActivePreview(null)}
       />
     </div>
   );
