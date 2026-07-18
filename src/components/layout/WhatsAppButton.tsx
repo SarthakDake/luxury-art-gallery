@@ -2,6 +2,7 @@
 
 import { useSiteConfig } from "@/components/providers/site-config-provider";
 import { useIsClient } from "@/hooks/use-is-client";
+import { buildWhatsAppHref } from "@/lib/whatsapp";
 import { createPortal } from "react-dom";
 
 const whatsappMessage = "Hello, I am inquiring about your artwork.";
@@ -21,9 +22,9 @@ function WhatsAppIcon() {
 export function WhatsAppButton() {
   const config = useSiteConfig();
   const isClient = useIsClient();
-  const whatsappHref = `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+  const whatsappHref = buildWhatsAppHref(config.whatsappNumber, whatsappMessage);
 
-  if (!config.whatsappNumber || !isClient) {
+  if (!whatsappHref || !isClient) {
     return null;
   }
 

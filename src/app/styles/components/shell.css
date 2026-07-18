@@ -476,7 +476,7 @@
     inset-inline: 0;
     top: var(--header-height);
     z-index: 50;
-    max-height: calc(100vh - var(--header-height));
+    max-height: calc(100dvh - var(--header-height));
     overflow-y: auto;
     border-bottom: 1px solid var(--border);
     background: var(--background);
@@ -783,10 +783,11 @@
 
   .site-logo .site-brand-main {
     font-family: var(--font-serif), ui-serif, Georgia, serif;
-    font-size: 1.125rem;
+    font-size: clamp(1rem, 3.6vw, 1.125rem);
     font-weight: 400;
     letter-spacing: 0.04em;
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .site-logo .site-brand-sub {
@@ -794,8 +795,8 @@
     font-size: 0.625rem;
     font-weight: 500;
     letter-spacing: 0.04em;
-    color: #c9a227;
-    white-space: nowrap;
+    color: var(--accent, #c9a227);
+    white-space: normal;
   }
 
   @media (min-width: 480px) {

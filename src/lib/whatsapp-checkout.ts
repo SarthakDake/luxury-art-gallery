@@ -1,10 +1,12 @@
 import type { Artwork } from "@/types/artwork";
-import type { SiteConfig } from "@/types/site-config";
 import type { CartItem } from "@/lib/store";
 import { formatPrice } from "@/types/artwork";
+import { buildWhatsAppHref, normalizeWhatsAppNumber } from "@/lib/whatsapp";
 
-export function isWhatsAppCheckoutAvailable(config: SiteConfig) {
-  return Boolean(config.whatsappNumber?.trim());
+type WhatsAppConfig = { whatsappNumber: string };
+
+export function isWhatsAppCheckoutAvailable(config: WhatsAppConfig) {
+  return Boolean(normalizeWhatsAppNumber(config.whatsappNumber ?? ""));
 }
 
 function getSiteBaseUrl(): string {
@@ -66,7 +68,7 @@ export function buildShowcaseEnquireMessage(
 
 export function buildShowcaseEnquireUrl(
   artwork: Pick<Artwork, "title" | "slug">,
-  config: SiteConfig,
+  config: WhatsAppConfig,
 ): string | null {
   if (!isWhatsAppCheckoutAvailable(config)) {
     return null;
@@ -74,13 +76,13 @@ export function buildShowcaseEnquireUrl(
 
   const message = buildShowcaseEnquireMessage(artwork);
 
-  return `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(message)}`;
+  return buildWhatsAppHref(config.whatsappNumber, message) || null;
 }
 
 export function buildWhatsAppCheckoutUrl(
   items: CartItem[],
   subtotal: number,
-  config: SiteConfig,
+  config: WhatsAppConfig,
   options?: {
     discount?: number;
     promoCode?: string;
@@ -93,5 +95,5 @@ export function buildWhatsAppCheckoutUrl(
 
   const message = buildWhatsAppCheckoutMessage(items, subtotal, options);
 
-  return `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(message)}`;
+  return buildWhatsAppHref(config.whatsappNumber, message) || null;
 }

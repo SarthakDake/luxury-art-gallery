@@ -1,6 +1,6 @@
-import type { SiteConfig } from "@/types/site-config";
+import type { PublicSiteConfig } from "@/lib/site-config";
 
-export function AnnouncementBar({ config }: { config: SiteConfig }) {
+export function AnnouncementBar({ config }: { config: PublicSiteConfig }) {
   return (
     <div className="announcement-bar">
       <div className="site-container announcement-bar-inner">

@@ -1,15 +1,15 @@
 "use client";
 
 import { createContext, useContext } from "react";
-import type { SiteConfig } from "@/types/site-config";
+import type { PublicSiteConfig } from "@/lib/site-config";
 
-const SiteConfigContext = createContext<SiteConfig | null>(null);
+const SiteConfigContext = createContext<PublicSiteConfig | null>(null);
 
 export function SiteConfigProvider({
   config,
   children,
 }: {
-  config: SiteConfig;
+  config: PublicSiteConfig;
   children: React.ReactNode;
 }) {
   return (
@@ -17,7 +17,7 @@ export function SiteConfigProvider({
   );
 }
 
-export function useSiteConfig(): SiteConfig {
+export function useSiteConfig(): PublicSiteConfig {
   const config = useContext(SiteConfigContext);
 
   if (!config) {

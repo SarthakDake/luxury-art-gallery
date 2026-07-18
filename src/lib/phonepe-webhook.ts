@@ -112,10 +112,15 @@ export async function processPhonePeWebhook(request: Request) {
   const rawBody = await request.text();
   const xVerify = request.headers.get("X-VERIFY");
 
-  if (process.env.PHONEPE_SALT_KEY) {
-    if (!verifyPhonePeWebhookChecksum(rawBody, xVerify)) {
-      return { status: 401 as const, body: { error: "Invalid webhook signature." } };
-    }
+  if (!process.env.PHONEPE_SALT_KEY) {
+    return {
+      status: 401 as const,
+      body: { error: "Webhook verification is not configured." },
+    };
+  }
+
+  if (!verifyPhonePeWebhookChecksum(rawBody, xVerify)) {
+    return { status: 401 as const, body: { error: "Invalid webhook signature." } };
   }
 
   const payload = decodeWebhookPayload(rawBody);

@@ -88,7 +88,7 @@
     font-size: 0.75rem;
     font-weight: 500;
     letter-spacing: 0.04em;
-    color: #c9a227;
+    color: var(--accent, #c9a227);
   }
 
   .footer-brand-tagline {
@@ -500,7 +500,7 @@
     font-size: 0.75rem;
     font-weight: 500;
     letter-spacing: 0.04em;
-    color: #c9a227;
+    color: var(--accent, #c9a227);
   }
 
   .hero-block--image .hero-brand .site-brand-main {
@@ -508,7 +508,7 @@
   }
 
   .hero-block--image .hero-brand .site-brand-sub {
-    color: #c9a227;
+    color: var(--accent, #c9a227);
   }
 
   .hero-title {
@@ -2761,16 +2761,36 @@
     border: 1px solid var(--border);
     background: var(--surface);
     overflow: hidden;
-    min-height: 28rem;
+    min-height: 16rem;
   }
 
   .trade-pdf-embed {
     display: block;
     width: 100%;
-    min-height: 32rem;
-    height: 70vh;
+    min-height: 18rem;
+    height: min(70vh, 36rem);
     border: 0;
     background: var(--background);
+  }
+
+  @media (max-width: 767px) {
+    .trade-pdf-frame {
+      min-height: 0;
+    }
+
+    .trade-pdf-embed {
+      display: none;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .trade-pdf-frame {
+      min-height: 28rem;
+    }
+
+    .trade-pdf-embed {
+      min-height: 32rem;
+    }
   }
 
   .trade-pdf-empty {
@@ -2832,9 +2852,37 @@
   .signature-page-hero {
     position: relative;
     width: 100%;
-    min-height: clamp(18rem, 48vw, 34rem);
+    min-height: clamp(14rem, 42vw, 34rem);
     background: var(--surface);
     overflow: hidden;
+  }
+
+  @media (max-width: 640px) {
+    .signature-page-hero {
+      min-height: clamp(12rem, 56vw, 18rem);
+    }
+
+    .signature-project-cover {
+      aspect-ratio: 4 / 3;
+    }
+
+    .signature-style-row {
+      gap: 1.25rem;
+    }
+
+    .signature-inquiry-actions,
+    .signature-project-cta-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .signature-inquiry-actions .btn-primary,
+    .signature-inquiry-actions .btn-secondary,
+    .signature-project-cta-row .btn-primary,
+    .signature-project-cta-row .btn-secondary {
+      width: 100%;
+      justify-content: center;
+    }
   }
 
   .signature-page-hero--image {

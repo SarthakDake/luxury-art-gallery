@@ -1,3 +1,4 @@
+import { isLocalAdminBypassEnabled } from "@/lib/local-admin-bypass";
 import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
@@ -27,13 +28,18 @@ export default withAuth(
     callbacks: {
       authorized: ({ token, req }) => {
         const pathname = req.nextUrl.pathname;
+        const isAdminSurface =
+          pathname.startsWith("/admin") || pathname.startsWith("/api/admin");
+
+        if (isAdminSurface) {
+          if (isLocalAdminBypassEnabled()) {
+            return true;
+          }
+          return token?.role === "ADMIN";
+        }
 
         if (pathname.startsWith("/api/")) {
           return true;
-        }
-
-        if (pathname.startsWith("/admin")) {
-          return token?.role === "ADMIN";
         }
 
         return Boolean(token);
