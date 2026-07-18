@@ -1,3 +1,4 @@
+import { SiteBrandName } from "@/components/ui/SiteBrandName";
 import type { SiteConfig } from "@/types/site-config";
 import { PRIMARY_NAV_LINKS } from "@/lib/nav-links";
 import Link from "next/link";
@@ -13,11 +14,8 @@ export function Header({ config }: { config: SiteConfig }) {
         <div className="header-leading">
           <div className="header-brand-group">
             <MobileNav />
-            <Link
-              href="/"
-              className="site-logo truncate font-serif text-xl tracking-wide text-[var(--foreground)] transition-opacity duration-300 hover:opacity-75 lg:text-2xl"
-            >
-              {config.siteName}
+            <Link href="/" className="site-logo">
+              <SiteBrandName name={config.siteName} />
             </Link>
           </div>
 

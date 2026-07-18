@@ -1,4 +1,5 @@
 import { ContactEmailLinks } from "@/components/ui/ContactEmailLinks";
+import { SiteBrandName } from "@/components/ui/SiteBrandName";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 import { VisitorCounter } from "@/components/ui/VisitorCounter";
 import { FOOTER_EXPLORE_LINKS } from "@/lib/nav-links";
@@ -13,7 +14,7 @@ export function Footer({ config }: { config: SiteConfig }) {
         <div className="footer-grid" data-reveal-stagger>
           <div className="footer-brand" data-reveal="slide-up">
             <Link href="/" className="footer-brand-name">
-              {config.siteName}
+              <SiteBrandName name={config.siteName} />
             </Link>
             <p className="footer-brand-tagline">{config.heroSubtitle}</p>
           </div>
