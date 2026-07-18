@@ -110,18 +110,18 @@
       },
       {
         "id": "features",
-        "enabled": false
-      },
-      {
-        "id": "testimonials",
-        "enabled": false
-      },
-      {
-        "id": "collections",
         "enabled": true
       },
       {
         "id": "portfolio",
+        "enabled": true
+      },
+      {
+        "id": "testimonials",
+        "enabled": true
+      },
+      {
+        "id": "collections",
         "enabled": true
       }
     ],
@@ -294,6 +294,6 @@
   "features": {
     "homepageOffers": false,
     "homepageFeatures": false,
-    "homepageTestimonials": false
+    "homepageTestimonials": true
   }
 }
