@@ -1,32 +1,43 @@
 /*
   Design tokens — single source for colors, type, spacing, and radii.
-  Brand colors/radii can be overridden at runtime from config.json via BrandTheme.
+  Brand colors/radii can be overridden at runtime from config.json.
+  Semantic colors (--background, etc.) remap under .dark so the theme
+  toggle works even when CMS brand vars are set on <html>.
 */
 
 :root {
-  /* Color */
-  --background: #ffffff;
-  --foreground: #171717;
-  --muted: #6b7280;
-  --border: #e5e7eb;
-  --surface: #f9fafb;
-  --surface-elevated: #ffffff;
-  --accent: #c9a227;
-  --accent-foreground: #171717;
-  --announcement-bg: #171717;
-  --announcement-text: #f3f3f3;
-  --announcement-muted: #a3a3a3;
-  --announcement-divider: color-mix(in srgb, var(--accent) 55%, transparent);
-  --announcement-border: color-mix(in srgb, var(--accent) 28%, transparent);
-  --whatsapp: #25d366;
+  /* CMS-overridable brand sources (light) */
+  --brand-background: #ffffff;
+  --brand-foreground: #171717;
+  --brand-muted: #6b7280;
+  --brand-border: #e5e7eb;
+  --brand-surface: #f9fafb;
+  --brand-accent: #c9a227;
+  --brand-accent-foreground: #171717;
 
-  /* Dark brand defaults (applied under .dark) */
+  /* CMS-overridable brand sources (dark) */
   --brand-dark-background: #111111;
   --brand-dark-foreground: #e5e5e5;
   --brand-dark-muted: #9ca3af;
   --brand-dark-border: #2d2d2d;
   --brand-dark-surface: #1a1a1a;
   --brand-dark-accent: #d4a017;
+
+  /* Semantic colors — light mode */
+  --background: var(--brand-background);
+  --foreground: var(--brand-foreground);
+  --muted: var(--brand-muted);
+  --border: var(--brand-border);
+  --surface: var(--brand-surface);
+  --surface-elevated: var(--brand-background);
+  --accent: var(--brand-accent);
+  --accent-foreground: var(--brand-accent-foreground);
+  --announcement-bg: #171717;
+  --announcement-text: #f3f3f3;
+  --announcement-muted: #a3a3a3;
+  --announcement-divider: color-mix(in srgb, var(--accent) 55%, transparent);
+  --announcement-border: color-mix(in srgb, var(--accent) 28%, transparent);
+  --whatsapp: #25d366;
 
   /* Spacing scale */
   --space-1: 0.25rem;
@@ -68,7 +79,7 @@
   --muted: var(--brand-dark-muted);
   --border: var(--brand-dark-border);
   --surface: var(--brand-dark-surface);
-  --surface-elevated: #1f1f1f;
+  --surface-elevated: color-mix(in srgb, var(--brand-dark-surface) 70%, #ffffff);
   --accent: var(--brand-dark-accent);
   --accent-foreground: #171717;
   --announcement-bg: #0f0f0f;

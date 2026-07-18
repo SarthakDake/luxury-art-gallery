@@ -9,6 +9,7 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return (
     <NextThemesProvider
       {...props}
+      attribute="class"
       enableSystem={false}
       disableTransitionOnChange
       storageKey="colors-n-joy-theme"
