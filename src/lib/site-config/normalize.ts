@@ -212,6 +212,11 @@ function mergeCuratedWorksCopy(
     subtitle: asString(source.subtitle, fallback.subtitle),
     limit: asPositiveInt(source.limit, fallback.limit),
     categoryFilter: asString(source.categoryFilter, fallback.categoryFilter),
+    pageImageUrl: asString(source.pageImageUrl, fallback.pageImageUrl),
+    pageIntro: asString(source.pageIntro, fallback.pageIntro),
+    pageLimit: asPositiveInt(source.pageLimit, fallback.pageLimit),
+    pageCtaLabel: asString(source.pageCtaLabel, fallback.pageCtaLabel),
+    pageCtaHref: asString(source.pageCtaHref, fallback.pageCtaHref),
   };
 }
 

@@ -2744,4 +2744,51 @@
     align-self: flex-start;
   }
 
+  /* Signature Wall Art dedicated page */
+  .signature-page-hero {
+    position: relative;
+    width: 100%;
+    min-height: clamp(18rem, 48vw, 34rem);
+    background: var(--surface);
+    overflow: hidden;
+  }
+
+  .signature-page-hero--image {
+    background: var(--foreground);
+  }
+
+  .signature-page-hero-media {
+    z-index: 0;
+  }
+
+  .signature-page-hero-fallback {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 45%),
+      linear-gradient(160deg, var(--surface), var(--background) 60%, var(--surface));
+  }
+
+  .signature-page-intro {
+    max-width: 36rem;
+    margin-inline: auto;
+    padding-block: clamp(2.5rem, 5vw, 4rem) 1.5rem;
+    text-align: center;
+  }
+
+  .signature-page-intro-copy {
+    margin-top: 1rem;
+    margin-inline: auto;
+  }
+
+  .signature-page-grid-section {
+    padding-block: 1rem 2.5rem;
+  }
+
+  .signature-page-cta {
+    display: flex;
+    justify-content: center;
+    padding-bottom: clamp(2rem, 4vw, 3.5rem);
+  }
+
 }

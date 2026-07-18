@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  ImageUploadField,
   StudioField,
   StudioFormGrid,
   StudioGroup,
@@ -30,6 +31,7 @@ export function CuratedPageTab({
   onRequestPreview?: (target: StudioPreviewTarget) => void;
 }) {
   const copy = config.homepage[pageKey];
+  const isSignaturePage = pageKey === "signatureWallArt";
 
   function updateCopy(patch: Partial<CuratedWorksCopy>) {
     onChange({
@@ -54,10 +56,31 @@ export function CuratedPageTab({
           })
         }
       >
+        {isSignaturePage ? (
+          <StudioGroup
+            eyebrow="Page hero"
+            title="Large image"
+            description="Full-width image at the top of the Signature Wall Art page."
+          >
+            <ImageUploadField
+              label="Large page image"
+              path={copy.pageImageUrl}
+              slug="signature-wall-art"
+              kind="hero"
+              onUploaded={(path) => updateCopy({ pageImageUrl: path })}
+              hint="Upload a wide statement image. Leave empty to show a soft studio fallback."
+            />
+          </StudioGroup>
+        ) : null}
+
         <StudioGroup
-          eyebrow="Page & section"
-          title="Headings & supporting copy"
-          description="These fields power both the dedicated page and the matching homepage section."
+          eyebrow={isSignaturePage ? "Introduction" : "Page & section"}
+          title={isSignaturePage ? "Small introduction" : "Headings & supporting copy"}
+          description={
+            isSignaturePage
+              ? "Short copy shown under the large image, before the project grid."
+              : "These fields power both the dedicated page and the matching homepage section."
+          }
         >
           <StudioFormGrid>
             <StudioField label="Eyebrow">
@@ -73,16 +96,29 @@ export function CuratedPageTab({
               />
             </StudioField>
           </StudioFormGrid>
-          <StudioField label="Subtitle">
-            <StudioTextarea
-              rows={3}
-              value={copy.subtitle}
-              onChange={(event) => updateCopy({ subtitle: event.target.value })}
-            />
-          </StudioField>
+          {isSignaturePage ? (
+            <StudioField label="Introduction">
+              <StudioTextarea
+                rows={3}
+                value={copy.pageIntro}
+                onChange={(event) => updateCopy({ pageIntro: event.target.value })}
+              />
+            </StudioField>
+          ) : (
+            <StudioField label="Subtitle">
+              <StudioTextarea
+                rows={3}
+                value={copy.subtitle}
+                onChange={(event) => updateCopy({ subtitle: event.target.value })}
+              />
+            </StudioField>
+          )}
         </StudioGroup>
 
-        <StudioGroup eyebrow="Collection" title="Which works to show">
+        <StudioGroup
+          eyebrow="Projects"
+          title={isSignaturePage ? "Premium project grid" : "Which works to show"}
+        >
           <StudioFormGrid>
             <StudioField label="Category filter">
               <StudioInput
@@ -93,6 +129,19 @@ export function CuratedPageTab({
                 }
               />
             </StudioField>
+            {isSignaturePage ? (
+              <StudioField label="Projects on page">
+                <StudioInput
+                  type="number"
+                  min={1}
+                  max={12}
+                  value={copy.pageLimit}
+                  onChange={(event) =>
+                    updateCopy({ pageLimit: Number(event.target.value) || 6 })
+                  }
+                />
+              </StudioField>
+            ) : null}
             <StudioField label="Homepage count">
               <StudioInput
                 type="number"
@@ -103,28 +152,97 @@ export function CuratedPageTab({
                 }
               />
             </StudioField>
-            <StudioField label="Action label">
-              <StudioInput
-                value={copy.actionLabel ?? ""}
-                onChange={(event) =>
-                  updateCopy({ actionLabel: event.target.value })
-                }
-              />
-            </StudioField>
-            <StudioField label="Action link">
-              <StudioInput
-                value={copy.actionHref ?? ""}
-                onChange={(event) =>
-                  updateCopy({ actionHref: event.target.value })
-                }
-              />
-            </StudioField>
+            {!isSignaturePage ? (
+              <>
+                <StudioField label="Action label">
+                  <StudioInput
+                    value={copy.actionLabel ?? ""}
+                    onChange={(event) =>
+                      updateCopy({ actionLabel: event.target.value })
+                    }
+                  />
+                </StudioField>
+                <StudioField label="Action link">
+                  <StudioInput
+                    value={copy.actionHref ?? ""}
+                    onChange={(event) =>
+                      updateCopy({ actionHref: event.target.value })
+                    }
+                  />
+                </StudioField>
+              </>
+            ) : null}
           </StudioFormGrid>
           <p className="studio-field-hint">
             Category filter matches category, subcategory, or title. Leave blank
-            to include all works. The dedicated page shows a larger selection.
+            to include all works.
+            {isSignaturePage
+              ? " The page grid defaults to 6 premium projects."
+              : ""}
           </p>
         </StudioGroup>
+
+        {isSignaturePage ? (
+          <>
+            <StudioGroup
+              eyebrow="Page CTA"
+              title="View Portfolio"
+              description="Button under the grid. Defaults to the For Interior Designers page."
+            >
+              <StudioFormGrid>
+                <StudioField label="Button label">
+                  <StudioInput
+                    value={copy.pageCtaLabel}
+                    onChange={(event) =>
+                      updateCopy({ pageCtaLabel: event.target.value })
+                    }
+                  />
+                </StudioField>
+                <StudioField label="Button link">
+                  <StudioInput
+                    value={copy.pageCtaHref}
+                    onChange={(event) =>
+                      updateCopy({ pageCtaHref: event.target.value })
+                    }
+                  />
+                </StudioField>
+              </StudioFormGrid>
+            </StudioGroup>
+
+            <StudioGroup
+              eyebrow="Homepage section"
+              title="Homepage Signature Collection teaser"
+              description="Optional — controls the matching homepage section only."
+            >
+              <StudioFormGrid>
+                <StudioField label="Homepage subtitle">
+                  <StudioInput
+                    value={copy.subtitle}
+                    onChange={(event) =>
+                      updateCopy({ subtitle: event.target.value })
+                    }
+                  />
+                </StudioField>
+                <StudioField label="Homepage action label">
+                  <StudioInput
+                    value={copy.actionLabel ?? ""}
+                    onChange={(event) =>
+                      updateCopy({ actionLabel: event.target.value })
+                    }
+                  />
+                </StudioField>
+                <StudioField label="Homepage action link">
+                  <StudioInput
+                    value={copy.actionHref ?? ""}
+                    onChange={(event) =>
+                      updateCopy({ actionHref: event.target.value })
+                    }
+                  />
+                </StudioField>
+              </StudioFormGrid>
+            </StudioGroup>
+          </>
+        ) : null}
       </StudioSection>
     </StudioShell>
   );

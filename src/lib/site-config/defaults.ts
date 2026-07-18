@@ -86,6 +86,12 @@ export const DEFAULT_HOMEPAGE: SiteHomepageConfig = {
     actionHref: "/signature-wall-art",
     limit: 4,
     categoryFilter: "Ready to hang",
+    pageImageUrl: "",
+    pageIntro:
+      "A focused selection of premium wall pieces — crafted to become the quiet center of a room.",
+    pageLimit: 6,
+    pageCtaLabel: "View Portfolio",
+    pageCtaHref: "/for-interior-designers",
   },
   portfolio: {
     eyebrow: "Trade Partners",
@@ -96,6 +102,11 @@ export const DEFAULT_HOMEPAGE: SiteHomepageConfig = {
     actionHref: "/for-interior-designers",
     limit: 4,
     categoryFilter: "",
+    pageImageUrl: "",
+    pageIntro: "",
+    pageLimit: 6,
+    pageCtaLabel: "View Portfolio",
+    pageCtaHref: "/for-interior-designers",
   },
   offers: {
     eyebrow: "Studio Offers",
