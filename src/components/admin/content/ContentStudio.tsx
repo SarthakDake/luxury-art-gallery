@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { ArtworksTab } from "./ArtworksTab";
 import { ConfigTab } from "./ConfigTab";
-import { CuratedPageTab } from "./CuratedPageTab";
 import { ForInteriorDesignersTab } from "./ForInteriorDesignersTab";
 import { ProfileTab } from "./ProfileTab";
+import { SignatureWallArtTab } from "./SignatureWallArtTab";
 import type { StudioPreviewTarget } from "./preview-targets";
 import { StudioSitePreview } from "./StudioSitePreview";
 import { StudioMessage, StudioTabs } from "./shared";
@@ -28,7 +28,7 @@ const TABS = [
     id: "signatureWallArt",
     label: "Signature Wall Art",
     description:
-      "Configure the Signature Wall Art page: large image, intro, project grid, and View Portfolio CTA.",
+      "Configure the Signature Wall Art showcase page: hero, projects, process, FAQ, and inquiry.",
   },
   {
     id: "portfolio",
@@ -256,11 +256,8 @@ export function ContentStudio() {
               />
             ) : null}
             {activeTab === "signatureWallArt" ? (
-              <CuratedPageTab
+              <SignatureWallArtTab
                 config={config}
-                pageKey="signatureWallArt"
-                title="Signature Wall Art"
-                subtitle="Page copy"
                 onChange={setConfig}
                 onRequestPreview={setActivePreview}
               />

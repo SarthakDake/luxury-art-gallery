@@ -4,12 +4,15 @@ import {
   DEFAULT_FOR_INTERIOR_DESIGNERS,
   DEFAULT_HOMEPAGE,
   DEFAULT_HOMEPAGE_SECTION_ORDER,
+  DEFAULT_SIGNATURE_WALL_ART_PAGE,
   DEFAULT_TESTIMONIALS,
 } from "@/lib/site-config/defaults";
 import type {
   ForInteriorDesignersConfig,
   HomepageSectionConfig,
   HomepageSectionId,
+  SignatureProject,
+  SignatureWallArtPageConfig,
   SiteBrandTokens,
   SiteConfig,
   SiteFeatureFlags,
@@ -329,6 +332,148 @@ function mergeTradeSteps(
     .filter((entry) => entry.title);
 }
 
+function mergeSignatureFaqItems(
+  raw: unknown,
+  fallback: SignatureWallArtPageConfig["faq"]["items"],
+): SignatureWallArtPageConfig["faq"]["items"] {
+  if (!Array.isArray(raw) || raw.length === 0) {
+    return structuredClone(fallback);
+  }
+
+  return raw
+    .filter(isRecord)
+    .map((entry) => ({
+      question: asString(entry.question).trim(),
+      answer: asString(entry.answer).trim(),
+    }))
+    .filter((entry) => entry.question);
+}
+
+function mergeSignatureProjectStyles(
+  raw: unknown,
+  fallback: SignatureProject["designStyles"],
+): SignatureProject["designStyles"] {
+  if (!Array.isArray(raw) || raw.length === 0) {
+    return structuredClone(fallback);
+  }
+
+  return raw
+    .filter(isRecord)
+    .map((entry) => ({
+      imageUrl: asString(entry.imageUrl).trim(),
+      title: asString(entry.title).trim(),
+      description: asString(entry.description).trim(),
+    }))
+    .filter((entry) => entry.title || entry.imageUrl);
+}
+
+function mergeSignatureProjects(
+  raw: unknown,
+  fallback: SignatureProject[],
+): SignatureProject[] {
+  if (!Array.isArray(raw) || raw.length === 0) {
+    return structuredClone(fallback);
+  }
+
+  return raw
+    .filter(isRecord)
+    .map((entry, index) => {
+      const fallbackProject = fallback[index] ?? fallback[0];
+      const slug =
+        asString(entry.slug).trim() ||
+        fallbackProject?.slug ||
+        `project-${index + 1}`;
+
+      return {
+        slug,
+        title: asString(entry.title, fallbackProject?.title ?? "Untitled project"),
+        summary: asString(entry.summary, fallbackProject?.summary ?? ""),
+        coverImageUrl: asNonEmptyString(
+          entry.coverImageUrl,
+          fallbackProject?.coverImageUrl ?? "",
+        ),
+        designStyles: mergeSignatureProjectStyles(
+          entry.designStyles,
+          fallbackProject?.designStyles ?? [],
+        ),
+        galleryImages: Array.isArray(entry.galleryImages)
+          ? entry.galleryImages.map((item) => asString(item).trim()).filter(Boolean)
+          : structuredClone(fallbackProject?.galleryImages ?? []),
+        testimonials: Array.isArray(entry.testimonials)
+          ? entry.testimonials
+              .filter(isRecord)
+              .map((item) => ({
+                quote: asString(item.quote).trim(),
+                name: asString(item.name).trim(),
+                role: asString(item.role).trim(),
+              }))
+              .filter((item) => item.quote && item.name)
+          : structuredClone(fallbackProject?.testimonials ?? []),
+      };
+    })
+    .filter((project) => project.title && project.slug);
+}
+
+function mergeSignatureWallArtPage(raw: unknown): SignatureWallArtPageConfig {
+  const source = isRecord(raw) ? raw : {};
+  const hero = isRecord(source.hero) ? source.hero : {};
+  const intro = isRecord(source.intro) ? source.intro : {};
+  const projects = isRecord(source.projects) ? source.projects : {};
+  const process = isRecord(source.process) ? source.process : {};
+  const faq = isRecord(source.faq) ? source.faq : {};
+  const inquiry = isRecord(source.inquiry) ? source.inquiry : {};
+  const defaults = DEFAULT_SIGNATURE_WALL_ART_PAGE;
+
+  return {
+    hero: {
+      imageUrl: asNonEmptyString(hero.imageUrl, defaults.hero.imageUrl),
+    },
+    intro: {
+      eyebrow: asString(intro.eyebrow, defaults.intro.eyebrow),
+      title: asString(intro.title, defaults.intro.title),
+      subtitle: asString(intro.subtitle, defaults.intro.subtitle),
+    },
+    projects: {
+      eyebrow: asString(projects.eyebrow, defaults.projects.eyebrow),
+      title: asString(projects.title, defaults.projects.title),
+      subtitle: asString(projects.subtitle, defaults.projects.subtitle),
+      items: mergeSignatureProjects(projects.items, defaults.projects.items),
+    },
+    process: {
+      eyebrow: asString(process.eyebrow, defaults.process.eyebrow),
+      title: asString(process.title, defaults.process.title),
+      subtitle: asString(process.subtitle, defaults.process.subtitle),
+      steps: mergeTradeSteps(process.steps, defaults.process.steps),
+    },
+    faq: {
+      eyebrow: asString(faq.eyebrow, defaults.faq.eyebrow),
+      title: asString(faq.title, defaults.faq.title),
+      subtitle: asString(faq.subtitle, defaults.faq.subtitle),
+      items: mergeSignatureFaqItems(faq.items, defaults.faq.items),
+    },
+    inquiry: {
+      eyebrow: asString(inquiry.eyebrow, defaults.inquiry.eyebrow),
+      title: asString(inquiry.title, defaults.inquiry.title),
+      subtitle: asString(inquiry.subtitle, defaults.inquiry.subtitle),
+      formCtaLabel: asString(inquiry.formCtaLabel, defaults.inquiry.formCtaLabel),
+      formHref: asString(inquiry.formHref, defaults.inquiry.formHref),
+      whatsappLabel: asString(
+        inquiry.whatsappLabel,
+        defaults.inquiry.whatsappLabel,
+      ),
+      submitLabel: asString(inquiry.submitLabel, defaults.inquiry.submitLabel),
+      successMessage: asString(
+        inquiry.successMessage,
+        defaults.inquiry.successMessage,
+      ),
+      defaultSubject: asString(
+        inquiry.defaultSubject,
+        defaults.inquiry.defaultSubject,
+      ),
+    },
+  };
+}
+
 function mergeForInteriorDesigners(raw: unknown): ForInteriorDesignersConfig {
   const source = isRecord(raw) ? raw : {};
   const hero = isRecord(source.hero) ? source.hero : {};
@@ -494,6 +639,7 @@ export function normalizeSiteConfig(raw: unknown): SiteConfig {
     },
     brand: mergeBrand(source.brand),
     homepage: mergeHomepage(source.homepage),
+    signatureWallArtPage: mergeSignatureWallArtPage(source.signatureWallArtPage),
     forInteriorDesigners: mergeForInteriorDesigners(source.forInteriorDesigners),
     testimonials: mergeTestimonials(source.testimonials),
     features: mergeFeatureFlags(source.features),
@@ -551,6 +697,7 @@ export function toPublicSiteConfig(config: SiteConfig) {
     socialLinks: config.socialLinks,
     brand: config.brand,
     homepage: config.homepage,
+    signatureWallArtPage: config.signatureWallArtPage,
     forInteriorDesigners: config.forInteriorDesigners,
     testimonials: config.testimonials,
     features: config.features,

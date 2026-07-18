@@ -3,6 +3,7 @@ export {
   DEFAULT_FEATURE_FLAGS,
   DEFAULT_HOMEPAGE,
   DEFAULT_HOMEPAGE_SECTION_ORDER,
+  DEFAULT_SIGNATURE_WALL_ART_PAGE,
   DEFAULT_TESTIMONIALS,
   createDefaultSiteConfig,
 } from "@/lib/site-config/defaults";

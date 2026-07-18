@@ -1,6 +1,7 @@
 import type {
   ForInteriorDesignersConfig,
   HomepageSectionId,
+  SignatureWallArtPageConfig,
   SiteBrandTokens,
   SiteConfig,
   SiteFeatureFlags,
@@ -248,6 +249,286 @@ export const DEFAULT_TESTIMONIALS: SiteTestimonial[] = [
   },
 ];
 
+export const DEFAULT_SIGNATURE_WALL_ART_PAGE: SignatureWallArtPageConfig = {
+  hero: {
+    imageUrl: "/site/signature-page-hero.jpg",
+  },
+  intro: {
+    eyebrow: "Signature Collection",
+    title: "Signature Wall Art",
+    subtitle:
+      "Five statement projects crafted for elevated interiors — explore the story, finishes, and design language behind each wall.",
+  },
+  projects: {
+    eyebrow: "Featured Projects",
+    title: "Five statement walls",
+    subtitle:
+      "Each project is a showcase of texture, scale, and atmosphere. Open a project to see design styles, process imagery, and client notes.",
+    items: [
+      {
+        slug: "coastal-calm",
+        title: "Coastal Calm",
+        summary:
+          "Soft mineral textures and layered neutrals for a seaside living room that feels open and restful.",
+        coverImageUrl: "/artworks/sample1.jpg",
+        designStyles: [
+          {
+            imageUrl: "/artworks/sample1.jpg",
+            title: "Tide Line Relief",
+            description:
+              "A low-relief wave rhythm in sand and chalk tones, designed to catch soft morning light across a long sofa wall.",
+          },
+          {
+            imageUrl: "/artworks/sample2.jpg",
+            title: "Salt Mist Palette",
+            description:
+              "Muted greys and warm whites keep the composition quiet, so furniture and drapery stay the supporting cast.",
+          },
+          {
+            imageUrl: "/artworks/green_leaf_1.jpg",
+            title: "Organic Edge Detail",
+            description:
+              "Hand-finished edges and subtle pigment washes add depth without competing with ocean views.",
+          },
+        ],
+        galleryImages: [
+          "/artworks/sample1.jpg",
+          "/artworks/sample2.jpg",
+          "/artworks/sample3.jpg",
+          "/artworks/green_leaf_1.jpg",
+        ],
+        testimonials: [
+          {
+            quote:
+              "The wall feels like the room finally exhaled. Guests always ask who made it.",
+            name: "Meera K.",
+            role: "Homeowner, Alibaug",
+          },
+        ],
+      },
+      {
+        slug: "desert-texture",
+        title: "Desert Texture",
+        summary:
+          "Warm clay and ochre reliefs that bring grounded warmth to a contemporary lounge.",
+        coverImageUrl: "/artworks/sample2.jpg",
+        designStyles: [
+          {
+            imageUrl: "/artworks/sample2.jpg",
+            title: "Dune Contour",
+            description:
+              "Sculpted ridges echo desert topography — calm from afar, rich up close.",
+          },
+          {
+            imageUrl: "/artworks/sample4.jpg",
+            title: "Sun-baked Finish",
+            description:
+              "Matte mineral pigments hold warmth through the day without glare on evening lighting.",
+          },
+        ],
+        galleryImages: [
+          "/artworks/sample2.jpg",
+          "/artworks/sample4.jpg",
+          "/artworks/sample5.jpg",
+        ],
+        testimonials: [
+          {
+            quote:
+              "It became the quiet hero of the lounge — textured, warm, and perfectly scaled.",
+            name: "Ananya R.",
+            role: "Interior Designer, Jaipur",
+          },
+        ],
+      },
+      {
+        slug: "forest-relief",
+        title: "Forest Relief",
+        summary:
+          "Botanical depth and layered greens for a dining space that feels immersive and alive.",
+        coverImageUrl: "/artworks/green_leaf_1.jpg",
+        designStyles: [
+          {
+            imageUrl: "/artworks/green_leaf_1.jpg",
+            title: "Canopy Layers",
+            description:
+              "Overlapping leaf forms create soft shadow play across the dining wall.",
+          },
+          {
+            imageUrl: "/artworks/sample3.jpg",
+            title: "Moss & Stone",
+            description:
+              "Deep greens against cool mineral bases keep the palette grounded and timeless.",
+          },
+          {
+            imageUrl: "/artworks/sample5.jpg",
+            title: "Evening Glow",
+            description:
+              "Under accent lighting, the relief reads sculptural without overpowering the table setting.",
+          },
+        ],
+        galleryImages: [
+          "/artworks/green_leaf_1.jpg",
+          "/artworks/sample3.jpg",
+          "/artworks/sample5.jpg",
+          "/artworks/sample1.jpg",
+        ],
+        testimonials: [
+          {
+            quote:
+              "Dinner conversations start with the wall. It feels custom in the best way.",
+            name: "Kabir N.",
+            role: "Homeowner, Pune",
+          },
+        ],
+      },
+      {
+        slug: "urban-neutral",
+        title: "Urban Neutral",
+        summary:
+          "Architectural texture in charcoal and bone for a city apartment that wants calm structure.",
+        coverImageUrl: "/artworks/sample3.jpg",
+        designStyles: [
+          {
+            imageUrl: "/artworks/sample3.jpg",
+            title: "Grid Softened",
+            description:
+              "A gentle geometric field that organizes the wall without feeling corporate.",
+          },
+          {
+            imageUrl: "/artworks/sample5.jpg",
+            title: "Concrete Whisper",
+            description:
+              "Cool greys and soft plaster tones pair with black metal and oak furniture.",
+          },
+        ],
+        galleryImages: [
+          "/artworks/sample3.jpg",
+          "/artworks/sample5.jpg",
+          "/artworks/sample4.jpg",
+          "/artworks/sample2.jpg",
+        ],
+        testimonials: [
+          {
+            quote:
+              "Exactly the quiet structure our apartment needed — refined, not loud.",
+            name: "Sonia D.",
+            role: "Architect, Mumbai",
+          },
+        ],
+      },
+      {
+        slug: "luminous-veil",
+        title: "Luminous Veil",
+        summary:
+          "Translucent layers and soft luminosity for a bedroom wall that feels private and serene.",
+        coverImageUrl: "/artworks/sample4.jpg",
+        designStyles: [
+          {
+            imageUrl: "/artworks/sample4.jpg",
+            title: "Veil Layers",
+            description:
+              "Sheer pigment washes over subtle relief create a soft glow beside the bed.",
+          },
+          {
+            imageUrl: "/artworks/sample1.jpg",
+            title: "Dawn Palette",
+            description:
+              "Pale ivory and mist tones keep the room calm from first light to evening lamps.",
+          },
+          {
+            imageUrl: "/artworks/sample2.jpg",
+            title: "Quiet Focal Point",
+            description:
+              "Scaled for intimacy — present enough to center the room, never restless.",
+          },
+        ],
+        galleryImages: [
+          "/artworks/sample4.jpg",
+          "/artworks/sample1.jpg",
+          "/artworks/sample2.jpg",
+        ],
+        testimonials: [
+          {
+            quote:
+              "Waking up to this wall feels intentional. Soft, luminous, and completely personal.",
+            name: "Isha V.",
+            role: "Homeowner, Bengaluru",
+          },
+        ],
+      },
+    ],
+  },
+  process: {
+    eyebrow: "Our Process",
+    title: "How statement wall art comes to life",
+    subtitle:
+      "A clear studio process from first conversation to installation-ready finish.",
+    steps: [
+      {
+        title: "Discover the space",
+        description:
+          "We review room photos, dimensions, lighting, and the mood you want the wall to hold.",
+      },
+      {
+        title: "Shape the concept",
+        description:
+          "Palette, texture language, and scale are refined into a clear direction before making begins.",
+      },
+      {
+        title: "Handcraft the piece",
+        description:
+          "Relief, texture, and finish are built by hand so every surface feels intentional and lasting.",
+      },
+      {
+        title: "Install & settle in",
+        description:
+          "Delivery guidance and hanging notes help the artwork land cleanly in your interior.",
+      },
+    ],
+  },
+  faq: {
+    eyebrow: "FAQ",
+    title: "Questions about statement wall art",
+    subtitle:
+      "Practical answers for homeowners and designers considering a signature wall.",
+    items: [
+      {
+        question: "Is Signature Wall Art available for purchase online?",
+        answer:
+          "These projects are showcase commissions. They are not listed with shop sizes or checkout — enquire via WhatsApp or the inquiry form to start a custom piece for your space.",
+      },
+      {
+        question: "Can you match an existing interior palette?",
+        answer:
+          "Yes. Share references, fabrics, or paint codes and we tailor texture and tone to your room.",
+      },
+      {
+        question: "What spaces work best for statement walls?",
+        answer:
+          "Living rooms, dining walls, bedroom feature walls, lobbies, and quiet commercial corners all work well when scale and lighting are considered together.",
+      },
+      {
+        question: "How long does a custom project take?",
+        answer:
+          "Timelines vary with scale and finish. After the concept is approved, most statement pieces are crafted within a planned studio window shared at inquiry.",
+      },
+    ],
+  },
+  inquiry: {
+    eyebrow: "Inquire",
+    title: "Start your signature wall",
+    subtitle:
+      "Tell us about your space — or message the studio on WhatsApp for a quicker conversation.",
+    formCtaLabel: "Fill inquiry form",
+    formHref: "#inquiry",
+    whatsappLabel: "Connect on WhatsApp",
+    submitLabel: "Send Inquiry",
+    successMessage:
+      "Thank you — your inquiry has been sent. The studio will be in touch shortly.",
+    defaultSubject: "Signature Wall Art Inquiry",
+  },
+};
+
 /** Legacy fields that remain at the root of SiteConfig for backward compatibility. */
 export function createDefaultSiteConfig(partial?: Partial<SiteConfig>): SiteConfig {
   return {
@@ -284,6 +565,7 @@ export function createDefaultSiteConfig(partial?: Partial<SiteConfig>): SiteConf
     },
     brand: { ...DEFAULT_BRAND_TOKENS },
     homepage: structuredClone(DEFAULT_HOMEPAGE),
+    signatureWallArtPage: structuredClone(DEFAULT_SIGNATURE_WALL_ART_PAGE),
     forInteriorDesigners: structuredClone(DEFAULT_FOR_INTERIOR_DESIGNERS),
     testimonials: structuredClone(DEFAULT_TESTIMONIALS),
     features: { ...DEFAULT_FEATURE_FLAGS },
