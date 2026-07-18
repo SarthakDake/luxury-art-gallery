@@ -203,6 +203,12 @@ export interface SignatureWallArtPageConfig {
   };
 }
 
+/** Trade-related image shown on the homepage Trade Partners section. */
+export interface TradeHomepageImage {
+  imageUrl: string;
+  caption: string;
+}
+
 /** CMS config for the For Interior Designers / trade partner page. */
 export interface ForInteriorDesignersConfig {
   hero: {
@@ -241,6 +247,8 @@ export interface ForInteriorDesignersConfig {
     subtitle: string;
     steps: TradeProcessStep[];
   };
+  /** Trade imagery for the homepage Trade Partners section (not shop artworks). */
+  homepageImages: TradeHomepageImage[];
   inquiryForm: {
     eyebrow: string;
     title: string;

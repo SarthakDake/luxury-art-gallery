@@ -18,9 +18,19 @@ import { DEFAULT_FOR_INTERIOR_DESIGNERS } from "@/lib/site-config/defaults";
 import type {
   ForInteriorDesignersConfig,
   SiteConfig,
+  TradeHomepageImage,
   TradePoint,
   TradeProcessStep,
 } from "@/types/site-config";
+
+function moveItem<T>(items: T[], index: number, direction: -1 | 1): T[] {
+  const next = [...items];
+  const target = index + direction;
+  if (target < 0 || target >= next.length) return items;
+  const [removed] = next.splice(index, 1);
+  next.splice(target, 0, removed);
+  return next;
+}
 
 export function ForInteriorDesignersTab({
   config,
@@ -31,8 +41,13 @@ export function ForInteriorDesignersTab({
   onChange: (config: SiteConfig) => void;
   onRequestPreview?: (target: StudioPreviewTarget) => void;
 }) {
-  const page: ForInteriorDesignersConfig =
-    config.forInteriorDesigners ?? DEFAULT_FOR_INTERIOR_DESIGNERS;
+  const page: ForInteriorDesignersConfig = {
+    ...DEFAULT_FOR_INTERIOR_DESIGNERS,
+    ...(config.forInteriorDesigners ?? {}),
+    homepageImages:
+      config.forInteriorDesigners?.homepageImages ??
+      DEFAULT_FOR_INTERIOR_DESIGNERS.homepageImages,
+  };
 
   function commitPage(next: ForInteriorDesignersConfig) {
     onChange({
@@ -624,7 +639,7 @@ export function ForInteriorDesignersTab({
         <StudioGroup
           eyebrow="Homepage teaser"
           title="Homepage “For Interior Designers” section"
-          description="This short teaser still appears on the homepage. Edit its headings here."
+          description="Headings and trade imagery for the homepage Trade Partners section. Uses these images — not shop artworks."
         >
           <StudioFormGrid>
             <StudioField label="Eyebrow">
@@ -714,6 +729,81 @@ export function ForInteriorDesignersTab({
               }
             />
           </StudioField>
+
+          <StudioRepeaterHeader
+            title="Homepage trade images"
+            addLabel="Add image"
+            onAdd={() => {
+              const next: TradeHomepageImage = { imageUrl: "", caption: "" };
+              updatePage({
+                homepageImages: [...(page.homepageImages ?? []), next],
+              });
+            }}
+          />
+          {(page.homepageImages ?? []).map((item, index) => (
+            <StudioRepeaterItem
+              key={`trade-home-image-${index}`}
+              index={index}
+              title={item.caption || `Image ${index + 1}`}
+              onMoveUp={
+                index > 0
+                  ? () =>
+                      updatePage({
+                        homepageImages: moveItem(
+                          page.homepageImages,
+                          index,
+                          -1,
+                        ),
+                      })
+                  : undefined
+              }
+              onMoveDown={
+                index < page.homepageImages.length - 1
+                  ? () =>
+                      updatePage({
+                        homepageImages: moveItem(
+                          page.homepageImages,
+                          index,
+                          1,
+                        ),
+                      })
+                  : undefined
+              }
+              onRemove={() =>
+                updatePage({
+                  homepageImages: page.homepageImages.filter(
+                    (_, i) => i !== index,
+                  ),
+                })
+              }
+            >
+              <ImageUploadField
+                label="Image"
+                path={item.imageUrl}
+                slug={`trade-home-${index + 1}`}
+                kind="page"
+                onUploaded={(path) => {
+                  const homepageImages = [...page.homepageImages];
+                  homepageImages[index] = { ...item, imageUrl: path };
+                  updatePage({ homepageImages });
+                }}
+                hint="Trade / interior partnership imagery for the homepage gallery."
+              />
+              <StudioField label="Caption (optional)">
+                <StudioInput
+                  value={item.caption}
+                  onChange={(event) => {
+                    const homepageImages = [...page.homepageImages];
+                    homepageImages[index] = {
+                      ...item,
+                      caption: event.target.value,
+                    };
+                    updatePage({ homepageImages });
+                  }}
+                />
+              </StudioField>
+            </StudioRepeaterItem>
+          ))}
         </StudioGroup>
       </StudioSection>
     </StudioShell>

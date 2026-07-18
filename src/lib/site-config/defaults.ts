@@ -222,6 +222,20 @@ export const DEFAULT_FOR_INTERIOR_DESIGNERS: ForInteriorDesignersConfig = {
       },
     ],
   },
+  homepageImages: [
+    {
+      imageUrl: "/site/trade-teaser-1.jpg",
+      caption: "Art placed for real living spaces",
+    },
+    {
+      imageUrl: "/site/trade-teaser-2.jpg",
+      caption: "Studio collaboration & material direction",
+    },
+    {
+      imageUrl: "/site/trade-teaser-3.jpg",
+      caption: "Hospitality & commercial installations",
+    },
+  ],
   inquiryForm: {
     eyebrow: "Inquiry",
     title: "Start a trade conversation",

@@ -80,9 +80,20 @@ const nextConfig: NextConfig = {
     ],
   },
   async headers() {
+    // Allow same-origin PDF embeds on the trade page; keep DENY elsewhere.
+    const documentHeaders = securityHeaders.map((header) =>
+      header.key === "X-Frame-Options"
+        ? { key: "X-Frame-Options", value: "SAMEORIGIN" }
+        : header,
+    );
+
     return [
       {
-        source: "/(.*)",
+        source: "/api/site-document/:path*",
+        headers: documentHeaders,
+      },
+      {
+        source: "/((?!api/site-document/).*)",
         headers: securityHeaders,
       },
     ];

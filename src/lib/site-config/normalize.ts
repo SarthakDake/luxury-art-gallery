@@ -21,6 +21,7 @@ import type {
   SiteFeatureFlags,
   SiteHomepageConfig,
   SiteTestimonial,
+  TradeHomepageImage,
   TradePoint,
   TradeProcessStep,
 } from "@/types/site-config";
@@ -511,6 +512,23 @@ function mergeSignatureWallArtPage(raw: unknown): SignatureWallArtPageConfig {
   };
 }
 
+function mergeTradeHomepageImages(raw: unknown): TradeHomepageImage[] {
+  const defaults = DEFAULT_FOR_INTERIOR_DESIGNERS.homepageImages;
+  if (!Array.isArray(raw)) {
+    return structuredClone(defaults);
+  }
+
+  const merged = raw
+    .filter(isRecord)
+    .map((entry) => ({
+      imageUrl: asString(entry.imageUrl).trim(),
+      caption: asString(entry.caption).trim(),
+    }))
+    .filter((entry) => entry.imageUrl);
+
+  return merged.length > 0 ? merged : structuredClone(defaults);
+}
+
 function mergeForInteriorDesigners(raw: unknown): ForInteriorDesignersConfig {
   const source = isRecord(raw) ? raw : {};
   const hero = isRecord(source.hero) ? source.hero : {};
@@ -573,6 +591,7 @@ function mergeForInteriorDesigners(raw: unknown): ForInteriorDesignersConfig {
       subtitle: asString(tradeProcess.subtitle, defaults.tradeProcess.subtitle),
       steps: mergeTradeSteps(tradeProcess.steps, defaults.tradeProcess.steps),
     },
+    homepageImages: mergeTradeHomepageImages(source.homepageImages),
     inquiryForm: {
       eyebrow: asString(inquiryForm.eyebrow, defaults.inquiryForm.eyebrow),
       title: asString(inquiryForm.title, defaults.inquiryForm.title),
