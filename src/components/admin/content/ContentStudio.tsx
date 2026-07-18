@@ -41,6 +41,18 @@ export function ContentStudio() {
   const [mirrorStatus, setMirrorStatus] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!message || message.tone !== "success") {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setMessage(null);
+    }, 5000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [message]);
+
+  useEffect(() => {
     async function loadMirrorStatus() {
       try {
         const response = await fetch("/api/admin/content/sync-status");
@@ -140,7 +152,7 @@ export function ContentStudio() {
           tone: payload.mirrorWarning ? "error" : "success",
           text: payload.mirrorWarning
             ? `Artworks saved to the database, but remote sync needs attention: ${payload.mirrorWarning}`
-            : "Artworks saved. Your gallery is live.",
+            : "Artwork saved and it's live.",
         });
       }
 
@@ -250,14 +262,21 @@ export function ContentStudio() {
             {mirrorStatus ? ` Remote backup: ${mirrorStatus}.` : ""}
           </p>
         </div>
-        <button
-          type="button"
-          className="btn-primary studio-save-btn"
-          disabled={saving}
-          onClick={() => void saveActiveTab()}
-        >
-          {saving ? "Saving…" : `Save ${activeLabel}`}
-        </button>
+        <div className="studio-save-actions">
+          {message?.tone === "success" ? (
+            <p className="studio-save-feedback" role="status">
+              {message.text}
+            </p>
+          ) : null}
+          <button
+            type="button"
+            className="btn-primary studio-save-btn"
+            disabled={saving}
+            onClick={() => void saveActiveTab()}
+          >
+            {saving ? "Saving…" : `Save ${activeLabel}`}
+          </button>
+        </div>
       </div>
     </div>
   );

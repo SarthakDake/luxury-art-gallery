@@ -1,48 +1,30 @@
 "use client";
 
-import {
-  getArtworkImageSrc,
-  isGifImage,
-  needsBrowserRasterization,
-} from "@/lib/artwork-image";
 import Image, { type ImageProps } from "next/image";
 import { useEffect, useState } from "react";
-
-type ArtworkImageProps = Omit<ImageProps, "src"> & {
-  src: string;
-};
 
 function mergeClassName(...parts: Array<string | undefined>) {
   return parts.filter(Boolean).join(" ");
 }
 
 /**
- * Renders artwork/portrait images.
- * - Originals are stored as uploaded (including HEIC).
- * - Browser-native formats are optimized by Next/Image.
- * - HEIC/TIFF/BMP are rasterized once by `/api/artwork-image` and served
- *   unoptimized so the Image Optimizer does not re-fetch/re-encode them.
- * - Fades in with the same ease as scroll reveals once the bitmap is ready.
+ * Next/Image with the site’s reveal-matched fade-in once the bitmap is ready.
  */
-export function ArtworkImage({
-  src,
-  alt,
+export function SoftImage({
   className,
   onLoad,
   onLoadingComplete,
+  src,
   ...props
-}: ArtworkImageProps) {
-  const resolvedSrc = getArtworkImageSrc(src);
-  const useUnoptimized =
-    isGifImage(src) || needsBrowserRasterization(src);
+}: ImageProps) {
   const [loaded, setLoaded] = useState(false);
+  const srcKey = typeof src === "string" ? src : JSON.stringify(src);
 
   useEffect(() => {
     setLoaded(false);
-    // Cached/broken loads should never leave the image invisible.
     const fallbackId = window.setTimeout(() => setLoaded(true), 2500);
     return () => window.clearTimeout(fallbackId);
-  }, [resolvedSrc]);
+  }, [srcKey]);
 
   function markLoaded() {
     setLoaded(true);
@@ -50,9 +32,7 @@ export function ArtworkImage({
 
   return (
     <Image
-      src={resolvedSrc}
-      alt={alt}
-      unoptimized={useUnoptimized}
+      src={src}
       className={mergeClassName(
         "media-fade",
         loaded ? "is-loaded" : undefined,
