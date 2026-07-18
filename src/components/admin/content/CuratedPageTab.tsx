@@ -65,10 +65,10 @@ export function CuratedPageTab({
             <ImageUploadField
               label="Large page image"
               path={copy.pageImageUrl}
-              slug="signature-wall-art"
-              kind="hero"
+              slug="signature-page-hero"
+              kind="page"
               onUploaded={(path) => updateCopy({ pageImageUrl: path })}
-              hint="Upload a wide statement image. Leave empty to show a soft studio fallback."
+              hint="Upload a wide statement image for the top of the Signature Wall Art page."
             />
           </StudioGroup>
         ) : null}

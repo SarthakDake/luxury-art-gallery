@@ -9,6 +9,7 @@ import { ProfileTab } from "./ProfileTab";
 import type { StudioPreviewTarget } from "./preview-targets";
 import { StudioSitePreview } from "./StudioSitePreview";
 import { StudioMessage, StudioTabs } from "./shared";
+import { normalizeSiteConfig } from "@/lib/site-config";
 import type { ArtistProfile, SiteConfig } from "@/types/site-config";
 import type { Artwork } from "@/types/artwork";
 
@@ -95,7 +96,9 @@ export function ContentStudio() {
         const profilePayload = (await profileRes.json()) as { profile: ArtistProfile };
 
         setArtworks(artworksPayload.artworks);
-        setConfig(configPayload.config);
+        // Re-normalize on the client so newer CMS fields (e.g. forInteriorDesigners)
+        // are always present even if a cached admin payload is stale.
+        setConfig(normalizeSiteConfig(configPayload.config));
         setProfile(profilePayload.profile);
         setSelectedArtwork(artworksPayload.artworks[0] ?? null);
       } catch (error) {

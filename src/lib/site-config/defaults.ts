@@ -86,7 +86,7 @@ export const DEFAULT_HOMEPAGE: SiteHomepageConfig = {
     actionHref: "/signature-wall-art",
     limit: 4,
     categoryFilter: "Ready to hang",
-    pageImageUrl: "",
+    pageImageUrl: "/site/signature-page-hero.jpg",
     pageIntro:
       "A focused selection of premium wall pieces — crafted to become the quiet center of a room.",
     pageLimit: 6,
@@ -128,7 +128,7 @@ export const DEFAULT_FOR_INTERIOR_DESIGNERS: ForInteriorDesignersConfig = {
     title: "Art Partnerships for Elevated Interiors",
     subtitle:
       "Collaborate with Colors N Joy for custom texture art, signature wall pieces, and a trade process built around your project timeline.",
-    imageUrl: "",
+    imageUrl: "/site/trade-hero.jpg",
     primaryCtaLabel: "Start a Trade Inquiry",
     primaryCtaHref: "#inquiry",
     secondaryCtaLabel: "Download Portfolio PDF",
@@ -191,7 +191,7 @@ export const DEFAULT_FOR_INTERIOR_DESIGNERS: ForInteriorDesignersConfig = {
     subtitle:
       "A curated PDF overview of signature works and studio capabilities for your next client presentation.",
     downloadLabel: "Download Portfolio PDF",
-    url: "",
+    url: "/documents/designer-portfolio.pdf",
     filename: "colors-n-joy-designer-portfolio.pdf",
   },
   tradeProcess: {

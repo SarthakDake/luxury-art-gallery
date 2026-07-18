@@ -14,7 +14,13 @@ import {
   StudioTextarea,
 } from "./shared";
 import type { StudioPreviewTarget } from "./preview-targets";
-import type { SiteConfig, TradePoint, TradeProcessStep } from "@/types/site-config";
+import { DEFAULT_FOR_INTERIOR_DESIGNERS } from "@/lib/site-config/defaults";
+import type {
+  ForInteriorDesignersConfig,
+  SiteConfig,
+  TradePoint,
+  TradeProcessStep,
+} from "@/types/site-config";
 
 export function ForInteriorDesignersTab({
   config,
@@ -25,13 +31,18 @@ export function ForInteriorDesignersTab({
   onChange: (config: SiteConfig) => void;
   onRequestPreview?: (target: StudioPreviewTarget) => void;
 }) {
-  const page = config.forInteriorDesigners;
+  const page: ForInteriorDesignersConfig =
+    config.forInteriorDesigners ?? DEFAULT_FOR_INTERIOR_DESIGNERS;
 
-  function updatePage(patch: Partial<typeof page>) {
+  function commitPage(next: ForInteriorDesignersConfig) {
     onChange({
       ...config,
-      forInteriorDesigners: { ...page, ...patch },
+      forInteriorDesigners: next,
     });
+  }
+
+  function updatePage(patch: Partial<ForInteriorDesignersConfig>) {
+    commitPage({ ...page, ...patch });
   }
 
   function updatePoints(
@@ -92,12 +103,12 @@ export function ForInteriorDesignersTab({
           <ImageUploadField
             label="Hero image"
             path={page.hero.imageUrl}
-            slug="for-interior-designers"
-            kind="hero"
+            slug="trade-hero"
+            kind="page"
             onUploaded={(path) =>
               updatePage({ hero: { ...page.hero, imageUrl: path } })
             }
-            hint="Optional full-bleed background for the trade page hero."
+            hint="Full-bleed background for the trade page hero. Replaces the default sample image."
           />
           <StudioFormGrid>
             <StudioField label="Primary CTA label">

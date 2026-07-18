@@ -2634,6 +2634,36 @@
   }
 
   /* For Interior Designers / trade page */
+  .trade-hero {
+    min-height: clamp(22rem, 48vh, 30rem);
+  }
+
+  .trade-hero .trade-hero-inner,
+  .trade-hero .hero-inner {
+    min-height: clamp(22rem, 48vh, 30rem);
+    justify-content: flex-end;
+    padding-block: 2.5rem 2.75rem;
+    padding-top: calc(
+      var(--header-height) + var(--announcement-height) + 1.25rem
+    );
+  }
+
+  @media (min-width: 1024px) {
+    .trade-hero {
+      min-height: clamp(24rem, 46vh, 32rem);
+    }
+
+    .trade-hero .trade-hero-inner,
+    .trade-hero .hero-inner {
+      min-height: clamp(24rem, 46vh, 32rem);
+      padding-block: 3rem 3.25rem;
+    }
+  }
+
+  .trade-page-body {
+    padding-top: clamp(2rem, 4vw, 3rem);
+  }
+
   .trade-section {
     padding-block: clamp(3rem, 6vw, 5rem);
   }

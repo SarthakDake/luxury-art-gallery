@@ -105,6 +105,19 @@ export async function POST(request: Request) {
       return Response.json({ path: publicPath, filename });
     }
 
+    if (kind === "page") {
+      const slugBase =
+        slug.replace(/[^a-z0-9-_]+/gi, "-").toLowerCase() || "page";
+      const filename = `${slugBase}${extension}`;
+      const publicPath = await uploadContentImage({
+        directory: "site",
+        filename,
+        buffer,
+        extension,
+      });
+      return Response.json({ path: publicPath, filename });
+    }
+
     if (kind === "cover") {
       const filename = buildArtworkImageFilename(slug, "cover", extension);
       const publicPath = await uploadContentImage({

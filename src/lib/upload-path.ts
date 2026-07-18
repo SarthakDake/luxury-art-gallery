@@ -9,6 +9,7 @@ import {
 export type UploadKind =
   | "portrait"
   | "hero"
+  | "page"
   | "cover"
   | "gallery"
   | "video-poster"
@@ -91,6 +92,17 @@ export function buildUploadPathname(options: {
 
   if (kind === "hero") {
     const filename = buildHeroFilename(options.extension);
+    return {
+      directory: "site",
+      filename,
+      pathname: `site/${filename}`,
+    };
+  }
+
+  if (kind === "page") {
+    const slugBase =
+      options.slug.replace(/[^a-z0-9-_]+/gi, "-").toLowerCase() || "page";
+    const filename = `${slugBase}${options.extension}`;
     return {
       directory: "site",
       filename,

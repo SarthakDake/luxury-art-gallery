@@ -16,7 +16,9 @@ export function SignatureWallArtView({
   artworks: Artwork[];
 }) {
   const resolved = copy ?? DEFAULT_HOMEPAGE.signatureWallArt;
-  const pageImage = resolved.pageImageUrl.trim();
+  const pageImage =
+    resolved.pageImageUrl.trim() ||
+    DEFAULT_HOMEPAGE.signatureWallArt.pageImageUrl;
   const intro = resolved.pageIntro.trim() || resolved.subtitle.trim();
   const pageLimit = Math.max(1, resolved.pageLimit || 6);
   const curated = selectCuratedArtworks(artworks, {
