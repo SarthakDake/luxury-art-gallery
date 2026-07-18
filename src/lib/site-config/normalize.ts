@@ -267,7 +267,7 @@ export function normalizeSiteConfig(raw: unknown): SiteConfig {
           .filter((feature) => feature.title)
       : [],
     visitorCounter: {
-      eyebrow: asString(visitor.eyebrow, "Gallery Reach").trim(),
+      eyebrow: asString(visitor.eyebrow, "Shop Reach").trim(),
       singularLabel: asString(
         visitor.singularLabel,
         "guest has explored our collection",

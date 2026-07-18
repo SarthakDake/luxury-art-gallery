@@ -150,7 +150,7 @@ function ArtworkDetailContent({
           <Breadcrumbs
             items={[
               { label: "Home", href: "/" },
-              { label: "Gallery", href: "/shop" },
+              { label: "Shop", href: "/shop" },
               { label: artwork.title },
             ]}
           />
@@ -329,7 +329,7 @@ export function ArtworkNotFound() {
         the collection.
       </p>
       <Link href="/shop" className="btn-primary btn-responsive mt-10">
-        Return to Gallery
+        Return to Shop
       </Link>
     </div>
   );

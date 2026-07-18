@@ -7,9 +7,9 @@ import { MobileNav } from "./MobileNav";
 
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "/shop", label: "Gallery" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
+  { href: "/shop", label: "Shop" },
+  { href: "/about", label: "About us" },
+  { href: "/contact", label: "Contact us" },
 ] as const;
 
 export function Header({ config }: { config: SiteConfig }) {

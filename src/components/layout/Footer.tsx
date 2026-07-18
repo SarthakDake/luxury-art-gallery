@@ -6,9 +6,9 @@ import { MapPin } from "lucide-react";
 import Link from "next/link";
 
 const exploreLinks = [
-  { href: "/shop", label: "Gallery" },
-  { href: "/about", label: "About the Artist" },
-  { href: "/contact", label: "Contact" },
+  { href: "/shop", label: "Shop" },
+  { href: "/about", label: "About us" },
+  { href: "/contact", label: "Contact us" },
   { href: "/cart", label: "Cart" },
 ] as const;
 
@@ -42,7 +42,7 @@ export function Footer({ config }: { config: SiteConfig }) {
           </nav>
 
           <div className="footer-column" data-reveal="slide-up">
-            <h2 className="footer-heading">Contact</h2>
+            <h2 className="footer-heading">Contact us</h2>
             <ul className="footer-contact-list">
               <li className="footer-contact-item">
                 <MapPin

@@ -408,7 +408,7 @@ export function ArtworksTab({
             />
           </StudioGroup>
 
-          <StudioGroup eyebrow="Gallery" title="Additional photos" description="Optional extra angles for the product carousel.">
+          <StudioGroup eyebrow="Photos" title="Additional photos" description="Optional extra angles for the product carousel.">
             <StudioRepeaterHeader
               title="Uploaded photos"
               addLabel="Add photo"

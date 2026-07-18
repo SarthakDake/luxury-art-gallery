@@ -34,7 +34,7 @@ export default async function SignInPage({
         <h1 className="page-title">Sign In</h1>
         <p className="body-text max-w-xl">
           Sign in to view your order history and track acquisitions from the
-          gallery.
+          shop.
         </p>
       </Reveal>
 

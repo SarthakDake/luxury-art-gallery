@@ -378,7 +378,7 @@ function ShopFilters({
         <Breadcrumbs
           items={[
             { label: "Home", href: "/" },
-            { label: "Gallery" },
+            { label: "Shop" },
           ]}
         />
 

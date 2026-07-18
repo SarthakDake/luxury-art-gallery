@@ -465,10 +465,10 @@ function CartPageContent() {
           <p className="eyebrow">Your Cart</p>
           <h1 className="page-title mt-4">Your collection is currently empty.</h1>
           <p className="body-text mt-4 max-w-md">
-            Discover works from the gallery and add pieces you wish to acquire.
+            Discover works from the shop and add pieces you wish to acquire.
           </p>
           <Link href="/shop" className="btn-primary btn-responsive mt-10">
-            Return to Gallery
+            Return to Shop
           </Link>
         </Reveal>
       </div>

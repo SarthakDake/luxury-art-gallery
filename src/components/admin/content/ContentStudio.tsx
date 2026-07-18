@@ -42,7 +42,6 @@ export function ContentStudio() {
     null,
   );
   const [saving, setSaving] = useState(false);
-  const [mirrorStatus, setMirrorStatus] = useState<string | null>(null);
 
   useEffect(() => {
     if (!message || message.tone !== "success") {
@@ -55,40 +54,6 @@ export function ContentStudio() {
 
     return () => window.clearTimeout(timeoutId);
   }, [message]);
-
-  useEffect(() => {
-    async function loadMirrorStatus() {
-      try {
-        const response = await fetch("/api/admin/content/sync-status");
-        if (!response.ok) {
-          return;
-        }
-
-        const payload = (await response.json()) as {
-          mirrors?: {
-            blob: boolean;
-            github: { enabled: boolean; configured: boolean; repo: string | null; branch: string | null };
-          };
-        };
-
-        const parts: string[] = [];
-        if (payload.mirrors?.blob) {
-          parts.push("Blob JSON backup");
-        }
-        if (payload.mirrors?.github.configured) {
-          parts.push(`GitHub ${payload.mirrors.github.repo}@${payload.mirrors.github.branch}`);
-        } else if (payload.mirrors?.github.enabled) {
-          parts.push("GitHub sync enabled but not fully configured");
-        }
-
-        setMirrorStatus(parts.length > 0 ? parts.join(" · ") : null);
-      } catch {
-        setMirrorStatus(null);
-      }
-    }
-
-    void loadMirrorStatus();
-  }, []);
 
   useEffect(() => {
     async function loadContent() {
@@ -280,7 +245,6 @@ export function ContentStudio() {
             <p className="studio-save-title">Ready to publish?</p>
             <p className="studio-field-hint">
               Save this tab to update the live site. Images are renamed automatically.
-              {mirrorStatus ? ` Remote backup: ${mirrorStatus}.` : ""}
             </p>
           </div>
           <div className="studio-save-actions">

@@ -53,9 +53,9 @@ export const DEFAULT_HOMEPAGE: SiteHomepageConfig = {
     { id: "testimonials", enabled: false },
   ],
   hero: {
-    primaryCtaLabel: "Shop Gallery",
+    primaryCtaLabel: "Shop",
     primaryCtaHref: "/shop",
-    secondaryCtaLabel: "About the Artist",
+    secondaryCtaLabel: "About us",
     secondaryCtaHref: "/about",
   },
   collections: {
@@ -67,7 +67,7 @@ export const DEFAULT_HOMEPAGE: SiteHomepageConfig = {
   featured: {
     eyebrow: "Featured Collection",
     title: "Selected Works",
-    actionLabel: "View Full Gallery",
+    actionLabel: "View Shop",
     actionHref: "/shop",
     limit: 4,
   },
@@ -123,7 +123,7 @@ export function createDefaultSiteConfig(partial?: Partial<SiteConfig>): SiteConf
     offers: [],
     productFeatures: [],
     visitorCounter: {
-      eyebrow: "Gallery Reach",
+      eyebrow: "Shop Reach",
       singularLabel: "guest has explored our collection",
       pluralLabel: "guests have explored our collection",
     },

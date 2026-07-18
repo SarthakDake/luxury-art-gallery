@@ -84,7 +84,7 @@ function AboutPreview({
     <div className="studio-preview-about">
       <PreviewRegion id="identity" active={focus === "identity"}>
         <header className="studio-preview-about-intro">
-          <p className="eyebrow">About the Artist</p>
+          <p className="eyebrow">About us</p>
           <h1 className="page-title">{profile.artistName || "Artist name"}</h1>
           <p className="body-text">
             {profile.artistTagline || "Artist tagline will appear here."}
@@ -177,7 +177,7 @@ function SiteChrome({ config }: { config: SiteConfig }) {
   return (
     <div className="studio-preview-settings-chrome">
       <span className="studio-preview-settings-brand">{config.siteName || "Site name"}</span>
-      <span className="studio-preview-settings-nav">Shop · About · Contact</span>
+      <span className="studio-preview-settings-nav">Shop · About us · Contact us</span>
     </div>
   );
 }

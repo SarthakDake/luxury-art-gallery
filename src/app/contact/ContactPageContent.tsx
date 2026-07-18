@@ -61,13 +61,13 @@ export function ContactPageContent() {
       <Breadcrumbs
         items={[
           { label: "Home", href: "/" },
-          { label: "Contact" },
+          { label: "Contact us" },
         ]}
       />
 
       <Reveal as="header" variant="slide-up" className="contact-intro">
         <p className="eyebrow">Get in Touch</p>
-        <h1 className="page-title">Contact</h1>
+        <h1 className="page-title">Contact us</h1>
         <p className="body-text max-w-2xl">
           For acquisitions, commissions, or private viewings, we welcome your
           inquiry. Our studio team responds with care and discretion.

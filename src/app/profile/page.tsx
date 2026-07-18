@@ -123,7 +123,7 @@ export default async function ProfilePage() {
               status updates.
             </p>
             <Link href="/shop" className="btn-primary mt-8 inline-flex">
-              Browse the Gallery
+              Browse the Shop
             </Link>
           </div>
         ) : (
