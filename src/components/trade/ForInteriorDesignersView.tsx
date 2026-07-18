@@ -190,11 +190,34 @@ export function ForInteriorDesignersView({
 
           {pdfViewSrc ? (
             <div className="trade-pdf-frame">
-              <iframe
-                title={page.portfolioPdf.title}
-                src={pdfViewSrc}
+              <object
+                data={pdfViewSrc}
+                type="application/pdf"
                 className="trade-pdf-embed"
-              />
+                aria-label={page.portfolioPdf.title}
+              >
+                <iframe
+                  title={page.portfolioPdf.title}
+                  src={pdfViewSrc}
+                  className="trade-pdf-embed"
+                />
+              </object>
+              <p className="trade-pdf-fallback-note">
+                If the preview does not appear,{" "}
+                <a href={pdfViewSrc} target="_blank" rel="noopener noreferrer">
+                  open the portfolio PDF
+                </a>
+                {pdfDownloadSrc ? (
+                  <>
+                    {" "}
+                    or{" "}
+                    <a href={pdfDownloadSrc} download={page.portfolioPdf.filename || undefined}>
+                      download it
+                    </a>
+                  </>
+                ) : null}
+                .
+              </p>
             </div>
           ) : (
             <div className="trade-pdf-empty">

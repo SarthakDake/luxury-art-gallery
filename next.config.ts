@@ -80,17 +80,26 @@ const nextConfig: NextConfig = {
     ],
   },
   async headers() {
-    // Allow same-origin PDF embeds on the trade page; keep DENY elsewhere.
-    const documentHeaders = securityHeaders.map((header) =>
-      header.key === "X-Frame-Options"
-        ? { key: "X-Frame-Options", value: "SAMEORIGIN" }
-        : header,
-    );
+    // PDF embeds need same-origin framing. Drop XFO DENY and declare frame-ancestors.
+    const documentHeaders = securityHeaders
+      .filter((header) => header.key !== "X-Frame-Options")
+      .map((header) => {
+        if (header.key !== "Content-Security-Policy") {
+          return header;
+        }
+        return {
+          key: "Content-Security-Policy",
+          value: `${header.value}; frame-ancestors 'self'`,
+        };
+      });
 
     return [
       {
         source: "/api/site-document/:path*",
-        headers: documentHeaders,
+        headers: [
+          ...documentHeaders,
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+        ],
       },
       {
         source: "/((?!api/site-document/).*)",

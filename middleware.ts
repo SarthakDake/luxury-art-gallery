@@ -6,6 +6,11 @@ import type { NextRequest } from "next/server";
 function redirectBrowserApiVisitToHome(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // PDF iframe navigations often send Accept: text/html — never redirect those.
+  if (pathname.startsWith("/api/site-document/")) {
+    return null;
+  }
+
   if (
     request.method === "GET" &&
     pathname.startsWith("/api/") &&

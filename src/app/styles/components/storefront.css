@@ -531,6 +531,17 @@
     color: var(--muted);
   }
 
+  .hero-subtitle .rich-text {
+    gap: 0.65rem;
+  }
+
+  .hero-subtitle .rich-text-paragraph {
+    margin: 0;
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit;
+  }
+
   @media (min-width: 768px) {
     .hero-subtitle {
       font-size: 1rem;
@@ -539,6 +550,11 @@
 
   .hero-block--image .hero-subtitle {
     color: rgba(255, 255, 255, 0.78);
+  }
+
+  .hero-block--image .hero-subtitle .rich-text-paragraph,
+  .hero-block--image .hero-subtitle .rich-text-heading {
+    color: inherit;
   }
 
   .hero-actions {
@@ -2791,6 +2807,20 @@
     height: min(70vh, 36rem);
     border: 0;
     background: var(--background);
+  }
+
+  .trade-pdf-fallback-note {
+    margin: 0;
+    padding: 0.85rem 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  .trade-pdf-fallback-note a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
   }
 
   @media (max-width: 767px) {
