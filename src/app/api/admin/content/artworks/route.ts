@@ -102,11 +102,18 @@ export async function PUT(request: Request) {
   for (const entry of payload.artworks) {
     const artwork = normalizeArtwork(entry, normalized);
 
-    if (!artwork.title || !artwork.slug || !artwork.imageUrl || artwork.sizes.length === 0) {
+    const needsSizes = !artwork.showcaseOnly;
+    if (
+      !artwork.title ||
+      !artwork.slug ||
+      !artwork.imageUrl ||
+      (needsSizes && artwork.sizes.length === 0)
+    ) {
       return Response.json(
         {
-          error:
-            "Each artwork needs a title, cover image, at least one size, category, and description.",
+          error: artwork.showcaseOnly
+            ? "Each showcase artwork needs a title and cover image."
+            : "Each artwork needs a title, cover image, at least one size, category, and description.",
         },
         { status: 400 },
       );

@@ -7,20 +7,13 @@ import {
   DEFAULT_SIGNATURE_PAGE_SECTION_ORDER,
   DEFAULT_SIGNATURE_WALL_ART_PAGE,
 } from "@/lib/site-config/defaults";
+import { buildWhatsAppHref } from "@/lib/whatsapp";
 import type {
   SignaturePageSectionId,
   SignatureWallArtPageConfig,
   SiteConfig,
 } from "@/types/site-config";
 import Link from "next/link";
-
-function buildWhatsAppHref(config: SiteConfig, message: string) {
-  const number = config.whatsappNumber?.trim();
-  if (!number) {
-    return "";
-  }
-  return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
-}
 
 function ProjectsSection({
   resolved,
@@ -201,7 +194,7 @@ export function SignatureWallArtView({
   const heroImage =
     resolved.hero.imageUrl.trim() || DEFAULT_SIGNATURE_WALL_ART_PAGE.hero.imageUrl;
   const whatsappHref = buildWhatsAppHref(
-    siteConfig,
+    siteConfig.whatsappNumber,
     `Hi ${siteConfig.siteName.split("|")[0]?.trim() || "Colors N Joy"}, I'd like to enquire about Signature Wall Art.`,
   );
   const sectionOrder =

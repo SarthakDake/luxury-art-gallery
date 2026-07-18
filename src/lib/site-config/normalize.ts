@@ -8,6 +8,7 @@ import {
   DEFAULT_SIGNATURE_WALL_ART_PAGE,
   DEFAULT_TESTIMONIALS,
 } from "@/lib/site-config/defaults";
+import { normalizeWhatsAppNumber } from "@/lib/whatsapp";
 import type {
   ForInteriorDesignersConfig,
   HomepageSectionConfig,
@@ -620,7 +621,9 @@ export function normalizeSiteConfig(raw: unknown): SiteConfig {
     siteName: asString(source.siteName).trim(),
     contactEmail: asString(source.contactEmail).trim(),
     adminEmail: asString(source.adminEmail).trim(),
-    whatsappNumber: asString(source.whatsappNumber).trim(),
+    whatsappNumber: normalizeWhatsAppNumber(
+      asString(source.whatsappNumber).trim(),
+    ),
     studioAddress: asString(source.studioAddress).trim(),
     heroTitle: asString(source.heroTitle).trim(),
     heroSubtitle: asString(source.heroSubtitle).trim(),
@@ -739,3 +742,5 @@ export function toPublicSiteConfig(config: SiteConfig) {
     features: config.features,
   };
 }
+
+export type PublicSiteConfig = ReturnType<typeof toPublicSiteConfig>;

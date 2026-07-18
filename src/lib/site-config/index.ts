@@ -14,4 +14,5 @@ export {
   isFeatureEnabled,
   normalizeSiteConfig,
   toPublicSiteConfig,
+  type PublicSiteConfig,
 } from "@/lib/site-config/normalize";

@@ -1,4 +1,6 @@
-import type { SiteConfig } from "@/types/site-config";
+import type { SiteOffer } from "@/types/site-config";
+
+type PromoConfig = { offers: SiteOffer[] };
 
 export interface PromoRule {
   code: string;
@@ -16,7 +18,7 @@ const PROMO_RULES: Record<string, Omit<PromoRule, "code" | "headline" | "detail"
   FESTIVE10: { type: "percent", value: 10, minSubtotal: 12000, maxDiscount: 2000 },
 };
 
-export function getPromoOffers(config: SiteConfig): PromoRule[] {
+export function getPromoOffers(config: PromoConfig): PromoRule[] {
   return config.offers
     .map((offer) => {
       const rule = PROMO_RULES[offer.code.trim().toUpperCase()];
@@ -54,7 +56,7 @@ export type PromoResult = PromoApplication | PromoRejection;
 export function applyPromoCode(
   code: string,
   subtotal: number,
-  config: SiteConfig,
+  config: PromoConfig,
 ): PromoResult {
   const normalizedCode = code.trim().toUpperCase();
 

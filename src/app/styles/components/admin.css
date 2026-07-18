@@ -141,6 +141,17 @@
     user-select: none;
   }
 
+  @media (max-width: 1099px) {
+    .studio-preview-canvas {
+      width: 100%;
+      zoom: 1;
+    }
+
+    .studio-preview-viewport {
+      max-height: min(70dvh, 28rem);
+    }
+  }
+
   @supports not (zoom: 1) {
     .studio-preview-canvas {
       transform: scale(0.3);
@@ -149,6 +160,12 @@
 
     .studio-preview-viewport {
       width: 100%;
+    }
+
+    @media (max-width: 1099px) {
+      .studio-preview-canvas {
+        transform: none;
+      }
     }
   }
 

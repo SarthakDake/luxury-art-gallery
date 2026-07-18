@@ -3,11 +3,11 @@ import { SiteBrandName } from "@/components/ui/SiteBrandName";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 import { VisitorCounter } from "@/components/ui/VisitorCounter";
 import { FOOTER_EXPLORE_LINKS } from "@/lib/nav-links";
-import type { SiteConfig } from "@/types/site-config";
+import type { PublicSiteConfig } from "@/lib/site-config";
 import { MapPin } from "lucide-react";
 import Link from "next/link";
 
-export function Footer({ config }: { config: SiteConfig }) {
+export function Footer({ config }: { config: PublicSiteConfig }) {
   return (
     <footer className="site-footer">
       <div className="site-container footer-main">

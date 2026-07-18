@@ -2,20 +2,10 @@ import { Reveal } from "@/components/motion/Reveal";
 import { SoftImage } from "@/components/ui/SoftImage";
 import { getArtworkImageSrc } from "@/lib/artwork-image";
 import { DEFAULT_SIGNATURE_WALL_ART_PAGE } from "@/lib/site-config/defaults";
+import { buildWhatsAppHref } from "@/lib/whatsapp";
 import type { SignatureProject, SiteConfig } from "@/types/site-config";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-
-function buildWhatsAppHref(config: SiteConfig, projectTitle: string) {
-  const number = config.whatsappNumber?.trim();
-  if (!number) {
-    return "";
-  }
-  const studio = config.siteName.split("|")[0]?.trim() || "Colors N Joy";
-  return `https://wa.me/${number}?text=${encodeURIComponent(
-    `Hi ${studio}, I'd like to enquire about the Signature Wall Art project "${projectTitle}".`,
-  )}`;
-}
 
 export function SignatureProjectView({
   project,
@@ -26,7 +16,11 @@ export function SignatureProjectView({
 }) {
   const inquiry = siteConfig.signatureWallArtPage?.inquiry ??
     DEFAULT_SIGNATURE_WALL_ART_PAGE.inquiry;
-  const whatsappHref = buildWhatsAppHref(siteConfig, project.title);
+  const studio = siteConfig.siteName.split("|")[0]?.trim() || "Colors N Joy";
+  const whatsappHref = buildWhatsAppHref(
+    siteConfig.whatsappNumber,
+    `Hi ${studio}, I'd like to enquire about the Signature Wall Art project "${project.title}".`,
+  );
   const formHref =
     inquiry.formHref?.startsWith("#")
       ? `/signature-wall-art${inquiry.formHref}`

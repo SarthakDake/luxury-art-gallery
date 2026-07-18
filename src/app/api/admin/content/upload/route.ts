@@ -14,6 +14,9 @@ export const runtime = "nodejs";
 /** Large iPhone originals can take longer to stream into Blob storage. */
 export const maxDuration = 300;
 
+/** Hard cap for Content Studio uploads (images / PDFs). */
+const MAX_UPLOAD_BYTES = 40 * 1024 * 1024;
+
 export async function POST(request: Request) {
   try {
     await assertAdminSession();
@@ -42,6 +45,13 @@ export async function POST(request: Request) {
 
   if (file.size <= 0) {
     return Response.json({ error: "The selected file is empty." }, { status: 400 });
+  }
+
+  if (file.size > MAX_UPLOAD_BYTES) {
+    return Response.json(
+      { error: "File is too large. Maximum upload size is 40 MB." },
+      { status: 400 },
+    );
   }
 
   const buffer = toSafeBuffer(new Uint8Array(await file.arrayBuffer()));

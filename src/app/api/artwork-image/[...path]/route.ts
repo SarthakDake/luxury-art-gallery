@@ -42,11 +42,21 @@ function resolvePublicFile(relativePath: string): string | null {
   return match ? path.join(parentDir, match) : null;
 }
 
-function isAllowedImagePath(relativePath: string): boolean {
-  const extension = path.extname(relativePath).toLowerCase();
+const ALLOWED_IMAGE_ROOTS = ["artworks/", "portraits/", "site/"] as const;
 
-  return ARTWORK_IMAGE_EXTENSIONS.includes(
+function isAllowedImagePath(relativePath: string): boolean {
+  const normalized = relativePath.replace(/^\/+/, "");
+  const extension = path.extname(normalized).toLowerCase();
+  const hasAllowedExtension = ARTWORK_IMAGE_EXTENSIONS.includes(
     extension as (typeof ARTWORK_IMAGE_EXTENSIONS)[number],
+  );
+
+  if (!hasAllowedExtension) {
+    return false;
+  }
+
+  return ALLOWED_IMAGE_ROOTS.some(
+    (root) => normalized === root.slice(0, -1) || normalized.startsWith(root),
   );
 }
 

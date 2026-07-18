@@ -69,8 +69,9 @@ function getSocialHref(
 ): string | null {
   if (platform === "whatsapp") {
     if (links.whatsapp) return links.whatsapp;
-    if (whatsappNumber) {
-      return `https://wa.me/${whatsappNumber}`;
+    const digits = whatsappNumber.replace(/\D/g, "");
+    if (digits) {
+      return `https://wa.me/${digits}`;
     }
     return null;
   }
