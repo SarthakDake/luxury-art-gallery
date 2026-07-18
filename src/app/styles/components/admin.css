@@ -21,6 +21,233 @@
     gap: 1.5rem;
   }
 
+  .studio-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 1100px) {
+    .studio-layout {
+      display: grid;
+      grid-template-columns: minmax(18rem, 22rem) minmax(0, 1fr);
+      align-items: start;
+      gap: 1.25rem;
+    }
+  }
+
+  .studio-main {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .studio-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--surface) 55%, var(--background));
+    padding: 0.875rem;
+  }
+
+  @media (min-width: 1100px) {
+    .studio-preview {
+      position: sticky;
+      top: calc(var(--header-height) + 0.75rem);
+      max-height: calc(100vh - var(--header-height) - 1.5rem);
+    }
+  }
+
+  .studio-preview-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .studio-preview-eyebrow {
+    margin: 0;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .studio-preview-title {
+    margin: 0;
+    font-family: var(--font-serif, serif);
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--foreground);
+  }
+
+  .studio-preview-hint {
+    margin: 0;
+    font-size: 0.75rem;
+    line-height: 1.45;
+    color: var(--muted);
+  }
+
+  .studio-preview-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .studio-preview-seg {
+    display: inline-flex;
+    border: 1px solid var(--border);
+    background: var(--background);
+  }
+
+  .studio-preview-seg button {
+    border: 0;
+    background: transparent;
+    padding: 0.375rem 0.625rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+  }
+
+  .studio-preview-seg button.is-active {
+    background: color-mix(in srgb, var(--foreground) 8%, var(--background));
+    color: var(--foreground);
+  }
+
+  .studio-preview-viewport {
+    overflow: auto;
+    border: 1px solid var(--border);
+    background: #0f0f0f;
+    max-height: 28rem;
+  }
+
+  @media (min-width: 1100px) {
+    .studio-preview-viewport {
+      flex: 1;
+      min-height: 0;
+      max-height: none;
+    }
+  }
+
+  .studio-preview-canvas {
+    width: 1100px;
+    min-height: 100%;
+    zoom: 0.3;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  @supports not (zoom: 1) {
+    .studio-preview-canvas {
+      transform: scale(0.3);
+      transform-origin: top left;
+    }
+
+    .studio-preview-viewport {
+      width: 100%;
+    }
+  }
+
+  /* Keep preview content visible (scroll-reveal stays opacity 0 until observed). */
+  .studio-preview-canvas [data-reveal],
+  .studio-preview-canvas .media-fade {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  .studio-preview-about {
+    padding: 3rem 2.5rem 4rem;
+  }
+
+  .studio-preview-about-intro {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .studio-preview-about-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .studio-preview-about-portrait {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    min-height: 18rem;
+  }
+
+  .studio-preview-about-portrait-empty {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+
+  .studio-preview-about-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .studio-preview-about-section {
+    margin-top: 1.5rem;
+  }
+
+  .studio-preview-about-section ul {
+    margin: 0.75rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.9375rem;
+    color: var(--muted);
+  }
+
+  .studio-color-field {
+    display: grid;
+    grid-template-columns: 2rem 2.25rem minmax(0, 1fr);
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .studio-color-swatch {
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 6%, transparent);
+  }
+
+  .studio-color-picker {
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border: 1px solid var(--border);
+    background: var(--background);
+    cursor: pointer;
+  }
+
+  .studio-color-picker::-webkit-color-swatch-wrapper {
+    padding: 2px;
+  }
+
+  .studio-color-picker::-webkit-color-swatch {
+    border: 0;
+  }
+
+  .studio-color-field .input-field {
+    min-width: 0;
+  }
+
   .studio-workspace {
     border: 1px solid var(--border);
     background: var(--background);

@@ -4,6 +4,7 @@ import { upload } from "@vercel/blob/client";
 import { ChevronDown, ImageIcon, Plus, Trash2, Upload } from "lucide-react";
 import { useState, type ReactNode, type SelectHTMLAttributes } from "react";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
+import { toColorInputValue } from "@/lib/color-input";
 import {
   buildUploadPathname,
   resolveClientImageExtension,
@@ -123,6 +124,46 @@ export function StudioInput(props: React.InputHTMLAttributes<HTMLInputElement>) 
       {...props}
       className={`input-field${props.className ? ` ${props.className}` : ""}`}
     />
+  );
+}
+
+export function StudioColorField({
+  label,
+  value,
+  onChange,
+  hint,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  hint?: string;
+}) {
+  const pickerValue = toColorInputValue(value);
+
+  return (
+    <StudioField label={label} hint={hint}>
+      <div className="studio-color-field">
+        <span
+          className="studio-color-swatch"
+          style={{ backgroundColor: value || pickerValue }}
+          title={value}
+          aria-hidden
+        />
+        <input
+          type="color"
+          className="studio-color-picker"
+          value={pickerValue}
+          aria-label={`${label} color picker`}
+          onChange={(event) => onChange(event.target.value)}
+        />
+        <StudioInput
+          value={value}
+          spellCheck={false}
+          aria-label={`${label} color code`}
+          onChange={(event) => onChange(event.target.value)}
+        />
+      </div>
+    </StudioField>
   );
 }
 

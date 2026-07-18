@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ArtworksTab } from "./ArtworksTab";
 import { ConfigTab } from "./ConfigTab";
 import { ProfileTab } from "./ProfileTab";
+import { StudioSitePreview } from "./StudioSitePreview";
 import { StudioMessage, StudioTabs } from "./shared";
 import type { ArtistProfile, SiteConfig } from "@/types/site-config";
 import type { Artwork } from "@/types/artwork";
@@ -236,46 +237,57 @@ export function ContentStudio() {
 
   return (
     <div className="content-studio">
-      <div className="studio-workspace">
-        <StudioTabs tabs={[...TABS]} active={activeTab} onChange={handleTabChange} />
+      <div className="studio-layout">
+        <StudioSitePreview
+          config={config}
+          artworks={artworks}
+          profile={profile}
+          activeTab={activeTab}
+        />
 
-        {message ? <StudioMessage tone={message.tone}>{message.text}</StudioMessage> : null}
+        <div className="studio-main">
+          <div className="studio-workspace">
+            <StudioTabs tabs={[...TABS]} active={activeTab} onChange={handleTabChange} />
 
-        <div role="tabpanel" className="studio-tabpanel">
-          {activeTab === "artworks" ? (
-            <ArtworksTab artworks={artworks} onChange={setArtworks} />
-          ) : null}
-          {activeTab === "config" ? (
-            <ConfigTab config={config} onChange={setConfig} />
-          ) : null}
-          {activeTab === "profile" ? (
-            <ProfileTab profile={profile} onChange={setProfile} />
-          ) : null}
-        </div>
-      </div>
+            {message ? <StudioMessage tone={message.tone}>{message.text}</StudioMessage> : null}
 
-      <div className="studio-save-bar">
-        <div className="studio-save-copy">
-          <p className="studio-save-title">Ready to publish?</p>
-          <p className="studio-field-hint">
-            Save this tab to update the live site. Images are renamed automatically.
-            {mirrorStatus ? ` Remote backup: ${mirrorStatus}.` : ""}
-          </p>
-        </div>
-        <div className="studio-save-actions">
-          {message?.tone === "success" ? (
-            <p className="studio-save-feedback" role="status">
-              {message.text}
-            </p>
-          ) : null}
-          <button
-            type="button"
-            className="btn-primary studio-save-btn"
-            disabled={saving}
-            onClick={() => void saveActiveTab()}
-          >
-            {saving ? "Saving…" : `Save ${activeLabel}`}
-          </button>
+            <div role="tabpanel" className="studio-tabpanel">
+              {activeTab === "artworks" ? (
+                <ArtworksTab artworks={artworks} onChange={setArtworks} />
+              ) : null}
+              {activeTab === "config" ? (
+                <ConfigTab config={config} onChange={setConfig} />
+              ) : null}
+              {activeTab === "profile" ? (
+                <ProfileTab profile={profile} onChange={setProfile} />
+              ) : null}
+            </div>
+          </div>
+
+          <div className="studio-save-bar">
+            <div className="studio-save-copy">
+              <p className="studio-save-title">Ready to publish?</p>
+              <p className="studio-field-hint">
+                Save this tab to update the live site. Images are renamed automatically.
+                {mirrorStatus ? ` Remote backup: ${mirrorStatus}.` : ""}
+              </p>
+            </div>
+            <div className="studio-save-actions">
+              {message?.tone === "success" ? (
+                <p className="studio-save-feedback" role="status">
+                  {message.text}
+                </p>
+              ) : null}
+              <button
+                type="button"
+                className="btn-primary studio-save-btn"
+                disabled={saving}
+                onClick={() => void saveActiveTab()}
+              >
+                {saving ? "Saving…" : `Save ${activeLabel}`}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  StudioColorField,
   StudioField,
   StudioFormGrid,
   StudioGroup,
@@ -479,17 +480,17 @@ export function ConfigTab({
         >
           <StudioFormGrid>
             {BRAND_COLOR_FIELDS.map(({ key, label }) => (
-              <StudioField key={key} label={label}>
-                <StudioInput
-                  value={config.brand[key]}
-                  onChange={(event) =>
-                    onChange({
-                      ...config,
-                      brand: { ...config.brand, [key]: event.target.value },
-                    })
-                  }
-                />
-              </StudioField>
+              <StudioColorField
+                key={key}
+                label={label}
+                value={config.brand[key]}
+                onChange={(value) =>
+                  onChange({
+                    ...config,
+                    brand: { ...config.brand, [key]: value },
+                  })
+                }
+              />
             ))}
             <StudioField label="Radius SM">
               <StudioInput
