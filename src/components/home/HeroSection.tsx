@@ -1,7 +1,7 @@
 import { Reveal } from "@/components/motion/Reveal";
+import { SoftImage } from "@/components/ui/SoftImage";
 import type { SiteConfig } from "@/types/site-config";
 import fs from "fs";
-import Image from "next/image";
 import Link from "next/link";
 import path from "path";
 
@@ -15,7 +15,7 @@ export function HeroSection({ config }: { config: SiteConfig }) {
     <section className={`hero-block ${hasHeroImage ? "hero-block--image" : ""}`}>
       {hasHeroImage ? (
         <>
-          <Image
+          <SoftImage
             src="/hero-banner.jpg"
             alt=""
             fill
