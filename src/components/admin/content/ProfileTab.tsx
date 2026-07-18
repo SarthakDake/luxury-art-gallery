@@ -10,8 +10,8 @@ import {
   StudioRepeaterItem,
   StudioSection,
   StudioShell,
-  StudioTextarea,
 } from "./shared";
+import { RichTextEditor } from "./RichTextEditor";
 import type { ArtistProfile } from "@/types/site-config";
 
 export function ProfileTab({
@@ -41,12 +41,18 @@ export function ProfileTab({
           </StudioFormGrid>
         </StudioGroup>
 
-        <StudioGroup eyebrow="Story" title="Biography">
+        <StudioGroup
+          eyebrow="Story"
+          title="Biography"
+          description="Formatting is preserved on the About page. Use headings, bold, lists, and blank lines for spacing."
+        >
           <StudioField label="About you" fullWidth>
-            <StudioTextarea
+            <RichTextEditor
               value={profile.biography}
-              onChange={(event) => onChange({ ...profile, biography: event.target.value })}
-              placeholder="Tell visitors about your practice and inspiration…"
+              onChange={(biography) => onChange({ ...profile, biography })}
+              placeholder={
+                "## About the studio\n\nTell visitors about your practice.\n\n### Process\n\nUse **bold** for emphasis and blank lines between sections."
+              }
             />
           </StudioField>
         </StudioGroup>
