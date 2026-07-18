@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getSiteUrl } from "@/lib/auth-url";
 import { getArtworkImageSrc } from "@/lib/artwork-image";
+import { stripRichTextToPlain } from "@/lib/rich-text";
 import type { Artwork } from "@/types/artwork";
 import type { SiteConfig } from "@/types/site-config";
 
@@ -41,10 +42,11 @@ export function buildArtworkMetadata(
   artwork: Artwork,
   config: SiteConfig,
 ): Metadata {
+  const plainDescription = stripRichTextToPlain(artwork.description);
   const description =
-    artwork.description.length > 160
-      ? `${artwork.description.slice(0, 157)}…`
-      : artwork.description;
+    plainDescription.length > 160
+      ? `${plainDescription.slice(0, 157)}…`
+      : plainDescription;
 
   const imageUrl = artwork.imageUrl
     ? new URL(getArtworkImageSrc(artwork.imageUrl), getMetadataBase())

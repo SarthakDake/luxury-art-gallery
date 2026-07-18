@@ -12,6 +12,7 @@ import {
   StudioTextarea,
   StudioToggle,
 } from "./shared";
+import { RichTextEditor } from "./RichTextEditor";
 import type { HomepageSectionId, SiteBrandTokens, SiteConfig } from "@/types/site-config";
 
 function updateStringList(list: string[], index: number, value: string) {
@@ -223,42 +224,47 @@ export function ConfigTab({
         <StudioGroup
           eyebrow="Defaults"
           title="Text shown on every artwork page"
-          description="Individual artworks can override these in the Advanced step."
+          description="Formatting is preserved in Product Details. Individual artworks can override these in the Advanced step."
         >
-          <StudioFormGrid>
-            <StudioField label="Dispatch note">
-              <StudioTextarea
-                value={config.defaultDispatchNote}
-                onChange={(event) =>
-                  onChange({ ...config, defaultDispatchNote: event.target.value })
-                }
-              />
-            </StudioField>
-            <StudioField label="Care guide">
-              <StudioTextarea
-                value={config.defaultCareGuide}
-                onChange={(event) =>
-                  onChange({ ...config, defaultCareGuide: event.target.value })
-                }
-              />
-            </StudioField>
-            <StudioField label="Shipping & returns">
-              <StudioTextarea
-                value={config.defaultShippingReturns}
-                onChange={(event) =>
-                  onChange({ ...config, defaultShippingReturns: event.target.value })
-                }
-              />
-            </StudioField>
-            <StudioField label="Before you buy">
-              <StudioTextarea
-                value={config.defaultBeforeYouBuy}
-                onChange={(event) =>
-                  onChange({ ...config, defaultBeforeYouBuy: event.target.value })
-                }
-              />
-            </StudioField>
-          </StudioFormGrid>
+          <StudioField label="Dispatch note" fullWidth>
+            <RichTextEditor
+              value={config.defaultDispatchNote}
+              onChange={(defaultDispatchNote) =>
+                onChange({ ...config, defaultDispatchNote })
+              }
+              rows={4}
+              compact
+              showHint={false}
+            />
+          </StudioField>
+          <StudioField label="Care guide" fullWidth>
+            <RichTextEditor
+              value={config.defaultCareGuide}
+              onChange={(defaultCareGuide) => onChange({ ...config, defaultCareGuide })}
+              rows={8}
+              compact
+            />
+          </StudioField>
+          <StudioField label="Shipping & returns" fullWidth>
+            <RichTextEditor
+              value={config.defaultShippingReturns}
+              onChange={(defaultShippingReturns) =>
+                onChange({ ...config, defaultShippingReturns })
+              }
+              rows={8}
+              compact
+            />
+          </StudioField>
+          <StudioField label="Before you buy" fullWidth>
+            <RichTextEditor
+              value={config.defaultBeforeYouBuy}
+              onChange={(defaultBeforeYouBuy) =>
+                onChange({ ...config, defaultBeforeYouBuy })
+              }
+              rows={8}
+              compact
+            />
+          </StudioField>
         </StudioGroup>
       </StudioSection>
 
@@ -316,16 +322,19 @@ export function ConfigTab({
                     />
                   </StudioField>
                   <StudioField label="Detail" fullWidth>
-                    <StudioInput
+                    <RichTextEditor
                       value={offer.detail}
-                      onChange={(event) =>
+                      onChange={(detail) =>
                         onChange({
                           ...config,
                           offers: config.offers.map((entry, i) =>
-                            i === index ? { ...entry, detail: event.target.value } : entry,
+                            i === index ? { ...entry, detail } : entry,
                           ),
                         })
                       }
+                      rows={4}
+                      compact
+                      showHint={false}
                     />
                   </StudioField>
                 </StudioFormGrid>
@@ -374,16 +383,19 @@ export function ConfigTab({
                     />
                   </StudioField>
                   <StudioField label="Description" fullWidth>
-                    <StudioTextarea
+                    <RichTextEditor
                       value={feature.description}
-                      onChange={(event) =>
+                      onChange={(description) =>
                         onChange({
                           ...config,
                           productFeatures: config.productFeatures.map((entry, i) =>
-                            i === index ? { ...entry, description: event.target.value } : entry,
+                            i === index ? { ...entry, description } : entry,
                           ),
                         })
                       }
+                      rows={5}
+                      compact
+                      showHint={false}
                     />
                   </StudioField>
                 </StudioFormGrid>
@@ -833,16 +845,19 @@ export function ConfigTab({
               >
                 <StudioFormGrid>
                   <StudioField label="Quote" fullWidth>
-                    <StudioTextarea
+                    <RichTextEditor
                       value={item.quote}
-                      onChange={(event) =>
+                      onChange={(quote) =>
                         onChange({
                           ...config,
                           testimonials: config.testimonials.map((entry, i) =>
-                            i === index ? { ...entry, quote: event.target.value } : entry,
+                            i === index ? { ...entry, quote } : entry,
                           ),
                         })
                       }
+                      rows={5}
+                      compact
+                      showHint={false}
                     />
                   </StudioField>
                   <StudioField label="Name">

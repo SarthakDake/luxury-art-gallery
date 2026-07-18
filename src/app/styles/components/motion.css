@@ -90,6 +90,10 @@
     margin-top: 1rem;
   }
 
+  .detail-text .rich-text-paragraph + .rich-text-paragraph {
+    margin-top: 0;
+  }
+
   /* ── Scroll reveal (Craftico-style) ── */
   .reveal-enabled {
     --reveal-duration: 0.7s;

@@ -9,6 +9,7 @@ import { RelatedProducts } from "@/components/product/RelatedProducts";
 import { SizeSelector } from "@/components/product/SizeSelector";
 import { useCartStore } from "@/lib/store";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
+import { RichText } from "@/components/ui/RichText";
 import { TrustBadges } from "@/components/ui/TrustBadges";
 import type { SiteConfig } from "@/types/site-config";
 import {
@@ -87,7 +88,14 @@ function ArtworkDetailContent({
     {
       id: "description",
       title: "Description & Details",
-      content: `${artwork.description}\n\nCategory: ${artwork.category}\nSubcategory: ${artwork.subcategory}\nDimensions: ${dimensionsLine}\nMaterial: ${artwork.material}\n\nPackage Content: ${artwork.title}`,
+      content: artwork.description,
+      facts: [
+        { label: "Category", value: artwork.category },
+        { label: "Subcategory", value: artwork.subcategory },
+        { label: "Dimensions", value: dimensionsLine },
+        { label: "Material", value: artwork.material },
+        { label: "Package Content", value: artwork.title },
+      ],
     },
     {
       id: "care",
@@ -191,7 +199,7 @@ function ArtworkDetailContent({
                 <QuantityStepper quantity={quantity} onChange={setQuantity} />
               ) : null}
 
-              <p className="dispatch-note">{dispatchNote}</p>
+              <RichText content={dispatchNote} className="dispatch-note dispatch-note-rich" />
 
               {purchasable ? (
                 <div className="space-y-3">
@@ -246,9 +254,14 @@ function ArtworkDetailContent({
                         </p>
                         <p className="mt-1 text-xs text-[var(--muted)]">
                           Use Code:{" "}
-                          <span className="offer-code">{offer.code}</span> (
-                          {offer.detail})
+                          <span className="offer-code">{offer.code}</span>
                         </p>
+                        {offer.detail.trim() ? (
+                          <RichText
+                            content={offer.detail}
+                            className="offer-detail-rich mt-1"
+                          />
+                        ) : null}
                       </div>
                     ))}
                   </div>

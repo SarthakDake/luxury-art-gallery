@@ -1034,6 +1034,107 @@
     color: var(--muted);
   }
 
+  .dispatch-note-rich {
+    gap: 0.35rem;
+  }
+
+  .dispatch-note-rich .rich-text-paragraph {
+    font-size: inherit;
+    letter-spacing: inherit;
+    line-height: 1.55;
+    color: inherit;
+  }
+
+  .dispatch-note-rich .rich-text-heading {
+    font-size: 0.875rem;
+    margin: 0;
+  }
+
+  .offer-detail-rich {
+    gap: 0.25rem;
+  }
+
+  .offer-detail-rich .rich-text-paragraph {
+    font-size: 0.75rem;
+    line-height: 1.55;
+    color: var(--muted);
+  }
+
+  .detail-rich-text {
+    gap: 0.85rem;
+  }
+
+  .detail-rich-text .rich-text-paragraph {
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit;
+  }
+
+  .detail-facts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    margin: 1.25rem 0 0;
+    padding: 1rem 0 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .detail-fact {
+    display: grid;
+    grid-template-columns: minmax(7rem, 9rem) minmax(0, 1fr);
+    gap: 0.75rem 1rem;
+  }
+
+  .detail-fact-label {
+    margin: 0;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .detail-fact-value {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--foreground);
+  }
+
+  .feature-card-rich {
+    gap: 0.5rem;
+  }
+
+  .feature-card-rich .rich-text-paragraph {
+    margin: 0;
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit;
+  }
+
+  .home-offer-detail-rich {
+    gap: 0.35rem;
+  }
+
+  .home-offer-detail-rich .rich-text-paragraph {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+
+  .home-testimonial-rich {
+    gap: 0.5rem;
+  }
+
+  .home-testimonial-rich .rich-text-paragraph {
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit;
+  }
+
   .offer-panel {
     border: 1px solid var(--border);
     background: var(--surface);

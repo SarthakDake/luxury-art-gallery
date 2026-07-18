@@ -1,22 +1,36 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Bold, Heading2, Heading3, List, Eye, PencilLine } from "lucide-react";
+import {
+  Bold,
+  Heading2,
+  Heading3,
+  Italic,
+  List,
+  Eye,
+  PencilLine,
+} from "lucide-react";
 import { RichText } from "@/components/ui/RichText";
 import { prefixLines, wrapSelection } from "@/lib/rich-text";
 
-type FormatAction = "bold" | "h2" | "h3" | "list";
+type FormatAction = "bold" | "italic" | "h2" | "h3" | "list";
 
 export function RichTextEditor({
   value,
   onChange,
   placeholder,
   label = "Formatted text",
+  rows = 12,
+  compact = false,
+  showHint = true,
 }: {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
   label?: string;
+  rows?: number;
+  compact?: boolean;
+  showHint?: boolean;
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [mode, setMode] = useState<"edit" | "preview">("edit");
@@ -34,6 +48,9 @@ export function RichTextEditor({
     switch (action) {
       case "bold":
         next = wrapSelection(value, start, end, "**");
+        break;
+      case "italic":
+        next = wrapSelection(value, start, end, "*");
         break;
       case "h2":
         next = prefixLines(value, start, end, "## ");
@@ -56,7 +73,7 @@ export function RichTextEditor({
   }
 
   return (
-    <div className="rich-text-editor">
+    <div className={`rich-text-editor${compact ? " rich-text-editor--compact" : ""}`}>
       <div className="rich-text-editor-toolbar">
         <div className="rich-text-editor-formats" role="toolbar" aria-label={label}>
           <button
@@ -68,6 +85,16 @@ export function RichTextEditor({
             disabled={mode === "preview"}
           >
             <Bold className="h-4 w-4" strokeWidth={1.75} />
+          </button>
+          <button
+            type="button"
+            className="rich-text-editor-btn"
+            onClick={() => applyFormat("italic")}
+            title="Italic"
+            aria-label="Italic"
+            disabled={mode === "preview"}
+          >
+            <Italic className="h-4 w-4" strokeWidth={1.75} />
           </button>
           <button
             type="button"
@@ -128,7 +155,7 @@ export function RichTextEditor({
           value={value}
           onChange={(event) => onChange(event.target.value)}
           placeholder={placeholder}
-          rows={16}
+          rows={rows}
         />
       ) : (
         <div className="rich-text-editor-preview">
@@ -140,11 +167,14 @@ export function RichTextEditor({
         </div>
       )}
 
-      <p className="studio-field-hint rich-text-editor-hint">
-        Blank lines start a new paragraph. Use the toolbar for bold, headings, and
-        lists — or type <code>**bold**</code>, <code>## Heading</code>, and{" "}
-        <code>- list item</code>.
-      </p>
+      {showHint ? (
+        <p className="studio-field-hint rich-text-editor-hint">
+          Blank lines start a new paragraph. Use the toolbar for bold, italic,
+          headings, and lists — or type <code>**bold**</code>,{" "}
+          <code>*italic*</code>, <code>## Heading</code>, and{" "}
+          <code>- list item</code>.
+        </p>
+      ) : null}
     </div>
   );
 }
