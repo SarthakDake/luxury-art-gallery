@@ -97,6 +97,11 @@ export async function saveSiteConfig(config: SiteConfig) {
   revalidatePath("/");
   revalidatePath("/shop");
   revalidatePath("/signature-wall-art");
+  for (const project of config.signatureWallArtPage?.projects.items ?? []) {
+    if (project.slug) {
+      revalidatePath(`/signature-wall-art/${project.slug}`);
+    }
+  }
   revalidatePath("/for-interior-designers");
   revalidatePath("/portfolio");
   revalidatePath("/about");

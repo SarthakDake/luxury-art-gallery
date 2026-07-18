@@ -130,6 +130,79 @@ export interface TradeProcessStep {
   description: string;
 }
 
+/** One design-style block on a Signature Wall Art project detail page. */
+export interface SignatureProjectStyle {
+  imageUrl: string;
+  title: string;
+  description: string;
+}
+
+/** Showcase project on the Signature Wall Art page (not a shop product). */
+export interface SignatureProject {
+  slug: string;
+  title: string;
+  summary: string;
+  coverImageUrl: string;
+  designStyles: SignatureProjectStyle[];
+  galleryImages: string[];
+  testimonials: SiteTestimonial[];
+}
+
+export interface SignatureFaqItem {
+  question: string;
+  answer: string;
+}
+
+/** Ordered blocks on the Signature Wall Art listing page (below hero + intro). */
+export type SignaturePageSectionId =
+  | "projects"
+  | "process"
+  | "faq"
+  | "inquiry";
+
+/** CMS config for the dedicated Signature Wall Art showcase page. */
+export interface SignatureWallArtPageConfig {
+  hero: {
+    imageUrl: string;
+  };
+  intro: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+  };
+  /** Order of main page sections after hero + intro. */
+  sectionOrder: SignaturePageSectionId[];
+  projects: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    items: SignatureProject[];
+  };
+  process: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    steps: TradeProcessStep[];
+  };
+  faq: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    items: SignatureFaqItem[];
+  };
+  inquiry: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    formCtaLabel: string;
+    formHref: string;
+    whatsappLabel: string;
+    submitLabel: string;
+    successMessage: string;
+    defaultSubject: string;
+  };
+}
+
 /** CMS config for the For Interior Designers / trade partner page. */
 export interface ForInteriorDesignersConfig {
   hero: {
@@ -198,6 +271,7 @@ export interface SiteConfig {
   socialLinks: SiteSocialLinks;
   brand: SiteBrandTokens;
   homepage: SiteHomepageConfig;
+  signatureWallArtPage: SignatureWallArtPageConfig;
   forInteriorDesigners: ForInteriorDesignersConfig;
   testimonials: SiteTestimonial[];
   features: SiteFeatureFlags;

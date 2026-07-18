@@ -1,7 +1,16 @@
 "use client";
 
 import { upload } from "@vercel/blob/client";
-import { ChevronDown, Eye, FileText, ImageIcon, Plus, Trash2, Upload } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  Eye,
+  FileText,
+  ImageIcon,
+  Plus,
+  Trash2,
+  Upload,
+} from "lucide-react";
 import { useState, type ReactNode, type SelectHTMLAttributes } from "react";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import { toColorInputValue } from "@/lib/color-input";
@@ -324,14 +333,24 @@ export function StudioRepeaterItem({
   title,
   onRemove,
   removeLabel,
+  onMoveUp,
+  onMoveDown,
+  showRemove = true,
   children,
 }: {
   index: number;
   title: string;
-  onRemove: () => void;
-  removeLabel: string;
+  onRemove?: () => void;
+  removeLabel?: string;
+  /** Move this item one slot up in the list (omit or leave undefined when disabled). */
+  onMoveUp?: () => void;
+  /** Move this item one slot down in the list (omit or leave undefined when disabled). */
+  onMoveDown?: () => void;
+  showRemove?: boolean;
   children: ReactNode;
 }) {
+  const canReorder = Boolean(onMoveUp || onMoveDown);
+
   return (
     <div className="studio-repeater-item">
       <div className="studio-repeater-item-header">
@@ -339,9 +358,42 @@ export function StudioRepeaterItem({
           <span className="studio-repeater-index">{index + 1}</span>
           <span className="studio-repeater-item-title">{title}</span>
         </div>
-        <button type="button" className="studio-icon-btn" onClick={onRemove} aria-label={removeLabel}>
-          <Trash2 className="h-4 w-4" strokeWidth={1.5} />
-        </button>
+        <div className="studio-repeater-item-actions">
+          {canReorder ? (
+            <>
+              <button
+                type="button"
+                className="studio-icon-btn"
+                onClick={onMoveUp}
+                disabled={!onMoveUp}
+                aria-label="Move up"
+                title="Move up"
+              >
+                <ChevronUp className="h-4 w-4" strokeWidth={1.5} />
+              </button>
+              <button
+                type="button"
+                className="studio-icon-btn"
+                onClick={onMoveDown}
+                disabled={!onMoveDown}
+                aria-label="Move down"
+                title="Move down"
+              >
+                <ChevronDown className="h-4 w-4" strokeWidth={1.5} />
+              </button>
+            </>
+          ) : null}
+          {showRemove && onRemove ? (
+            <button
+              type="button"
+              className="studio-icon-btn"
+              onClick={onRemove}
+              aria-label={removeLabel ?? "Remove"}
+            >
+              <Trash2 className="h-4 w-4" strokeWidth={1.5} />
+            </button>
+          ) : null}
+        </div>
       </div>
       <div className="studio-repeater-item-body">{children}</div>
     </div>
