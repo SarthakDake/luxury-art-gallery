@@ -1,21 +1,18 @@
-import { CuratedWorksSection } from "@/components/home/CuratedWorksSection";
+import { SignatureShowcaseSection } from "@/components/home/SignatureShowcaseSection";
 import { Reveal } from "@/components/motion/Reveal";
 import { TradeInquiryForm } from "@/components/trade/TradeInquiryForm";
 import { SoftImage } from "@/components/ui/SoftImage";
 import { getArtworkImageSrc } from "@/lib/artwork-image";
 import { DEFAULT_FOR_INTERIOR_DESIGNERS } from "@/lib/site-config/defaults";
 import { getSiteDocumentSrc } from "@/lib/site-document";
-import type { Artwork } from "@/types/artwork";
 import type { SiteConfig } from "@/types/site-config";
 import { Download, FileText } from "lucide-react";
 import Link from "next/link";
 
 export function ForInteriorDesignersView({
   config,
-  artworks,
 }: {
   config: SiteConfig;
-  artworks: Artwork[];
 }) {
   const page = config.forInteriorDesigners ?? DEFAULT_FOR_INTERIOR_DESIGNERS;
   const heroImage =
@@ -209,9 +206,9 @@ export function ForInteriorDesignersView({
         </Reveal>
       </div>
 
-      <CuratedWorksSection
+      <SignatureShowcaseSection
         copy={config.homepage.signatureWallArt}
-        artworks={artworks}
+        page={config.signatureWallArtPage}
       />
 
       <div className="site-container page-section-end">

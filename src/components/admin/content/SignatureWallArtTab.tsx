@@ -914,7 +914,7 @@ export function SignatureWallArtTab({
         <StudioGroup
           eyebrow="Homepage"
           title="Homepage Signature Collection teaser"
-          description="Optional — controls only the matching homepage section (shop artworks grid)."
+          description="Optional — controls the homepage Signature Collection teaser. Project cards come from the showcase projects above."
         >
           <StudioFormGrid>
             <StudioField label="Eyebrow">

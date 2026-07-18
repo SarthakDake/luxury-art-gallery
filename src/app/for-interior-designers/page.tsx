@@ -1,6 +1,6 @@
 import { ForInteriorDesignersView } from "@/components/trade/ForInteriorDesignersView";
 import { DEFAULT_FOR_INTERIOR_DESIGNERS } from "@/lib/site-config/defaults";
-import { getArtworks, getSiteConfig } from "@/lib/site-data";
+import { getSiteConfig } from "@/lib/site-data";
 import type { Metadata } from "next";
 
 export const revalidate = 3600;
@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ForInteriorDesignersPage() {
-  const [config, artworks] = await Promise.all([getSiteConfig(), getArtworks()]);
+  const config = await getSiteConfig();
 
-  return <ForInteriorDesignersView config={config} artworks={artworks} />;
+  return <ForInteriorDesignersView config={config} />;
 }

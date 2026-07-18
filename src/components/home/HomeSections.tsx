@@ -1,10 +1,11 @@
 import { CollectionsSection } from "@/components/home/CollectionsSection";
-import { CuratedWorksSection } from "@/components/home/CuratedWorksSection";
 import { FeaturedWorksSection } from "@/components/home/FeaturedWorksSection";
 import { FeaturesSection } from "@/components/home/FeaturesSection";
 import { HeroSection } from "@/components/home/HeroSection";
 import { OffersSection } from "@/components/home/OffersSection";
+import { SignatureShowcaseSection } from "@/components/home/SignatureShowcaseSection";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
+import { TradePartnersSection } from "@/components/home/TradePartnersSection";
 import { TrustBadgesSection } from "@/components/home/TrustBadgesSection";
 import { getEnabledHomepageSections } from "@/lib/site-config";
 import { DEFAULT_HOMEPAGE } from "@/lib/site-config/defaults";
@@ -27,20 +28,20 @@ function renderSection(
       return <FeaturedWorksSection key={id} config={config} artworks={artworks} />;
     case "signatureWallArt":
       return (
-        <CuratedWorksSection
+        <SignatureShowcaseSection
           key={id}
           copy={
             config.homepage.signatureWallArt ?? DEFAULT_HOMEPAGE.signatureWallArt
           }
-          artworks={artworks}
+          page={config.signatureWallArtPage}
         />
       );
     case "portfolio":
       return (
-        <CuratedWorksSection
+        <TradePartnersSection
           key={id}
           copy={config.homepage.portfolio ?? DEFAULT_HOMEPAGE.portfolio}
-          artworks={artworks}
+          tradePage={config.forInteriorDesigners}
         />
       );
     case "offers":

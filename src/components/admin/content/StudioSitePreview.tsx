@@ -2,12 +2,13 @@
 
 import { ArtworkDetailClient } from "@/app/art/[slug]/ArtworkDetailClient";
 import { CollectionsSection } from "@/components/home/CollectionsSection";
-import { CuratedWorksSection } from "@/components/home/CuratedWorksSection";
 import { FeaturedWorksSection } from "@/components/home/FeaturedWorksSection";
 import { FeaturesSection } from "@/components/home/FeaturesSection";
 import { HeroSection } from "@/components/home/HeroSection";
 import { OffersSection } from "@/components/home/OffersSection";
+import { SignatureShowcaseSection } from "@/components/home/SignatureShowcaseSection";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
+import { TradePartnersSection } from "@/components/home/TradePartnersSection";
 import { TrustBadgesSection } from "@/components/home/TrustBadgesSection";
 import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
@@ -259,15 +260,15 @@ function SiteSettingsPreview({
             <FeaturedWorksSection config={config} artworks={artworks} />
           </PreviewRegion>
           <PreviewRegion id="signatureWallArt" active={false}>
-            <CuratedWorksSection
+            <SignatureShowcaseSection
               copy={config.homepage.signatureWallArt}
-              artworks={artworks}
+              page={config.signatureWallArtPage}
             />
           </PreviewRegion>
           <PreviewRegion id="portfolio" active={false}>
-            <CuratedWorksSection
+            <TradePartnersSection
               copy={config.homepage.portfolio}
-              artworks={artworks}
+              tradePage={config.forInteriorDesigners}
             />
           </PreviewRegion>
         </>

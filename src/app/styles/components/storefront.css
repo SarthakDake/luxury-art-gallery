@@ -1083,8 +1083,11 @@
   }
 
   .dispatch-note {
-    font-size: 0.8125rem;
-    letter-spacing: 0.04em;
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.875rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    line-height: 1.55;
     color: var(--muted);
   }
 
@@ -1092,24 +1095,34 @@
     gap: 0.35rem;
   }
 
-  .dispatch-note-rich .rich-text-paragraph {
-    font-size: inherit;
-    letter-spacing: inherit;
-    line-height: 1.55;
-    color: inherit;
-  }
-
-  .dispatch-note-rich .rich-text-heading {
-    font-size: 0.875rem;
+  .dispatch-note-rich .rich-text-paragraph,
+  .dispatch-note-rich .rich-text-heading,
+  .dispatch-note-rich .rich-text-heading--1,
+  .dispatch-note-rich .rich-text-heading--2,
+  .dispatch-note-rich .rich-text-heading--3 {
     margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+    line-height: inherit;
+    color: inherit;
   }
 
   .offer-detail-rich {
     gap: 0.25rem;
   }
 
-  .offer-detail-rich .rich-text-paragraph {
+  .offer-detail-rich .rich-text-paragraph,
+  .offer-detail-rich .rich-text-heading,
+  .offer-detail-rich .rich-text-heading--1,
+  .offer-detail-rich .rich-text-heading--2,
+  .offer-detail-rich .rich-text-heading--3 {
+    margin: 0;
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
     font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: normal;
     line-height: 1.55;
     color: var(--muted);
   }
@@ -1170,9 +1183,16 @@
     gap: 0.35rem;
   }
 
-  .home-offer-detail-rich .rich-text-paragraph {
+  .home-offer-detail-rich .rich-text-paragraph,
+  .home-offer-detail-rich .rich-text-heading,
+  .home-offer-detail-rich .rich-text-heading--1,
+  .home-offer-detail-rich .rich-text-heading--2,
+  .home-offer-detail-rich .rich-text-heading--3 {
     margin: 0;
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
     font-size: 0.875rem;
+    font-weight: 400;
+    letter-spacing: normal;
     line-height: 1.6;
     color: var(--muted);
   }
@@ -2848,7 +2868,179 @@
     align-self: flex-start;
   }
 
+  /* Homepage Signature Collection (showcase projects) */
+  .home-signature-showcase {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .home-signature-showcase {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 1.75rem;
+    }
+
+    .home-signature-showcase-item--1 {
+      grid-column: span 7;
+    }
+
+    .home-signature-showcase-item--2 {
+      grid-column: span 5;
+    }
+
+    .home-signature-showcase-item--3 {
+      grid-column: span 5;
+    }
+
+    .home-signature-showcase-item--4 {
+      grid-column: span 7;
+    }
+  }
+
+  .home-signature-showcase-link {
+    display: grid;
+    gap: 1rem;
+    color: inherit;
+    text-decoration: none;
+    height: 100%;
+  }
+
+  .home-signature-showcase-media {
+    position: relative;
+    aspect-ratio: 5 / 4;
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .home-signature-showcase-item--1 .home-signature-showcase-media,
+  .home-signature-showcase-item--4 .home-signature-showcase-media {
+    aspect-ratio: 16 / 10;
+  }
+
+  .home-signature-showcase-placeholder {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, var(--surface), var(--border));
+  }
+
+  .home-signature-showcase-media img {
+    transition: transform 600ms ease;
+  }
+
+  .home-signature-showcase-link:hover .home-signature-showcase-media img {
+    transform: scale(1.04);
+  }
+
+  .home-signature-showcase-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .home-signature-showcase-index {
+    font-family: var(--font-serif), ui-serif, Georgia, serif;
+    font-size: 0.875rem;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+
+  .home-signature-showcase-title {
+    margin: 0;
+    font-family: var(--font-serif), ui-serif, Georgia, serif;
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    font-weight: 400;
+  }
+
+  .home-signature-showcase-summary {
+    color: var(--muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Homepage Trade Partners gallery */
+  .home-trade-gallery {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .home-trade-gallery {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 1.5rem;
+      align-items: end;
+    }
+
+    .home-trade-gallery-item--1 {
+      grid-column: span 5;
+    }
+
+    .home-trade-gallery-item--2 {
+      grid-column: span 4;
+    }
+
+    .home-trade-gallery-item--3 {
+      grid-column: span 3;
+    }
+  }
+
+  .home-trade-gallery-media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .home-trade-gallery-item--2 .home-trade-gallery-media {
+    aspect-ratio: 3 / 4;
+  }
+
+  .home-trade-gallery-item--3 .home-trade-gallery-media {
+    aspect-ratio: 1 / 1;
+  }
+
+  .home-trade-gallery-media img {
+    transition: transform 600ms ease;
+  }
+
+  .home-trade-gallery-item:hover .home-trade-gallery-media img {
+    transform: scale(1.03);
+  }
+
+  .home-trade-gallery-caption {
+    margin: 0.75rem 0 0;
+    font-size: 0.875rem;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+  }
+
   /* Signature Wall Art dedicated page */
+  .signature-page-body {
+    padding-block: 1.25rem 4rem;
+    padding-bottom: calc(4rem + var(--fab-clearance) + env(safe-area-inset-bottom, 0px));
+  }
+
+  @media (min-width: 768px) {
+    .signature-page-body {
+      padding-block: 1.5rem 5rem;
+      padding-bottom: calc(5rem + var(--fab-clearance) + env(safe-area-inset-bottom, 0px));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .signature-page-body {
+      padding-block: 1.75rem 6rem;
+      padding-bottom: 6rem;
+    }
+  }
+
   .signature-page-hero {
     position: relative;
     width: 100%;
@@ -2904,12 +3096,12 @@
   .signature-page-intro {
     max-width: 36rem;
     margin-inline: auto;
-    padding-block: clamp(2.5rem, 5vw, 4rem) 1.5rem;
+    padding-block: clamp(1rem, 2.5vw, 1.75rem) 0.75rem;
     text-align: center;
   }
 
   .signature-page-intro-copy {
-    margin-top: 1rem;
+    margin-top: 0.75rem;
     margin-inline: auto;
   }
 
@@ -2917,43 +3109,89 @@
   .signature-process-section,
   .signature-faq-section,
   .signature-inquiry-section {
-    padding-block: clamp(2.5rem, 5vw, 4rem);
+    padding-block: clamp(2rem, 4vw, 3.5rem);
   }
 
-  .signature-project-grid {
+  #inquiry.signature-inquiry-section {
+    scroll-margin-top: calc(var(--header-height, 5rem) + 1.5rem);
+  }
+
+  .signature-project-mosaic {
     list-style: none;
-    margin: 2rem 0 0;
+    margin: 1.75rem 0 0;
     padding: 0;
     display: grid;
-    gap: 2rem;
+    gap: 1.5rem;
   }
 
   @media (min-width: 768px) {
-    .signature-project-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 2.25rem;
+    .signature-project-mosaic {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 1.75rem 1.5rem;
+    }
+
+    .signature-project-tile--feature {
+      grid-column: span 12;
+    }
+
+    .signature-project-tile--tall {
+      grid-column: span 5;
+    }
+
+    .signature-project-tile--wide {
+      grid-column: span 7;
+    }
+
+    .signature-project-tile--compact {
+      grid-column: span 4;
     }
   }
 
-  @media (min-width: 1100px) {
-    .signature-project-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-
-  .signature-project-card-link {
-    display: flex;
-    flex-direction: column;
+  .signature-project-tile-link {
+    display: grid;
     gap: 1rem;
     color: inherit;
     text-decoration: none;
+    height: 100%;
   }
 
-  .signature-project-card-media {
+  @media (min-width: 900px) {
+    .signature-project-tile--feature .signature-project-tile-link {
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      gap: 2rem;
+      align-items: center;
+    }
+  }
+
+  .signature-project-tile-media {
     position: relative;
     aspect-ratio: 4 / 5;
     overflow: hidden;
     background: var(--surface);
+  }
+
+  .signature-project-tile--feature .signature-project-tile-media {
+    aspect-ratio: 16 / 10;
+  }
+
+  .signature-project-tile--wide .signature-project-tile-media {
+    aspect-ratio: 5 / 4;
+  }
+
+  .signature-project-tile--compact .signature-project-tile-media {
+    aspect-ratio: 1 / 1;
+  }
+
+  .signature-project-tile-index {
+    position: absolute;
+    top: 0.85rem;
+    left: 0.85rem;
+    z-index: 1;
+    font-family: var(--font-serif), ui-serif, Georgia, serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    color: color-mix(in srgb, var(--background) 92%, white);
+    text-shadow: 0 1px 8px rgb(0 0 0 / 35%);
   }
 
   .signature-project-card-placeholder {
@@ -2962,25 +3200,36 @@
     background: linear-gradient(160deg, var(--surface), var(--border));
   }
 
-  .signature-project-card-media img {
-    transition: transform 500ms ease;
+  .signature-project-tile-media img {
+    transition: transform 600ms ease;
   }
 
-  .signature-project-card-link:hover .signature-project-card-media img {
-    transform: scale(1.03);
+  .signature-project-tile-link:hover .signature-project-tile-media img {
+    transform: scale(1.04);
+  }
+
+  .signature-project-tile-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
   }
 
   .signature-project-card-title {
     margin: 0;
     font-family: var(--font-serif), ui-serif, Georgia, serif;
-    font-size: 1.375rem;
+    font-size: clamp(1.25rem, 2.2vw, 1.75rem);
     font-weight: 400;
     letter-spacing: 0.02em;
   }
 
   .signature-project-card-summary {
-    margin-top: 0.5rem;
+    margin-top: 0.35rem;
     color: var(--muted);
+  }
+
+  .signature-project-tile--feature .signature-project-card-summary {
+    max-width: 28rem;
   }
 
   .signature-project-card-action {
@@ -2990,7 +3239,11 @@
     font-weight: 500;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--foreground);
+    color: var(--accent);
+  }
+
+  .signature-project-tile-link:hover .signature-project-card-action {
+    color: color-mix(in srgb, var(--accent) 85%, var(--foreground));
   }
 
   .signature-process-list {

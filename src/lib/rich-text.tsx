@@ -94,12 +94,16 @@ function upgradeLegacyPlainText(source: string): string {
       }
 
       // Short standalone title lines → headings (artist common pattern).
+      // Skip instructional / meta lines (offers, dispatch notes, etc.).
       if (
         lines.length === 1 &&
         lines[0].length > 0 &&
         lines[0].length <= 48 &&
         !/[.!?]$/.test(lines[0]) &&
-        !/^[-*]\s+/.test(lines[0])
+        !/^[-*]\s+/.test(lines[0]) &&
+        !/\d/.test(lines[0]) &&
+        !/[₹$€|]/.test(lines[0]) &&
+        !/\b(use on|orders above|dispatches|made to order)\b/i.test(lines[0])
       ) {
         return `## ${lines[0]}`;
       }

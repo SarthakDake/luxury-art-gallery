@@ -1,5 +1,6 @@
 import { Reveal } from "@/components/motion/Reveal";
 import { SignatureFaq } from "@/components/signature/SignatureFaq";
+import { SignatureHashScroll } from "@/components/signature/SignatureHashScroll";
 import { SignatureInquiryForm } from "@/components/signature/SignatureInquiryForm";
 import { SoftImage } from "@/components/ui/SoftImage";
 import { getArtworkImageSrc } from "@/lib/artwork-image";
@@ -10,16 +11,76 @@ import {
 import { buildWhatsAppHref } from "@/lib/whatsapp";
 import type {
   SignaturePageSectionId,
+  SignatureProject,
   SignatureWallArtPageConfig,
   SiteConfig,
 } from "@/types/site-config";
 import Link from "next/link";
+
+function ProjectCard({
+  project,
+  index,
+  variant,
+}: {
+  project: SignatureProject;
+  index: number;
+  variant: "feature" | "tall" | "wide" | "compact";
+}) {
+  return (
+    <li className={`signature-project-tile signature-project-tile--${variant}`}>
+      <Link
+        href={`/signature-wall-art/${project.slug}`}
+        className="signature-project-tile-link"
+      >
+        <div className="signature-project-tile-media">
+          {project.coverImageUrl ? (
+            <SoftImage
+              src={getArtworkImageSrc(project.coverImageUrl)}
+              alt=""
+              fill
+              sizes={
+                variant === "feature"
+                  ? "(max-width: 768px) 100vw, 70vw"
+                  : "(max-width: 768px) 100vw, 40vw"
+              }
+              className="object-cover"
+            />
+          ) : (
+            <div className="signature-project-card-placeholder" aria-hidden />
+          )}
+          <span className="signature-project-tile-index" aria-hidden>
+            {String(index + 1).padStart(2, "0")}
+          </span>
+        </div>
+        <div className="signature-project-tile-copy">
+          <h3 className="signature-project-card-title">{project.title}</h3>
+          {project.summary ? (
+            <p className="body-text signature-project-card-summary">
+              {project.summary}
+            </p>
+          ) : null}
+          <span className="signature-project-card-action">View project</span>
+        </div>
+      </Link>
+    </li>
+  );
+}
+
+function projectVariant(index: number, total: number): "feature" | "tall" | "wide" | "compact" {
+  if (index === 0 && total > 1) return "feature";
+  if (index % 5 === 1) return "tall";
+  if (index % 5 === 2) return "wide";
+  if (index % 5 === 3) return "tall";
+  return "compact";
+}
 
 function ProjectsSection({
   resolved,
 }: {
   resolved: SignatureWallArtPageConfig;
 }) {
+  const items = resolved.projects.items;
+
   return (
     <Reveal
       as="section"
@@ -37,37 +98,14 @@ function ProjectsSection({
         ) : null}
       </div>
 
-      <ul className="signature-project-grid" data-reveal-stagger>
-        {resolved.projects.items.map((project) => (
-          <li key={project.slug} className="signature-project-card">
-            <Link
-              href={`/signature-wall-art/${project.slug}`}
-              className="signature-project-card-link"
-            >
-              <div className="signature-project-card-media">
-                {project.coverImageUrl ? (
-                  <SoftImage
-                    src={getArtworkImageSrc(project.coverImageUrl)}
-                    alt=""
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="signature-project-card-placeholder" aria-hidden />
-                )}
-              </div>
-              <div className="signature-project-card-copy">
-                <h3 className="signature-project-card-title">{project.title}</h3>
-                {project.summary ? (
-                  <p className="body-text signature-project-card-summary">
-                    {project.summary}
-                  </p>
-                ) : null}
-                <span className="signature-project-card-action">View project</span>
-              </div>
-            </Link>
-          </li>
+      <ul className="signature-project-mosaic" data-reveal-stagger>
+        {items.map((project, index) => (
+          <ProjectCard
+            key={project.slug}
+            project={project}
+            index={index}
+            variant={projectVariant(index, items.length)}
+          />
         ))}
       </ul>
     </Reveal>
@@ -221,6 +259,7 @@ export function SignatureWallArtView({
 
   return (
     <>
+      <SignatureHashScroll />
       <section
         className={`signature-page-hero ${heroImage ? "signature-page-hero--image" : ""}`}
         aria-label={resolved.intro.title}
@@ -239,7 +278,7 @@ export function SignatureWallArtView({
         )}
       </section>
 
-      <div className="site-container page-shell page-section-end">
+      <div className="site-container signature-page-body page-section-end">
         <Reveal as="header" variant="slide-up" className="signature-page-intro">
           <p className="eyebrow">{resolved.intro.eyebrow}</p>
           <h1 className="page-title">{resolved.intro.title}</h1>
