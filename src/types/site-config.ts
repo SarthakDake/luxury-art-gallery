@@ -134,6 +134,12 @@ export interface ArtistPressFeature {
   link: string;
 }
 
+/** Stat callouts on the About page (e.g. Major Exhibitions, Years in Practice). */
+export interface ArtistHighlight {
+  value: string;
+  label: string;
+}
+
 export interface ArtistProfile {
   artistName: string;
   artistTagline: string;
@@ -141,4 +147,5 @@ export interface ArtistProfile {
   biography: string;
   exhibitions: ArtistExhibition[];
   press: ArtistPressFeature[];
+  highlights: ArtistHighlight[];
 }

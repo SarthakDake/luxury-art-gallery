@@ -119,6 +119,20 @@ function AboutPreview({
             </div>
           </div>
         </div>
+
+        {(profile.highlights ?? []).length > 0 ? (
+          <div className="about-highlights studio-preview-about-highlights">
+            {(profile.highlights ?? []).map((highlight) => (
+              <div
+                key={`${highlight.label}-${highlight.value}`}
+                className="about-highlight-item"
+              >
+                <p className="about-highlight-value">{highlight.value}</p>
+                <p className="about-highlight-label">{highlight.label}</p>
+              </div>
+            ))}
+          </div>
+        ) : null}
       </PreviewRegion>
 
       <PreviewRegion id="exhibitions" active={focus === "exhibitions"}>
