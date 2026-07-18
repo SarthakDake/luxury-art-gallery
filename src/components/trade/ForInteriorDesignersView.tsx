@@ -5,6 +5,7 @@ import { TradeInquiryForm } from "@/components/trade/TradeInquiryForm";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { SoftImage } from "@/components/ui/SoftImage";
 import { getArtworkImageSrc } from "@/lib/artwork-image";
+import { DEFAULT_FOR_INTERIOR_DESIGNERS } from "@/lib/site-config/defaults";
 import { getSiteDocumentSrc } from "@/lib/site-document";
 import type { Artwork } from "@/types/artwork";
 import type { SiteConfig } from "@/types/site-config";
@@ -18,7 +19,7 @@ export function ForInteriorDesignersView({
   config: SiteConfig;
   artworks: Artwork[];
 }) {
-  const page = config.forInteriorDesigners;
+  const page = config.forInteriorDesigners ?? DEFAULT_FOR_INTERIOR_DESIGNERS;
   const heroImage = page.hero.imageUrl.trim();
   const pdfUrl = page.portfolioPdf.url.trim();
   const pdfViewSrc = pdfUrl
