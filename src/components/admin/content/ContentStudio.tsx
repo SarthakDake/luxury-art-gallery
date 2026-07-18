@@ -35,6 +35,7 @@ export function ContentStudio() {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [config, setConfig] = useState<SiteConfig | null>(null);
   const [profile, setProfile] = useState<ArtistProfile | null>(null);
+  const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const [message, setMessage] = useState<{ tone: "success" | "error"; text: string } | null>(
     null,
   );
@@ -109,6 +110,7 @@ export function ContentStudio() {
         setArtworks(artworksPayload.artworks);
         setConfig(configPayload.config);
         setProfile(profilePayload.profile);
+        setSelectedArtwork(artworksPayload.artworks[0] ?? null);
       } catch (error) {
         setMessage({
           tone: "error",
@@ -237,59 +239,64 @@ export function ContentStudio() {
 
   return (
     <div className="content-studio">
-      <div className="studio-layout">
-        <StudioSitePreview
-          config={config}
-          artworks={artworks}
-          profile={profile}
-          activeTab={activeTab}
-        />
+      {/* Editor column — original Content Studio UI, untouched by preview chrome */}
+      <div className="studio-editor">
+        <div className="studio-workspace">
+          <StudioTabs tabs={[...TABS]} active={activeTab} onChange={handleTabChange} />
 
-        <div className="studio-main">
-          <div className="studio-workspace">
-            <StudioTabs tabs={[...TABS]} active={activeTab} onChange={handleTabChange} />
+          {message ? <StudioMessage tone={message.tone}>{message.text}</StudioMessage> : null}
 
-            {message ? <StudioMessage tone={message.tone}>{message.text}</StudioMessage> : null}
-
-            <div role="tabpanel" className="studio-tabpanel">
-              {activeTab === "artworks" ? (
-                <ArtworksTab artworks={artworks} onChange={setArtworks} />
-              ) : null}
-              {activeTab === "config" ? (
-                <ConfigTab config={config} onChange={setConfig} />
-              ) : null}
-              {activeTab === "profile" ? (
-                <ProfileTab profile={profile} onChange={setProfile} />
-              ) : null}
-            </div>
+          <div role="tabpanel" className="studio-tabpanel">
+            {activeTab === "artworks" ? (
+              <ArtworksTab
+                artworks={artworks}
+                onChange={setArtworks}
+                onSelectedArtworkChange={setSelectedArtwork}
+              />
+            ) : null}
+            {activeTab === "config" ? (
+              <ConfigTab config={config} onChange={setConfig} />
+            ) : null}
+            {activeTab === "profile" ? (
+              <ProfileTab profile={profile} onChange={setProfile} />
+            ) : null}
           </div>
+        </div>
 
-          <div className="studio-save-bar">
-            <div className="studio-save-copy">
-              <p className="studio-save-title">Ready to publish?</p>
-              <p className="studio-field-hint">
-                Save this tab to update the live site. Images are renamed automatically.
-                {mirrorStatus ? ` Remote backup: ${mirrorStatus}.` : ""}
+        <div className="studio-save-bar">
+          <div className="studio-save-copy">
+            <p className="studio-save-title">Ready to publish?</p>
+            <p className="studio-field-hint">
+              Save this tab to update the live site. Images are renamed automatically.
+              {mirrorStatus ? ` Remote backup: ${mirrorStatus}.` : ""}
+            </p>
+          </div>
+          <div className="studio-save-actions">
+            {message?.tone === "success" ? (
+              <p className="studio-save-feedback" role="status">
+                {message.text}
               </p>
-            </div>
-            <div className="studio-save-actions">
-              {message?.tone === "success" ? (
-                <p className="studio-save-feedback" role="status">
-                  {message.text}
-                </p>
-              ) : null}
-              <button
-                type="button"
-                className="btn-primary studio-save-btn"
-                disabled={saving}
-                onClick={() => void saveActiveTab()}
-              >
-                {saving ? "Saving…" : `Save ${activeLabel}`}
-              </button>
-            </div>
+            ) : null}
+            <button
+              type="button"
+              className="btn-primary studio-save-btn"
+              disabled={saving}
+              onClick={() => void saveActiveTab()}
+            >
+              {saving ? "Saving…" : `Save ${activeLabel}`}
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Separate right-side preview — sibling, not nested in the editor UI */}
+      <StudioSitePreview
+        config={config}
+        artworks={artworks}
+        profile={profile}
+        activeTab={activeTab}
+        selectedArtwork={selectedArtwork}
+      />
     </div>
   );
 }

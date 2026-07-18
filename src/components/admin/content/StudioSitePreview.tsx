@@ -1,6 +1,8 @@
 "use client";
 
+import { ArtworkDetailClient } from "@/app/art/[slug]/ArtworkDetailClient";
 import { HomeSections } from "@/components/home/HomeSections";
+import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import { RichText } from "@/components/ui/RichText";
 import { brandTokensToCssVars } from "@/lib/site-config/brand-style";
@@ -13,8 +15,8 @@ import {
   type CSSProperties,
 } from "react";
 
-type PreviewPage = "home" | "about";
 type PreviewTheme = "light" | "dark";
+type StudioTab = "artworks" | "config" | "profile";
 
 function previewBrandStyle(brand: SiteConfig["brand"], theme: PreviewTheme): CSSProperties {
   const vars = brandTokensToCssVars(brand);
@@ -35,6 +37,29 @@ function previewBrandStyle(brand: SiteConfig["brand"], theme: PreviewTheme): CSS
     color: isDark ? brand.darkForeground : brand.foreground,
     background: isDark ? brand.darkBackground : brand.background,
   } as CSSProperties;
+}
+
+function previewMeta(activeTab: StudioTab, artwork: Artwork | null) {
+  if (activeTab === "artworks") {
+    return {
+      title: "Artwork page",
+      hint: artwork?.title?.trim()
+        ? `Previewing “${artwork.title.trim()}” product page`
+        : "Select an artwork to preview its product page",
+    };
+  }
+
+  if (activeTab === "config") {
+    return {
+      title: "Site settings",
+      hint: "Homepage, announcements, offers, and theme tokens",
+    };
+  }
+
+  return {
+    title: "Artist profile",
+    hint: "About page — biography, portrait, exhibitions, press",
+  };
 }
 
 function AboutPreview({
@@ -118,27 +143,54 @@ function AboutPreview({
   );
 }
 
+function SiteSettingsPreview({
+  config,
+  artworks,
+}: {
+  config: SiteConfig;
+  artworks: Artwork[];
+}) {
+  return (
+    <div className="studio-preview-settings">
+      {config.announcements.length > 0 ? <AnnouncementBar config={config} /> : null}
+      <div className="studio-preview-settings-chrome">
+        <span className="studio-preview-settings-brand">{config.siteName || "Site name"}</span>
+        <span className="studio-preview-settings-nav">Shop · About · Contact</span>
+      </div>
+      <HomeSections config={config} artworks={artworks} />
+    </div>
+  );
+}
+
+function ArtworkPreviewEmpty() {
+  return (
+    <div className="studio-preview-empty">
+      <p className="eyebrow">Artwork page</p>
+      <p className="body-text">Choose an artwork on the left to preview its live product page.</p>
+    </div>
+  );
+}
+
 export function StudioSitePreview({
   config,
   artworks,
   profile,
   activeTab,
+  selectedArtwork,
 }: {
   config: SiteConfig;
   artworks: Artwork[];
   profile: ArtistProfile;
-  activeTab: string;
+  activeTab: StudioTab;
+  selectedArtwork: Artwork | null;
 }) {
   const deferredConfig = useDeferredValue(config);
   const deferredArtworks = useDeferredValue(artworks);
   const deferredProfile = useDeferredValue(profile);
-
-  const defaultPage: PreviewPage = activeTab === "profile" ? "about" : "home";
-  const [page, setPage] = useState<PreviewPage>(defaultPage);
+  const deferredArtwork = useDeferredValue(selectedArtwork);
   const [theme, setTheme] = useState<PreviewTheme>("light");
-  const [pageTouched, setPageTouched] = useState(false);
 
-  const resolvedPage = pageTouched ? page : defaultPage;
+  const meta = previewMeta(activeTab, deferredArtwork);
   const brandStyle = useMemo(
     () => previewBrandStyle(deferredConfig.brand, theme),
     [deferredConfig.brand, theme],
@@ -149,51 +201,35 @@ export function StudioSitePreview({
       <div className="studio-preview-header">
         <div>
           <p className="studio-preview-eyebrow">Preview</p>
-          <h2 className="studio-preview-title">Live website</h2>
+          <h2 className="studio-preview-title">{meta.title}</h2>
         </div>
-        <p className="studio-preview-hint">Updates as you edit · not published until Save</p>
+        <p className="studio-preview-hint">
+          {meta.hint}
+          <span className="studio-preview-hint-sep">·</span>
+          Updates as you edit · not published until Save
+        </p>
       </div>
 
-      <div className="studio-preview-toolbar">
-        <div className="studio-preview-seg" role="group" aria-label="Preview page">
-          <button
-            type="button"
-            className={resolvedPage === "home" ? "is-active" : undefined}
-            onClick={() => {
-              setPage("home");
-              setPageTouched(true);
-            }}
-          >
-            Home
-          </button>
-          <button
-            type="button"
-            className={resolvedPage === "about" ? "is-active" : undefined}
-            onClick={() => {
-              setPage("about");
-              setPageTouched(true);
-            }}
-          >
-            About
-          </button>
+      {activeTab === "config" ? (
+        <div className="studio-preview-toolbar">
+          <div className="studio-preview-seg" role="group" aria-label="Preview theme">
+            <button
+              type="button"
+              className={theme === "light" ? "is-active" : undefined}
+              onClick={() => setTheme("light")}
+            >
+              Light
+            </button>
+            <button
+              type="button"
+              className={theme === "dark" ? "is-active" : undefined}
+              onClick={() => setTheme("dark")}
+            >
+              Dark
+            </button>
+          </div>
         </div>
-        <div className="studio-preview-seg" role="group" aria-label="Preview theme">
-          <button
-            type="button"
-            className={theme === "light" ? "is-active" : undefined}
-            onClick={() => setTheme("light")}
-          >
-            Light
-          </button>
-          <button
-            type="button"
-            className={theme === "dark" ? "is-active" : undefined}
-            onClick={() => setTheme("dark")}
-          >
-            Dark
-          </button>
-        </div>
-      </div>
+      ) : null}
 
       <div className="studio-preview-viewport">
         <div
@@ -201,11 +237,27 @@ export function StudioSitePreview({
           style={brandStyle}
           data-studio-preview
         >
-          {resolvedPage === "home" ? (
-            <HomeSections config={deferredConfig} artworks={deferredArtworks} />
-          ) : (
+          {activeTab === "artworks" ? (
+            deferredArtwork ? (
+              <div className="studio-preview-artwork">
+                <ArtworkDetailClient
+                  artwork={deferredArtwork}
+                  artworks={deferredArtworks}
+                  siteConfig={deferredConfig}
+                />
+              </div>
+            ) : (
+              <ArtworkPreviewEmpty />
+            )
+          ) : null}
+
+          {activeTab === "config" ? (
+            <SiteSettingsPreview config={deferredConfig} artworks={deferredArtworks} />
+          ) : null}
+
+          {activeTab === "profile" ? (
             <AboutPreview config={deferredConfig} profile={deferredProfile} />
-          )}
+          ) : null}
         </div>
       </div>
     </aside>
