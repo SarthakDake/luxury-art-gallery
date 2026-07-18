@@ -1,19 +1,17 @@
 import { Reveal } from "@/components/motion/Reveal";
 import { SoftImage } from "@/components/ui/SoftImage";
 import type { SiteConfig } from "@/types/site-config";
-import fs from "fs";
 import Link from "next/link";
-import path from "path";
 
-const heroImagePath = path.join(process.cwd(), "public/hero-banner.jpg");
-const hasHeroImage = fs.existsSync(heroImagePath);
+/** Static public asset — avoid `fs` so hero can render in client-side studio previews. */
+const HAS_HERO_IMAGE = true;
 
 export function HeroSection({ config }: { config: SiteConfig }) {
   const { hero } = config.homepage;
 
   return (
-    <section className={`hero-block ${hasHeroImage ? "hero-block--image" : ""}`}>
-      {hasHeroImage ? (
+    <section className={`hero-block ${HAS_HERO_IMAGE ? "hero-block--image" : ""}`}>
+      {HAS_HERO_IMAGE ? (
         <>
           <SoftImage
             src="/hero-banner.jpg"
@@ -44,7 +42,7 @@ export function HeroSection({ config }: { config: SiteConfig }) {
             variant="slide-up"
             immediate
             delay={260}
-            className={`hero-actions ${hasHeroImage ? "hero-actions--on-dark" : ""}`}
+            className={`hero-actions ${HAS_HERO_IMAGE ? "hero-actions--on-dark" : ""}`}
           >
             <Link href={hero.primaryCtaHref} className="btn-primary btn-responsive">
               {hero.primaryCtaLabel}
