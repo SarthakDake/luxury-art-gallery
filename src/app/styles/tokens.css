@@ -19,7 +19,8 @@
   --brand-dark-background: #111111;
   --brand-dark-foreground: #e5e5e5;
   --brand-dark-muted: #9ca3af;
-  --brand-dark-border: #2d2d2d;
+  /* Keep dark borders light enough for inputs/dividers on near-black surfaces */
+  --brand-dark-border: #4b5563;
   --brand-dark-surface: #1a1a1a;
   --brand-dark-accent: #d4a017;
 
@@ -77,9 +78,17 @@
   --background: var(--brand-dark-background);
   --foreground: var(--brand-dark-foreground);
   --muted: var(--brand-dark-muted);
-  --border: var(--brand-dark-border);
+  /*
+    Floor dark borders so near-black CMS values (e.g. #000 / #2d2d2d) still
+    read on inputs, chips, cards, and section rules.
+  */
+  --border: color-mix(
+    in srgb,
+    var(--brand-dark-border) 55%,
+    var(--brand-dark-foreground) 45%
+  );
   --surface: var(--brand-dark-surface);
-  --surface-elevated: color-mix(in srgb, var(--brand-dark-surface) 70%, #ffffff);
+  --surface-elevated: color-mix(in srgb, var(--brand-dark-surface) 78%, #ffffff);
   --accent: var(--brand-dark-accent);
   --accent-foreground: #171717;
   --announcement-bg: #0f0f0f;

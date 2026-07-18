@@ -22,7 +22,7 @@ export const DEFAULT_BRAND_TOKENS: SiteBrandTokens = {
   darkForeground: "#e5e5e5",
   darkMuted: "#9ca3af",
   darkSurface: "#1a1a1a",
-  darkBorder: "#2d2d2d",
+  darkBorder: "#4b5563",
   radiusSm: "0.25rem",
   radiusMd: "0.5rem",
   radiusLg: "0.75rem",
