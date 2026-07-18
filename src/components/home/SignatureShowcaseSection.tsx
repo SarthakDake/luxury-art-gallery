@@ -1,4 +1,5 @@
 import { Reveal } from "@/components/motion/Reveal";
+import { RichText } from "@/components/ui/RichText";
 import { SoftImage } from "@/components/ui/SoftImage";
 import { getArtworkImageSrc } from "@/lib/artwork-image";
 import { DEFAULT_HOMEPAGE, DEFAULT_SIGNATURE_WALL_ART_PAGE } from "@/lib/site-config/defaults";
@@ -32,7 +33,7 @@ export function SignatureShowcaseSection({
           <p className="eyebrow">{resolvedCopy.eyebrow}</p>
           <h2 className="section-title">{resolvedCopy.title}</h2>
           {resolvedCopy.subtitle ? (
-            <p className="body-text mt-3 max-w-2xl">{resolvedCopy.subtitle}</p>
+            <RichText content={resolvedCopy.subtitle} className="body-text mt-3 max-w-2xl" />
           ) : null}
         </div>
         {resolvedCopy.actionHref && resolvedCopy.actionLabel ? (
@@ -74,9 +75,10 @@ export function SignatureShowcaseSection({
                 </span>
                 <h3 className="home-signature-showcase-title">{project.title}</h3>
                 {project.summary ? (
-                  <p className="body-text home-signature-showcase-summary">
-                    {project.summary}
-                  </p>
+                  <RichText
+                    content={project.summary}
+                    className="body-text home-signature-showcase-summary"
+                  />
                 ) : null}
                 <span className="signature-project-card-action">View project</span>
               </div>

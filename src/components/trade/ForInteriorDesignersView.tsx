@@ -1,6 +1,7 @@
 import { SignatureShowcaseSection } from "@/components/home/SignatureShowcaseSection";
 import { Reveal } from "@/components/motion/Reveal";
 import { TradeInquiryForm } from "@/components/trade/TradeInquiryForm";
+import { RichText } from "@/components/ui/RichText";
 import { SoftImage } from "@/components/ui/SoftImage";
 import { getArtworkImageSrc } from "@/lib/artwork-image";
 import { DEFAULT_FOR_INTERIOR_DESIGNERS } from "@/lib/site-config/defaults";
@@ -54,13 +55,13 @@ export function ForInteriorDesignersView({
               {page.hero.title}
             </Reveal>
             <Reveal
-              as="p"
+              as="div"
               variant="slide-up"
               immediate
               delay={140}
               className="hero-subtitle"
             >
-              {page.hero.subtitle}
+              <RichText content={page.hero.subtitle} />
             </Reveal>
             <Reveal
               variant="slide-up"
@@ -97,13 +98,13 @@ export function ForInteriorDesignersView({
             <h2 id="why-partner-heading" className="section-title">
               {page.whyPartner.title}
             </h2>
-            <p className="body-text mt-3">{page.whyPartner.subtitle}</p>
+            <RichText content={page.whyPartner.subtitle} className="body-text mt-3" />
           </div>
           <ul className="trade-point-grid" data-reveal-stagger>
             {page.whyPartner.points.map((point) => (
               <li key={point.title} className="trade-point-item">
                 <h3 className="trade-point-title">{point.title}</h3>
-                <p className="body-text">{point.description}</p>
+                <RichText content={point.description} className="body-text" />
               </li>
             ))}
           </ul>
@@ -120,13 +121,13 @@ export function ForInteriorDesignersView({
             <h2 id="benefits-heading" className="section-title">
               {page.benefits.title}
             </h2>
-            <p className="body-text mt-3">{page.benefits.subtitle}</p>
+            <RichText content={page.benefits.subtitle} className="body-text mt-3" />
           </div>
           <ul className="trade-point-grid" data-reveal-stagger>
             {page.benefits.items.map((item) => (
               <li key={item.title} className="trade-point-item">
                 <h3 className="trade-point-title">{item.title}</h3>
-                <p className="body-text">{item.description}</p>
+                <RichText content={item.description} className="body-text" />
               </li>
             ))}
           </ul>
@@ -143,7 +144,7 @@ export function ForInteriorDesignersView({
             <h2 id="trade-process-heading" className="section-title">
               {page.tradeProcess.title}
             </h2>
-            <p className="body-text mt-3">{page.tradeProcess.subtitle}</p>
+            <RichText content={page.tradeProcess.subtitle} className="body-text mt-3" />
           </div>
           <ol className="trade-process-list" data-reveal-stagger>
             {page.tradeProcess.steps.map((step, index) => (
@@ -153,7 +154,7 @@ export function ForInteriorDesignersView({
                 </span>
                 <div>
                   <h3 className="trade-point-title">{step.title}</h3>
-                  <p className="body-text mt-2">{step.description}</p>
+                  <RichText content={step.description} className="body-text mt-2" />
                 </div>
               </li>
             ))}
@@ -173,7 +174,7 @@ export function ForInteriorDesignersView({
               <h2 id="portfolio-pdf-heading" className="section-title">
                 {page.portfolioPdf.title}
               </h2>
-              <p className="body-text mt-3">{page.portfolioPdf.subtitle}</p>
+              <RichText content={page.portfolioPdf.subtitle} className="body-text mt-3" />
             </div>
             {pdfDownloadSrc ? (
               <a
@@ -225,7 +226,7 @@ export function ForInteriorDesignersView({
               <h2 id="inquiry-heading" className="section-title">
                 {page.inquiryForm.title}
               </h2>
-              <p className="body-text mt-3">{page.inquiryForm.subtitle}</p>
+              <RichText content={page.inquiryForm.subtitle} className="body-text mt-3" />
             </div>
             <TradeInquiryForm copy={page.inquiryForm} />
           </div>

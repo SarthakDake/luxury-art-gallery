@@ -1,5 +1,6 @@
 "use client";
 
+import { RichText } from "@/components/ui/RichText";
 import type { SignatureWallArtPageConfig } from "@/types/site-config";
 import { useState } from "react";
 
@@ -121,9 +122,9 @@ export function SignatureInquiryForm({
         </p>
       ) : null}
       {success ? (
-        <p className="contact-form-success" role="status">
-          {copy.successMessage}
-        </p>
+        <div role="status">
+          <RichText content={copy.successMessage} className="contact-form-success" />
+        </div>
       ) : null}
 
       <button type="submit" className="btn-primary btn-responsive" disabled={isSubmitting}>

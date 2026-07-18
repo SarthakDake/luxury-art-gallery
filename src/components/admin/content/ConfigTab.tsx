@@ -11,7 +11,6 @@ import {
   StudioRepeaterItem,
   StudioSection,
   StudioShell,
-  StudioTextarea,
   StudioToggle,
 } from "./shared";
 import { RichTextEditor } from "./RichTextEditor";
@@ -105,9 +104,12 @@ export function ConfigTab({
             </StudioField>
           </StudioFormGrid>
           <StudioField label="Hero subtitle" fullWidth>
-            <StudioTextarea
+            <RichTextEditor
               value={config.heroSubtitle}
-              onChange={(event) => onChange({ ...config, heroSubtitle: event.target.value })}
+              onChange={(heroSubtitle) => onChange({ ...config, heroSubtitle })}
+              rows={3}
+              compact
+              showHint={false}
             />
           </StudioField>
           <ImageUploadField
