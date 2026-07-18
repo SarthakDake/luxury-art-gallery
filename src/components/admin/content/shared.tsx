@@ -1,7 +1,7 @@
 "use client";
 
 import { upload } from "@vercel/blob/client";
-import { ChevronDown, ImageIcon, Plus, Trash2, Upload } from "lucide-react";
+import { ChevronDown, Eye, ImageIcon, Plus, Trash2, Upload } from "lucide-react";
 import { useState, type ReactNode, type SelectHTMLAttributes } from "react";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import { toColorInputValue } from "@/lib/color-input";
@@ -70,29 +70,44 @@ export function StudioSection({
   title,
   subtitle,
   defaultOpen = true,
+  onPreview,
   children,
 }: {
   title: string;
   subtitle?: string;
   defaultOpen?: boolean;
+  /** Opens a focused live preview for this section’s place on the site. */
+  onPreview?: () => void;
   children: ReactNode;
 }) {
   const [open, setOpen] = useState(defaultOpen);
 
   return (
     <section className={`studio-section${open ? " studio-section--open" : ""}`}>
-      <button
-        type="button"
-        className="studio-section-toggle"
-        aria-expanded={open}
-        onClick={() => setOpen((current) => !current)}
-      >
-        <span className="studio-section-heading">
-          {subtitle ? <span className="eyebrow">{subtitle}</span> : null}
-          <span className="studio-section-title">{title}</span>
-        </span>
-        <ChevronDown className="studio-section-icon" strokeWidth={1.5} aria-hidden />
-      </button>
+      <div className="studio-section-bar">
+        <button
+          type="button"
+          className="studio-section-toggle"
+          aria-expanded={open}
+          onClick={() => setOpen((current) => !current)}
+        >
+          <span className="studio-section-heading">
+            {subtitle ? <span className="eyebrow">{subtitle}</span> : null}
+            <span className="studio-section-title">{title}</span>
+          </span>
+          <ChevronDown className="studio-section-icon" strokeWidth={1.5} aria-hidden />
+        </button>
+        {onPreview ? (
+          <button
+            type="button"
+            className="btn-secondary studio-section-preview-btn"
+            onClick={onPreview}
+          >
+            <Eye className="h-4 w-4" strokeWidth={1.5} aria-hidden />
+            Preview
+          </button>
+        ) : null}
+      </div>
       {open ? <div className="studio-section-body">{children}</div> : null}
     </section>
   );

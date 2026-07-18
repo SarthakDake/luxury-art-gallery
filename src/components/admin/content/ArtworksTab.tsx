@@ -22,6 +22,10 @@ import {
   StudioToggle,
 } from "./shared";
 import { RichTextEditor } from "./RichTextEditor";
+import {
+  ARTWORK_STEP_PREVIEW_LABELS,
+  type StudioPreviewTarget,
+} from "./preview-targets";
 import { nextArtworkId, slugify } from "@/lib/site-data/slug";
 import { useEffect, useState } from "react";
 import {
@@ -69,10 +73,12 @@ export function ArtworksTab({
   artworks,
   onChange,
   onSelectedArtworkChange,
+  onRequestPreview,
 }: {
   artworks: Artwork[];
   onChange: (artworks: Artwork[]) => void;
   onSelectedArtworkChange?: (artwork: Artwork | null) => void;
+  onRequestPreview?: (target: StudioPreviewTarget) => void;
 }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [editorStep, setEditorStep] = useState<ArtworkEditorStep>("details");
@@ -86,6 +92,14 @@ export function ArtworksTab({
   }, [selectedArtwork, onSelectedArtworkChange]);
 
   const categorySuggestions = getCategorySuggestions(artworks);
+
+  function previewStep(step: ArtworkEditorStep) {
+    onRequestPreview?.({
+      scope: "artwork",
+      step,
+      label: ARTWORK_STEP_PREVIEW_LABELS[step],
+    });
+  }
 
   function selectArtwork(index: number) {
     setSelectedIndex(index);
@@ -227,6 +241,7 @@ export function ArtworksTab({
           activeStep={editorStep}
           title="Artwork details"
           lead="Fill in the essentials first — name, category, and description."
+          onPreview={() => previewStep("details")}
         >
           <StudioGroup eyebrow="Step 1" title="Name" description="This is the title shoppers see in your gallery.">
             <StudioField label="Artwork title" fullWidth>
@@ -379,6 +394,7 @@ export function ArtworksTab({
           activeStep={editorStep}
           title="Photos"
           lead="Upload a cover image first, then add optional gallery shots."
+          onPreview={() => previewStep("photos")}
         >
           <StudioGroup eyebrow="Cover" title="Main photo" description="Shown in the shop grid and product page hero.">
             <ImageUploadField
@@ -441,6 +457,7 @@ export function ArtworksTab({
           activeStep={editorStep}
           title="Sizes & pricing"
           lead="List every size you sell. Shoppers choose one on the product page."
+          onPreview={() => previewStep("pricing")}
         >
           <StudioGroup eyebrow="Pricing" title="Size options">
             <StudioRepeaterHeader
@@ -499,6 +516,7 @@ export function ArtworksTab({
           activeStep={editorStep}
           title="Videos"
           lead="Optional — add YouTube, Instagram, or a local video file."
+          onPreview={() => previewStep("videos")}
         >
           <StudioGroup eyebrow="Media" title="Product videos">
             <StudioRepeaterHeader
@@ -588,6 +606,7 @@ export function ArtworksTab({
           activeStep={editorStep}
           title="Advanced options"
           lead="Only use these if you need something different from your site defaults."
+          onPreview={() => previewStep("more")}
         >
           <StudioGroup eyebrow="URL" title="Web address">
             <StudioField label="URL slug" hint="Used in the link for this artwork." fullWidth>

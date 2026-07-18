@@ -12,18 +12,32 @@ import {
   StudioShell,
 } from "./shared";
 import { RichTextEditor } from "./RichTextEditor";
+import type { StudioPreviewTarget } from "./preview-targets";
 import type { ArtistProfile } from "@/types/site-config";
 
 export function ProfileTab({
   profile,
   onChange,
+  onRequestPreview,
 }: {
   profile: ArtistProfile;
   onChange: (profile: ArtistProfile) => void;
+  onRequestPreview?: (target: StudioPreviewTarget) => void;
 }) {
+  function preview(
+    region: Extract<StudioPreviewTarget, { scope: "about" }>["region"],
+    label: string,
+  ) {
+    onRequestPreview?.({ scope: "about", region, label });
+  }
+
   return (
     <StudioShell>
-      <StudioSection title="Artist identity" subtitle="About page">
+      <StudioSection
+        title="Artist identity"
+        subtitle="About page"
+        onPreview={() => preview("identity", "About page — identity & portrait")}
+      >
         <StudioGroup eyebrow="Profile" title="Name & tagline">
           <StudioFormGrid>
             <StudioField label="Artist name">
@@ -68,7 +82,11 @@ export function ProfileTab({
         </StudioGroup>
       </StudioSection>
 
-      <StudioSection title="Exhibitions" subtitle="Career">
+      <StudioSection
+        title="Exhibitions"
+        subtitle="Career"
+        onPreview={() => preview("exhibitions", "About page — exhibitions")}
+      >
         <StudioGroup eyebrow="Shows" title="Exhibition history">
           <StudioRepeaterHeader
             title="Past exhibitions"
@@ -152,7 +170,12 @@ export function ProfileTab({
         </StudioGroup>
       </StudioSection>
 
-      <StudioSection title="Press" subtitle="Media" defaultOpen={Boolean(profile.press.length)}>
+      <StudioSection
+        title="Press"
+        subtitle="Media"
+        defaultOpen={Boolean(profile.press.length)}
+        onPreview={() => preview("press", "About page — press")}
+      >
         <StudioGroup eyebrow="Media" title="Press features">
           <StudioRepeaterHeader
             title="Articles & mentions"

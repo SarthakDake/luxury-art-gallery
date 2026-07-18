@@ -3,6 +3,7 @@
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import { formatPriceFrom, isShowcaseOnly, type Artwork } from "@/types/artwork";
 import {
+  Eye,
   ImageIcon,
   Layers,
   MoreHorizontal,
@@ -201,12 +202,14 @@ export function ArtworkStepPanel({
   activeStep,
   title,
   lead,
+  onPreview,
   children,
 }: {
   step: ArtworkEditorStep;
   activeStep: ArtworkEditorStep;
   title: string;
   lead?: string;
+  onPreview?: () => void;
   children: ReactNode;
 }) {
   if (step !== activeStep) {
@@ -216,8 +219,20 @@ export function ArtworkStepPanel({
   return (
     <section className="studio-step-panel">
       <header className="studio-step-panel-header">
-        <h3 className="studio-step-panel-title">{title}</h3>
-        {lead ? <p className="studio-field-hint">{lead}</p> : null}
+        <div className="studio-step-panel-heading">
+          <h3 className="studio-step-panel-title">{title}</h3>
+          {lead ? <p className="studio-field-hint">{lead}</p> : null}
+        </div>
+        {onPreview ? (
+          <button
+            type="button"
+            className="btn-secondary studio-section-preview-btn"
+            onClick={onPreview}
+          >
+            <Eye className="h-4 w-4" strokeWidth={1.5} aria-hidden />
+            Preview
+          </button>
+        ) : null}
       </header>
       <div className="studio-step-panel-body">
         <div className="studio-step-panel-inner">{children}</div>

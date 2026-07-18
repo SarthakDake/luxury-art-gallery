@@ -14,6 +14,7 @@ import {
   StudioToggle,
 } from "./shared";
 import { RichTextEditor } from "./RichTextEditor";
+import type { StudioPreviewTarget } from "./preview-targets";
 import type { HomepageSectionId, SiteBrandTokens, SiteConfig } from "@/types/site-config";
 
 function updateStringList(list: string[], index: number, value: string) {
@@ -65,13 +66,23 @@ function moveHomepageSection(
 export function ConfigTab({
   config,
   onChange,
+  onRequestPreview,
 }: {
   config: SiteConfig;
   onChange: (config: SiteConfig) => void;
+  onRequestPreview?: (target: StudioPreviewTarget) => void;
 }) {
+  function preview(region: Extract<StudioPreviewTarget, { scope: "site" }>["region"], label: string) {
+    onRequestPreview?.({ scope: "site", region, label });
+  }
+
   return (
     <StudioShell>
-      <StudioSection title="Brand & contact" subtitle="Identity">
+      <StudioSection
+        title="Brand & contact"
+        subtitle="Identity"
+        onPreview={() => preview("hero", "Homepage hero & site name")}
+      >
         <StudioGroup eyebrow="Brand" title="Site name & homepage hero">
           <StudioFormGrid>
             <StudioField label="Site name">
@@ -147,7 +158,11 @@ export function ConfigTab({
         </StudioGroup>
       </StudioSection>
 
-      <StudioSection title="Announcements & trust badges" subtitle="Header">
+      <StudioSection
+        title="Announcements & trust badges"
+        subtitle="Header"
+        onPreview={() => preview("announcements", "Header announcements & trust badges")}
+      >
         <StudioGroup eyebrow="Header bar" title="Announcement messages">
           <StudioRepeaterHeader
             title="Lines in the top bar"
@@ -221,7 +236,12 @@ export function ConfigTab({
         </StudioGroup>
       </StudioSection>
 
-      <StudioSection title="Default product copy" subtitle="Product pages" defaultOpen={false}>
+      <StudioSection
+        title="Default product copy"
+        subtitle="Product pages"
+        defaultOpen={false}
+        onPreview={() => preview("product-copy", "Default copy on product pages")}
+      >
         <StudioGroup
           eyebrow="Defaults"
           title="Text shown on every artwork page"
@@ -269,7 +289,11 @@ export function ConfigTab({
         </StudioGroup>
       </StudioSection>
 
-      <StudioSection title="Offers & features" subtitle="Promotions">
+      <StudioSection
+        title="Offers & features"
+        subtitle="Promotions"
+        onPreview={() => preview("promotions", "Homepage offers & features")}
+      >
         <StudioGroup eyebrow="Promotions" title="Promo offers">
           <StudioRepeaterHeader
             title="Active offers"
@@ -406,7 +430,11 @@ export function ConfigTab({
         </StudioGroup>
       </StudioSection>
 
-      <StudioSection title="Visitor counter & social" subtitle="Footer">
+      <StudioSection
+        title="Visitor counter & social"
+        subtitle="Footer"
+        onPreview={() => preview("footer", "Footer contact & social")}
+      >
         <StudioGroup eyebrow="Counter" title="Visitor counter labels">
           <StudioFormGrid>
             <StudioField label="Counter eyebrow">
@@ -472,7 +500,12 @@ export function ConfigTab({
         </StudioGroup>
       </StudioSection>
 
-      <StudioSection title="Brand tokens" subtitle="Theme" defaultOpen={false}>
+      <StudioSection
+        title="Brand tokens"
+        subtitle="Theme"
+        defaultOpen={false}
+        onPreview={() => preview("theme", "Theme colors on homepage")}
+      >
         <StudioGroup
           eyebrow="Look"
           title="Colors & radii"
@@ -529,7 +562,12 @@ export function ConfigTab({
         </StudioGroup>
       </StudioSection>
 
-      <StudioSection title="Homepage sections" subtitle="Layout" defaultOpen={false}>
+      <StudioSection
+        title="Homepage sections"
+        subtitle="Layout"
+        defaultOpen={false}
+        onPreview={() => preview("homepage", "Homepage section layout")}
+      >
         <StudioGroup
           eyebrow="Order"
           title="Section visibility & order"
@@ -776,7 +814,12 @@ export function ConfigTab({
         </StudioGroup>
       </StudioSection>
 
-      <StudioSection title="Feature flags" subtitle="Progressive ship" defaultOpen={false}>
+      <StudioSection
+        title="Feature flags"
+        subtitle="Progressive ship"
+        defaultOpen={false}
+        onPreview={() => preview("homepage", "Homepage with feature flags applied")}
+      >
         <StudioGroup
           eyebrow="Gates"
           title="Turn new homepage modules on/off"
@@ -815,7 +858,12 @@ export function ConfigTab({
         </StudioGroup>
       </StudioSection>
 
-      <StudioSection title="Testimonials" subtitle="Social proof" defaultOpen={false}>
+      <StudioSection
+        title="Testimonials"
+        subtitle="Social proof"
+        defaultOpen={false}
+        onPreview={() => preview("testimonials", "Homepage testimonials")}
+      >
         <StudioGroup eyebrow="Quotes" title="Collector testimonials">
           <StudioRepeaterHeader
             title="Testimonials"
