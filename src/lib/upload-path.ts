@@ -1,10 +1,14 @@
 import { ARTWORK_IMAGE_EXTENSIONS, type ArtworkImageExtension } from "@/lib/artwork-image";
+import { getImageContentType } from "@/lib/image-format";
 import {
   buildArtworkImageFilename,
   buildPortraitFilename,
 } from "@/lib/site-data/slug";
 
 export type UploadKind = "portrait" | "cover" | "gallery" | "video-poster" | "artwork";
+
+/** Prefer the server FormData route under this size — avoids flaky client Blob multipart for typical iPhone HEIC (~1–3MB). */
+export const SERVER_UPLOAD_PREFERRED_MAX_BYTES = 4 * 1024 * 1024;
 
 const MIME_TO_EXTENSION: Record<string, ArtworkImageExtension> = {
   "image/jpeg": ".jpg",
@@ -22,6 +26,20 @@ const MIME_TO_EXTENSION: Record<string, ArtworkImageExtension> = {
 };
 
 export const ALLOWED_UPLOAD_CONTENT_TYPES = Object.keys(MIME_TO_EXTENSION);
+
+/** Resolve a Blob-safe MIME type even when the browser leaves File.type empty (common for HEIC). */
+export function resolveUploadContentType(
+  filename: string,
+  mimeType?: string,
+): string {
+  const trimmed = mimeType?.trim();
+  if (trimmed) {
+    return trimmed;
+  }
+
+  const extension = resolveClientImageExtension(filename, mimeType);
+  return extension ? getImageContentType(extension) : "application/octet-stream";
+}
 
 export function resolveClientImageExtension(
   filename: string,

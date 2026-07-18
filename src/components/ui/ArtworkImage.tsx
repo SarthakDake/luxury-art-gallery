@@ -12,14 +12,15 @@ type ArtworkImageProps = Omit<ImageProps, "src"> & {
 /**
  * Renders artwork/portrait images.
  * - Originals are stored as uploaded (including HEIC).
- * - Next/Image still optimizes delivery size for performance.
- * - GIF stays unoptimized to preserve animation.
- * - HEIC/TIFF/BMP are rasterized by `/api/artwork-image` then optimized.
+ * - Browser-native formats are optimized by Next/Image.
+ * - HEIC/TIFF/BMP are rasterized once by `/api/artwork-image` and served
+ *   unoptimized so the Image Optimizer does not re-fetch/re-encode them
+ *   (that double-pass was slow and could hang admin previews).
  */
 export function ArtworkImage({ src, alt, ...props }: ArtworkImageProps) {
   const resolvedSrc = getArtworkImageSrc(src);
-  // Animated GIFs should not be re-encoded by the optimizer.
-  const useUnoptimized = isGifImage(src) && !needsBrowserRasterization(src);
+  const useUnoptimized =
+    isGifImage(src) || needsBrowserRasterization(src);
 
   return (
     <Image
