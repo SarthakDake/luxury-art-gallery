@@ -61,10 +61,6 @@
   }
 
   .footer-brand-name {
-    font-family: var(--font-serif), ui-serif, Georgia, serif;
-    font-size: 1.625rem;
-    font-weight: 400;
-    letter-spacing: 0.04em;
     color: var(--foreground);
     text-decoration: none;
     transition: opacity 300ms ease;
@@ -72,6 +68,28 @@
 
   .footer-brand-name:hover {
     opacity: 0.75;
+  }
+
+  .footer-brand-name .site-brand-name {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .footer-brand-name .site-brand-main {
+    font-family: var(--font-serif), ui-serif, Georgia, serif;
+    font-size: 1.625rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+  }
+
+  .footer-brand-name .site-brand-sub {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
   }
 
   .footer-brand-tagline {
@@ -454,6 +472,44 @@
   }
 
   .hero-block--image .hero-eyebrow {
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .hero-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .hero-brand .site-brand-name {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  .hero-brand .site-brand-main {
+    font-family: var(--font-serif), ui-serif, Georgia, serif;
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+    color: var(--foreground);
+  }
+
+  .hero-brand .site-brand-sub {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .hero-block--image .hero-brand .site-brand-main {
+    color: #f5f5f5;
+  }
+
+  .hero-block--image .hero-brand .site-brand-sub {
     color: rgba(255, 255, 255, 0.72);
   }
 

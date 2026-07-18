@@ -88,7 +88,10 @@ export function ConfigTab({
       >
         <StudioGroup eyebrow="Brand" title="Site name & homepage hero">
           <StudioFormGrid>
-            <StudioField label="Site name">
+            <StudioField
+              label="Site name"
+              hint='Use "Main | Subline" for a two-line brand (e.g. Colors N Joy | Texture Art Studio).'
+            >
               <StudioInput
                 value={config.siteName}
                 onChange={(event) => onChange({ ...config, siteName: event.target.value })}

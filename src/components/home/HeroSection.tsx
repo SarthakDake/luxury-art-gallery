@@ -1,4 +1,5 @@
 import { Reveal } from "@/components/motion/Reveal";
+import { SiteBrandName } from "@/components/ui/SiteBrandName";
 import { SoftImage } from "@/components/ui/SoftImage";
 import { getArtworkImageSrc } from "@/lib/artwork-image";
 import type { SiteConfig } from "@/types/site-config";
@@ -31,8 +32,8 @@ export function HeroSection({ config }: { config: SiteConfig }) {
 
       <div className="site-container hero-inner">
         <div className="hero-content">
-          <Reveal as="p" variant="fade-in" immediate delay={0} className="hero-eyebrow">
-            {config.siteName}
+          <Reveal as="div" variant="fade-in" immediate delay={0} className="hero-brand">
+            <SiteBrandName name={config.siteName} />
           </Reveal>
           <Reveal as="h1" variant="slide-up" immediate delay={100} className="hero-title">
             {config.heroTitle}
