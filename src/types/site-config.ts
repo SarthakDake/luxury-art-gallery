@@ -84,6 +84,15 @@ export interface CuratedWorksCopy extends HomepageFeaturedCopy {
   subtitle: string;
   /** Optional filter matched against category, subcategory, or title. */
   categoryFilter: string;
+  /** Large hero image for the dedicated Signature Wall Art page. */
+  pageImageUrl: string;
+  /** Short introduction under the large image on the dedicated page. */
+  pageIntro: string;
+  /** How many works to show on the dedicated page grid. */
+  pageLimit: number;
+  /** CTA on the dedicated page (e.g. View Portfolio). */
+  pageCtaLabel: string;
+  pageCtaHref: string;
 }
 
 export interface SiteHomepageConfig {

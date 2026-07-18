@@ -26,7 +26,8 @@ const TABS = [
   {
     id: "signatureWallArt",
     label: "Signature Wall Art",
-    description: "Configure the Signature Wall Art page and its homepage section.",
+    description:
+      "Configure the Signature Wall Art page: large image, intro, project grid, and View Portfolio CTA.",
   },
   {
     id: "portfolio",
