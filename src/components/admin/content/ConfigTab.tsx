@@ -533,7 +533,7 @@ export function ConfigTab({
         <StudioGroup
           eyebrow="Look"
           title="Colors & radii"
-          description="These map to CSS variables and the Tailwind theme bridge. Leave defaults unless you are restyling the storefront."
+          description="These map to CSS variables and the Tailwind theme bridge. For Dark border, prefer a mid gray (around #4b5563) so form fields and dividers stay visible on near-black backgrounds — avoid pure black."
         >
           <StudioFormGrid>
             {BRAND_COLOR_FIELDS.map(({ key, label }) => (

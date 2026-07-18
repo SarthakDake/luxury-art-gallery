@@ -53,31 +53,49 @@ function asPositiveInt(value: unknown, fallback: number): number {
 function mergeBrand(raw: unknown): SiteBrandTokens {
   const source = isRecord(raw) ? raw : {};
   return {
-    accent: asString(source.accent, DEFAULT_BRAND_TOKENS.accent),
-    accentForeground: asString(
+    accent: asNonEmptyString(source.accent, DEFAULT_BRAND_TOKENS.accent),
+    accentForeground: asNonEmptyString(
       source.accentForeground,
       DEFAULT_BRAND_TOKENS.accentForeground,
     ),
-    background: asString(source.background, DEFAULT_BRAND_TOKENS.background),
-    foreground: asString(source.foreground, DEFAULT_BRAND_TOKENS.foreground),
-    muted: asString(source.muted, DEFAULT_BRAND_TOKENS.muted),
-    surface: asString(source.surface, DEFAULT_BRAND_TOKENS.surface),
-    border: asString(source.border, DEFAULT_BRAND_TOKENS.border),
-    darkAccent: asString(source.darkAccent, DEFAULT_BRAND_TOKENS.darkAccent),
-    darkBackground: asString(
+    background: asNonEmptyString(
+      source.background,
+      DEFAULT_BRAND_TOKENS.background,
+    ),
+    foreground: asNonEmptyString(
+      source.foreground,
+      DEFAULT_BRAND_TOKENS.foreground,
+    ),
+    muted: asNonEmptyString(source.muted, DEFAULT_BRAND_TOKENS.muted),
+    surface: asNonEmptyString(source.surface, DEFAULT_BRAND_TOKENS.surface),
+    border: asNonEmptyString(source.border, DEFAULT_BRAND_TOKENS.border),
+    darkAccent: asNonEmptyString(
+      source.darkAccent,
+      DEFAULT_BRAND_TOKENS.darkAccent,
+    ),
+    darkBackground: asNonEmptyString(
       source.darkBackground,
       DEFAULT_BRAND_TOKENS.darkBackground,
     ),
-    darkForeground: asString(
+    darkForeground: asNonEmptyString(
       source.darkForeground,
       DEFAULT_BRAND_TOKENS.darkForeground,
     ),
-    darkMuted: asString(source.darkMuted, DEFAULT_BRAND_TOKENS.darkMuted),
-    darkSurface: asString(source.darkSurface, DEFAULT_BRAND_TOKENS.darkSurface),
-    darkBorder: asString(source.darkBorder, DEFAULT_BRAND_TOKENS.darkBorder),
-    radiusSm: asString(source.radiusSm, DEFAULT_BRAND_TOKENS.radiusSm),
-    radiusMd: asString(source.radiusMd, DEFAULT_BRAND_TOKENS.radiusMd),
-    radiusLg: asString(source.radiusLg, DEFAULT_BRAND_TOKENS.radiusLg),
+    darkMuted: asNonEmptyString(
+      source.darkMuted,
+      DEFAULT_BRAND_TOKENS.darkMuted,
+    ),
+    darkSurface: asNonEmptyString(
+      source.darkSurface,
+      DEFAULT_BRAND_TOKENS.darkSurface,
+    ),
+    darkBorder: asNonEmptyString(
+      source.darkBorder,
+      DEFAULT_BRAND_TOKENS.darkBorder,
+    ),
+    radiusSm: asNonEmptyString(source.radiusSm, DEFAULT_BRAND_TOKENS.radiusSm),
+    radiusMd: asNonEmptyString(source.radiusMd, DEFAULT_BRAND_TOKENS.radiusMd),
+    radiusLg: asNonEmptyString(source.radiusLg, DEFAULT_BRAND_TOKENS.radiusLg),
   };
 }
 

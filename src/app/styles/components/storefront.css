@@ -1060,11 +1060,30 @@
     color: var(--background);
   }
 
+  .dark .size-pill:not(.size-pill-active) {
+    border-color: var(--border);
+    background: color-mix(in srgb, var(--surface) 70%, transparent);
+    color: color-mix(in srgb, var(--foreground) 82%, var(--muted));
+  }
+
   .quantity-stepper {
     display: inline-flex;
     min-height: var(--input-height);
     align-items: stretch;
     border: 1px solid var(--border);
+  }
+
+  .dark .quantity-stepper {
+    border-color: var(--border);
+    background: var(--surface);
+  }
+
+  .dark .quantity-btn {
+    background: var(--surface);
+  }
+
+  .dark .quantity-value {
+    border-color: var(--border);
   }
 
   .quantity-btn {
@@ -2620,6 +2639,12 @@
     transition: border-color 300ms ease, background-color 300ms ease;
   }
 
+  .dark .contact-info-card,
+  .dark .contact-form-card {
+    background: var(--surface);
+    border-color: var(--border);
+  }
+
   @media (min-width: 640px) {
     .contact-info-card,
     .contact-form-card {
@@ -2798,6 +2823,11 @@
     background: var(--surface);
     overflow: hidden;
     min-height: 16rem;
+  }
+
+  .dark .trade-pdf-frame {
+    border-color: var(--border);
+    background: var(--surface-elevated);
   }
 
   .trade-pdf-embed {
