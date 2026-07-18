@@ -793,9 +793,8 @@
     font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
     font-size: 0.625rem;
     font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--muted);
+    letter-spacing: 0.04em;
+    color: #c9a227;
     white-space: nowrap;
   }
 
@@ -826,7 +825,6 @@
 
     .site-logo .site-brand-sub {
       font-size: 0.75rem;
-      letter-spacing: 0.16em;
     }
   }
 

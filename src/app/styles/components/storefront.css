@@ -87,9 +87,8 @@
   .footer-brand-name .site-brand-sub {
     font-size: 0.75rem;
     font-weight: 500;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--muted);
+    letter-spacing: 0.04em;
+    color: #c9a227;
   }
 
   .footer-brand-tagline {
@@ -500,9 +499,8 @@
   .hero-brand .site-brand-sub {
     font-size: 0.75rem;
     font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--muted);
+    letter-spacing: 0.04em;
+    color: #c9a227;
   }
 
   .hero-block--image .hero-brand .site-brand-main {
@@ -510,7 +508,7 @@
   }
 
   .hero-block--image .hero-brand .site-brand-sub {
-    color: rgba(255, 255, 255, 0.72);
+    color: #c9a227;
   }
 
   .hero-title {
