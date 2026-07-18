@@ -388,7 +388,7 @@ export function ImageUploadField({
   label: string;
   path?: string;
   slug: string;
-  kind: "cover" | "gallery" | "portrait" | "hero" | "video-poster";
+  kind: "cover" | "gallery" | "portrait" | "hero" | "page" | "video-poster";
   galleryIndex?: number;
   videoIndex?: number;
   onUploaded: (path: string) => void;

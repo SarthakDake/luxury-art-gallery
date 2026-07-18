@@ -27,6 +27,11 @@ function asString(value: unknown, fallback = ""): string {
   return typeof value === "string" ? value : fallback;
 }
 
+function asNonEmptyString(value: unknown, fallback: string): string {
+  const next = asString(value, fallback).trim();
+  return next || fallback;
+}
+
 function asBoolean(value: unknown, fallback: boolean): boolean {
   return typeof value === "boolean" ? value : fallback;
 }
@@ -212,11 +217,11 @@ function mergeCuratedWorksCopy(
     subtitle: asString(source.subtitle, fallback.subtitle),
     limit: asPositiveInt(source.limit, fallback.limit),
     categoryFilter: asString(source.categoryFilter, fallback.categoryFilter),
-    pageImageUrl: asString(source.pageImageUrl, fallback.pageImageUrl),
+    pageImageUrl: asNonEmptyString(source.pageImageUrl, fallback.pageImageUrl),
     pageIntro: asString(source.pageIntro, fallback.pageIntro),
     pageLimit: asPositiveInt(source.pageLimit, fallback.pageLimit),
-    pageCtaLabel: asString(source.pageCtaLabel, fallback.pageCtaLabel),
-    pageCtaHref: asString(source.pageCtaHref, fallback.pageCtaHref),
+    pageCtaLabel: asNonEmptyString(source.pageCtaLabel, fallback.pageCtaLabel),
+    pageCtaHref: asNonEmptyString(source.pageCtaHref, fallback.pageCtaHref),
   };
 }
 
@@ -339,7 +344,7 @@ function mergeForInteriorDesigners(raw: unknown): ForInteriorDesignersConfig {
       eyebrow: asString(hero.eyebrow, defaults.hero.eyebrow),
       title: asString(hero.title, defaults.hero.title),
       subtitle: asString(hero.subtitle, defaults.hero.subtitle),
-      imageUrl: asString(hero.imageUrl, defaults.hero.imageUrl),
+      imageUrl: asNonEmptyString(hero.imageUrl, defaults.hero.imageUrl),
       primaryCtaLabel: asString(
         hero.primaryCtaLabel,
         defaults.hero.primaryCtaLabel,
@@ -374,8 +379,11 @@ function mergeForInteriorDesigners(raw: unknown): ForInteriorDesignersConfig {
         portfolioPdf.downloadLabel,
         defaults.portfolioPdf.downloadLabel,
       ),
-      url: asString(portfolioPdf.url, defaults.portfolioPdf.url),
-      filename: asString(portfolioPdf.filename, defaults.portfolioPdf.filename),
+      url: asNonEmptyString(portfolioPdf.url, defaults.portfolioPdf.url),
+      filename: asNonEmptyString(
+        portfolioPdf.filename,
+        defaults.portfolioPdf.filename,
+      ),
     },
     tradeProcess: {
       eyebrow: asString(tradeProcess.eyebrow, defaults.tradeProcess.eyebrow),

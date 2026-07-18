@@ -1,8 +1,6 @@
-import { CollectionsSection } from "@/components/home/CollectionsSection";
 import { CuratedWorksSection } from "@/components/home/CuratedWorksSection";
 import { Reveal } from "@/components/motion/Reveal";
 import { TradeInquiryForm } from "@/components/trade/TradeInquiryForm";
-import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { SoftImage } from "@/components/ui/SoftImage";
 import { getArtworkImageSrc } from "@/lib/artwork-image";
 import { DEFAULT_FOR_INTERIOR_DESIGNERS } from "@/lib/site-config/defaults";
@@ -20,38 +18,37 @@ export function ForInteriorDesignersView({
   artworks: Artwork[];
 }) {
   const page = config.forInteriorDesigners ?? DEFAULT_FOR_INTERIOR_DESIGNERS;
-  const heroImage = page.hero.imageUrl.trim();
-  const pdfUrl = page.portfolioPdf.url.trim();
+  const heroImage =
+    page.hero.imageUrl.trim() || DEFAULT_FOR_INTERIOR_DESIGNERS.hero.imageUrl;
+  const pdfUrl =
+    page.portfolioPdf.url.trim() || DEFAULT_FOR_INTERIOR_DESIGNERS.portfolioPdf.url;
+  const pdfFilename =
+    page.portfolioPdf.filename.trim() ||
+    DEFAULT_FOR_INTERIOR_DESIGNERS.portfolioPdf.filename;
   const pdfViewSrc = pdfUrl
-    ? getSiteDocumentSrc(pdfUrl, { filename: page.portfolioPdf.filename })
+    ? getSiteDocumentSrc(pdfUrl, { filename: pdfFilename })
     : "";
   const pdfDownloadSrc = pdfUrl
     ? getSiteDocumentSrc(pdfUrl, {
         download: true,
-        filename: page.portfolioPdf.filename || "designer-portfolio.pdf",
+        filename: pdfFilename || "designer-portfolio.pdf",
       })
     : "";
 
   return (
     <>
-      <section
-        className={`hero-block ${heroImage ? "hero-block--image" : ""} trade-hero`}
-      >
-        {heroImage ? (
-          <>
-            <SoftImage
-              src={getArtworkImageSrc(heroImage)}
-              alt=""
-              fill
-              priority
-              sizes="100vw"
-              className="hero-media object-cover"
-            />
-            <div className="hero-overlay" aria-hidden />
-          </>
-        ) : null}
+      <section className="hero-block hero-block--image trade-hero">
+        <SoftImage
+          src={getArtworkImageSrc(heroImage)}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="hero-media object-cover"
+        />
+        <div className="hero-overlay" aria-hidden />
 
-        <div className="site-container hero-inner">
+        <div className="site-container hero-inner trade-hero-inner">
           <div className="hero-content">
             <Reveal as="p" variant="fade-in" immediate className="hero-eyebrow">
               {page.hero.eyebrow}
@@ -72,7 +69,7 @@ export function ForInteriorDesignersView({
               variant="slide-up"
               immediate
               delay={220}
-              className={`hero-actions ${heroImage ? "hero-actions--on-dark" : ""}`}
+              className="hero-actions hero-actions--on-dark"
             >
               <Link href={page.hero.primaryCtaHref} className="btn-primary btn-responsive">
                 {page.hero.primaryCtaLabel}
@@ -90,13 +87,7 @@ export function ForInteriorDesignersView({
         </div>
       </section>
 
-      <div className="site-container page-shell page-section-end">
-        <Breadcrumbs
-          items={[
-            { label: "Home", href: "/" },
-            { label: "For Interior Designers" },
-          ]}
-        />
+      <div className="site-container trade-page-body page-section-end">
 
         <Reveal
           as="section"
@@ -194,8 +185,6 @@ export function ForInteriorDesignersView({
         copy={config.homepage.signatureWallArt}
         artworks={artworks}
       />
-
-      <CollectionsSection config={config} artworks={artworks} />
 
       <div className="site-container page-section-end">
         <Reveal
