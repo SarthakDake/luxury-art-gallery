@@ -10,6 +10,7 @@ import {
   Plus,
   Sparkles,
   Tag,
+  Trash2,
   Video,
 } from "lucide-react";
 import type { ReactNode } from "react";
@@ -158,8 +159,14 @@ export function ArtworkEditorHero({
         </div>
       </div>
 
-      <button type="button" className="btn-secondary studio-delete-btn" onClick={onDelete}>
-        Delete piece
+      <button
+        type="button"
+        className="studio-icon-btn studio-delete-btn"
+        onClick={onDelete}
+        aria-label="Delete piece"
+        title="Delete piece"
+      >
+        <Trash2 className="h-4 w-4" strokeWidth={1.5} aria-hidden />
       </button>
     </div>
   );

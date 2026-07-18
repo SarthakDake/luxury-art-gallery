@@ -328,107 +328,6 @@ export function ForInteriorDesignersTab({
           </div>
         </StudioGroup>
 
-        <StudioGroup
-          eyebrow="Portfolio PDF"
-          title="Designer portfolio document"
-          description="Upload a PDF from here. It appears on the For Interior Designers page with a download button."
-        >
-          <StudioFormGrid>
-            <StudioField label="Eyebrow">
-              <StudioInput
-                value={page.portfolioPdf.eyebrow}
-                onChange={(event) =>
-                  updatePage({
-                    portfolioPdf: {
-                      ...page.portfolioPdf,
-                      eyebrow: event.target.value,
-                    },
-                  })
-                }
-              />
-            </StudioField>
-            <StudioField label="Title">
-              <StudioInput
-                value={page.portfolioPdf.title}
-                onChange={(event) =>
-                  updatePage({
-                    portfolioPdf: {
-                      ...page.portfolioPdf,
-                      title: event.target.value,
-                    },
-                  })
-                }
-              />
-            </StudioField>
-            <StudioField label="Download button label">
-              <StudioInput
-                value={page.portfolioPdf.downloadLabel}
-                onChange={(event) =>
-                  updatePage({
-                    portfolioPdf: {
-                      ...page.portfolioPdf,
-                      downloadLabel: event.target.value,
-                    },
-                  })
-                }
-              />
-            </StudioField>
-            <StudioField label="Download filename">
-              <StudioInput
-                value={page.portfolioPdf.filename}
-                onChange={(event) =>
-                  updatePage({
-                    portfolioPdf: {
-                      ...page.portfolioPdf,
-                      filename: event.target.value,
-                    },
-                  })
-                }
-              />
-            </StudioField>
-          </StudioFormGrid>
-          <StudioField label="Subtitle">
-            <StudioTextarea
-              rows={3}
-              value={page.portfolioPdf.subtitle}
-              onChange={(event) =>
-                updatePage({
-                  portfolioPdf: {
-                    ...page.portfolioPdf,
-                    subtitle: event.target.value,
-                  },
-                })
-              }
-            />
-          </StudioField>
-          <DocumentUploadField
-            label="Portfolio PDF"
-            path={page.portfolioPdf.url}
-            filename={page.portfolioPdf.filename}
-            slug="designer-portfolio"
-            onUploaded={(path, filename) =>
-              updatePage({
-                portfolioPdf: {
-                  ...page.portfolioPdf,
-                  url: path,
-                  filename: filename || page.portfolioPdf.filename,
-                },
-              })
-            }
-          />
-        </StudioGroup>
-
-        <StudioGroup
-          eyebrow="On-page galleries"
-          title="Signature Wall Art & Collections"
-          description="These blocks reuse the same Signature Wall Art and Collections settings as the homepage (edit those under Signature Wall Art / Site Settings)."
-        >
-          <p className="studio-field-hint">
-            Homepage Signature Wall Art and Collections sections are shown on this
-            page automatically after the PDF block.
-          </p>
-        </StudioGroup>
-
         <StudioGroup eyebrow="Trade Process" title="Collaboration steps">
           <StudioFormGrid>
             <StudioField label="Eyebrow">
@@ -534,6 +433,107 @@ export function ForInteriorDesignersTab({
               </StudioRepeaterItem>
             ))}
           </div>
+        </StudioGroup>
+
+        <StudioGroup
+          eyebrow="Portfolio PDF"
+          title="Designer portfolio document"
+          description="Upload a PDF from here. It appears on the For Interior Designers page with a download button."
+        >
+          <StudioFormGrid>
+            <StudioField label="Eyebrow">
+              <StudioInput
+                value={page.portfolioPdf.eyebrow}
+                onChange={(event) =>
+                  updatePage({
+                    portfolioPdf: {
+                      ...page.portfolioPdf,
+                      eyebrow: event.target.value,
+                    },
+                  })
+                }
+              />
+            </StudioField>
+            <StudioField label="Title">
+              <StudioInput
+                value={page.portfolioPdf.title}
+                onChange={(event) =>
+                  updatePage({
+                    portfolioPdf: {
+                      ...page.portfolioPdf,
+                      title: event.target.value,
+                    },
+                  })
+                }
+              />
+            </StudioField>
+            <StudioField label="Download button label">
+              <StudioInput
+                value={page.portfolioPdf.downloadLabel}
+                onChange={(event) =>
+                  updatePage({
+                    portfolioPdf: {
+                      ...page.portfolioPdf,
+                      downloadLabel: event.target.value,
+                    },
+                  })
+                }
+              />
+            </StudioField>
+            <StudioField label="Download filename">
+              <StudioInput
+                value={page.portfolioPdf.filename}
+                onChange={(event) =>
+                  updatePage({
+                    portfolioPdf: {
+                      ...page.portfolioPdf,
+                      filename: event.target.value,
+                    },
+                  })
+                }
+              />
+            </StudioField>
+          </StudioFormGrid>
+          <StudioField label="Subtitle">
+            <StudioTextarea
+              rows={3}
+              value={page.portfolioPdf.subtitle}
+              onChange={(event) =>
+                updatePage({
+                  portfolioPdf: {
+                    ...page.portfolioPdf,
+                    subtitle: event.target.value,
+                  },
+                })
+              }
+            />
+          </StudioField>
+          <DocumentUploadField
+            label="Portfolio PDF"
+            path={page.portfolioPdf.url}
+            filename={page.portfolioPdf.filename}
+            slug="designer-portfolio"
+            onUploaded={(path, filename) =>
+              updatePage({
+                portfolioPdf: {
+                  ...page.portfolioPdf,
+                  url: path,
+                  filename: filename || page.portfolioPdf.filename,
+                },
+              })
+            }
+          />
+        </StudioGroup>
+
+        <StudioGroup
+          eyebrow="On-page galleries"
+          title="Signature Wall Art"
+          description="This block reuses the same Signature Wall Art settings as the homepage (edit under Signature Wall Art)."
+        >
+          <p className="studio-field-hint">
+            Signature Wall Art is shown on this page automatically after the
+            Studio Portfolio PDF block.
+          </p>
         </StudioGroup>
 
         <StudioGroup eyebrow="Inquiry Form" title="Trade inquiry copy">

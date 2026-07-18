@@ -51,7 +51,7 @@ export const DEFAULT_HOMEPAGE: SiteHomepageConfig = {
     { id: "trustBadges", enabled: true },
     { id: "signatureWallArt", enabled: true },
     { id: "featured", enabled: true },
-    { id: "collections", enabled: true },
+    { id: "collections", enabled: false },
     { id: "portfolio", enabled: true },
     { id: "offers", enabled: false },
     { id: "features", enabled: false },

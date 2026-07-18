@@ -106,7 +106,7 @@
       },
       {
         "id": "collections",
-        "enabled": true
+        "enabled": false
       },
       {
         "id": "portfolio",
