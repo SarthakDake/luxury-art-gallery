@@ -1,6 +1,7 @@
 import { CuratedCollectionPage } from "@/components/curated/CuratedCollectionPage";
 import { Reveal } from "@/components/motion/Reveal";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
+import { DEFAULT_HOMEPAGE } from "@/lib/site-config/defaults";
 import { getArtistProfile, getArtworks, getSiteConfig } from "@/lib/site-data";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -9,7 +10,7 @@ export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
   const config = await getSiteConfig();
-  const copy = config.homepage.portfolio;
+  const copy = config.homepage.portfolio ?? DEFAULT_HOMEPAGE.portfolio;
 
   return {
     title: copy.title,
@@ -25,7 +26,7 @@ export default async function PortfolioPage() {
     getArtistProfile(),
   ]);
 
-  const copy = config.homepage.portfolio;
+  const copy = config.homepage.portfolio ?? DEFAULT_HOMEPAGE.portfolio;
   const exhibitions = [...profile.exhibitions]
     .sort((a, b) => b.year - a.year)
     .slice(0, 3);
@@ -35,6 +36,7 @@ export default async function PortfolioPage() {
       copy={copy}
       artworks={artworks}
       breadcrumbLabel="Portfolio"
+      fallbackCopy={DEFAULT_HOMEPAGE.portfolio}
       intro={
         <Reveal
           as="section"

@@ -7,6 +7,7 @@ import { OffersSection } from "@/components/home/OffersSection";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { TrustBadgesSection } from "@/components/home/TrustBadgesSection";
 import { getEnabledHomepageSections } from "@/lib/site-config";
+import { DEFAULT_HOMEPAGE } from "@/lib/site-config/defaults";
 import type { Artwork } from "@/types/artwork";
 import type { HomepageSectionId, SiteConfig } from "@/types/site-config";
 
@@ -28,7 +29,9 @@ function renderSection(
       return (
         <CuratedWorksSection
           key={id}
-          copy={config.homepage.signatureWallArt}
+          copy={
+            config.homepage.signatureWallArt ?? DEFAULT_HOMEPAGE.signatureWallArt
+          }
           artworks={artworks}
         />
       );
@@ -36,7 +39,7 @@ function renderSection(
       return (
         <CuratedWorksSection
           key={id}
-          copy={config.homepage.portfolio}
+          copy={config.homepage.portfolio ?? DEFAULT_HOMEPAGE.portfolio}
           artworks={artworks}
         />
       );
