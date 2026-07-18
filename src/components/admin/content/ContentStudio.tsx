@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ArtworksTab } from "./ArtworksTab";
 import { ConfigTab } from "./ConfigTab";
+import { CuratedPageTab } from "./CuratedPageTab";
 import { ProfileTab } from "./ProfileTab";
 import type { StudioPreviewTarget } from "./preview-targets";
 import { StudioSitePreview } from "./StudioSitePreview";
@@ -22,6 +23,16 @@ const TABS = [
     description: "Update branding, theme tokens, homepage sections, offers, and feature flags.",
   },
   {
+    id: "signatureWallArt",
+    label: "Signature Wall Art",
+    description: "Configure the Signature Wall Art page and its homepage section.",
+  },
+  {
+    id: "portfolio",
+    label: "Portfolio",
+    description: "Configure the artist Portfolio page and its homepage section.",
+  },
+  {
     id: "profile",
     label: "Artist Profile",
     description: "Edit your biography, portrait, exhibitions, and press.",
@@ -29,6 +40,12 @@ const TABS = [
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
+
+const CONFIG_SAVE_TABS = new Set<TabId>([
+  "config",
+  "signatureWallArt",
+  "portfolio",
+]);
 
 export function ContentStudio() {
   const [activeTab, setActiveTab] = useState<TabId>("artworks");
@@ -127,7 +144,7 @@ export function ContentStudio() {
         });
       }
 
-      if (activeTab === "config" && config) {
+      if (CONFIG_SAVE_TABS.has(activeTab) && config) {
         const response = await fetch("/api/admin/content/config", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -144,11 +161,13 @@ export function ContentStudio() {
         }
 
         setConfig(payload.config ?? config);
+        const savedLabel =
+          TABS.find((tab) => tab.id === activeTab)?.label ?? "Site settings";
         setMessage({
           tone: payload.mirrorWarning ? "error" : "success",
           text: payload.mirrorWarning
-            ? `Site settings saved to the database, but remote sync needs attention: ${payload.mirrorWarning}`
-            : "Site settings saved.",
+            ? `${savedLabel} saved to the database, but remote sync needs attention: ${payload.mirrorWarning}`
+            : `${savedLabel} saved.`,
         });
       }
 
@@ -226,6 +245,26 @@ export function ContentStudio() {
             {activeTab === "config" ? (
               <ConfigTab
                 config={config}
+                onChange={setConfig}
+                onRequestPreview={setActivePreview}
+              />
+            ) : null}
+            {activeTab === "signatureWallArt" ? (
+              <CuratedPageTab
+                config={config}
+                pageKey="signatureWallArt"
+                title="Signature Wall Art"
+                subtitle="Page copy"
+                onChange={setConfig}
+                onRequestPreview={setActivePreview}
+              />
+            ) : null}
+            {activeTab === "portfolio" ? (
+              <CuratedPageTab
+                config={config}
+                pageKey="portfolio"
+                title="Portfolio"
+                subtitle="Page copy"
                 onChange={setConfig}
                 onRequestPreview={setActivePreview}
               />

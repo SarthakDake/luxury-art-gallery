@@ -9,20 +9,21 @@ import { createPortal } from "react-dom";
 import { useIsClient } from "@/hooks/use-is-client";
 
 interface GlobalSearchProps {
-  variant?: "inline" | "mobile" | "drawer";
+  /** `toggle` = header icon button that opens the search panel; `drawer` = inline field inside the mobile menu. */
+  variant?: "toggle" | "drawer";
 }
 
-const MOBILE_SEARCH_TOP =
+const SEARCH_PANEL_TOP =
   "top-[calc(var(--announcement-height)+var(--header-height))]";
 
-export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
+export function GlobalSearch({ variant = "toggle" }: GlobalSearchProps) {
   const isClient = useIsClient();
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [mobileExpanded, setMobileExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const artworks = useArtworks();
 
   const hasQuery = query.length > 0;
@@ -30,23 +31,7 @@ export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
   const results = useMemo(() => searchArtworks(artworks, query), [artworks, query]);
 
   useEffect(() => {
-    if (variant === "mobile") return;
-
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [variant]);
-
-  useEffect(() => {
-    if (variant !== "mobile" || !mobileExpanded) return;
+    if (variant !== "toggle" || !expanded) return;
 
     const frame = requestAnimationFrame(() => {
       inputRef.current?.focus({ preventScroll: true });
@@ -72,24 +57,24 @@ export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
       style.width = previousWidth;
       window.scrollTo(0, scrollY);
     };
-  }, [variant, mobileExpanded]);
+  }, [variant, expanded]);
 
   function handleSelect(slug: string) {
     setQuery("");
     setIsOpen(false);
-    setMobileExpanded(false);
+    setExpanded(false);
     router.push(`/art/${slug}`, { scroll: false });
   }
 
-  function openMobileSearch() {
+  function openSearch() {
     window.scrollTo(0, 0);
-    setMobileExpanded(true);
+    setExpanded(true);
   }
 
-  function closeMobileSearch() {
+  function closeSearch() {
     setQuery("");
     setIsOpen(false);
-    setMobileExpanded(false);
+    setExpanded(false);
   }
 
   function clearQuery() {
@@ -174,67 +159,54 @@ export function GlobalSearch({ variant = "inline" }: GlobalSearchProps) {
     );
   }
 
-  if (variant === "mobile") {
-    const mobilePanel =
-      mobileExpanded && isClient ? (
-        <>
-          <button
-            type="button"
-            aria-label="Close search overlay"
-            onClick={closeMobileSearch}
-            className={`fixed inset-x-0 bottom-0 ${MOBILE_SEARCH_TOP} z-[44] cursor-pointer border-0 bg-black/30 backdrop-blur-[2px]`}
-          />
-          <div
-            ref={containerRef}
-            className={`fixed inset-x-0 ${MOBILE_SEARCH_TOP} z-[45] border-b border-[var(--border)] bg-[var(--background)] shadow-[0_12px_32px_rgba(0,0,0,0.08)]`}
-          >
-            <div className="site-container py-3.5">
-              <div className="flex items-center gap-2">
-                <div className="min-w-0 flex-1">{searchInput}</div>
-                <button
-                  type="button"
-                  aria-label="Close search"
-                  onClick={closeMobileSearch}
-                  className="icon-btn shrink-0"
-                >
-                  <X className="h-[18px] w-[18px]" strokeWidth={1.5} />
-                </button>
-              </div>
-              {resultsPanel}
-            </div>
-          </div>
-        </>
-      ) : null;
-
-    return (
+  const panel =
+    expanded && isClient ? (
       <>
         <button
           type="button"
-          aria-label="Search artworks"
-          aria-expanded={mobileExpanded}
-          onClick={() =>
-            mobileExpanded ? closeMobileSearch() : openMobileSearch()
-          }
-          className="icon-btn xl:hidden"
+          aria-label="Close search overlay"
+          onClick={closeSearch}
+          className={`fixed inset-x-0 bottom-0 ${SEARCH_PANEL_TOP} z-[44] cursor-pointer border-0 bg-black/30 backdrop-blur-[2px]`}
+        />
+        <div
+          ref={containerRef}
+          className={`fixed inset-x-0 ${SEARCH_PANEL_TOP} z-[45] border-b border-[var(--border)] bg-[var(--background)] shadow-[0_12px_32px_rgba(0,0,0,0.08)]`}
         >
-          {mobileExpanded ? (
-            <X className="h-[18px] w-[18px]" strokeWidth={1.5} />
-          ) : (
-            <Search className="h-[18px] w-[18px]" strokeWidth={1.5} />
-          )}
-        </button>
-
-        {isClient && mobilePanel ? createPortal(mobilePanel, document.body) : null}
+          <div className="site-container py-3.5">
+            <div className="mx-auto flex max-w-2xl items-center gap-2">
+              <div className="min-w-0 flex-1">{searchInput}</div>
+              <button
+                type="button"
+                aria-label="Close search"
+                onClick={closeSearch}
+                className="icon-btn shrink-0"
+              >
+                <X className="h-[18px] w-[18px]" strokeWidth={1.5} />
+              </button>
+            </div>
+            <div className="mx-auto max-w-2xl">{resultsPanel}</div>
+          </div>
+        </div>
       </>
-    );
-  }
+    ) : null;
 
   return (
-    <div ref={containerRef} className="header-search hidden xl:block">
-      {searchInput}
-      {isOpen && query.trim() ? (
-        <div className="search-dropdown">{resultsPanel}</div>
-      ) : null}
-    </div>
+    <>
+      <button
+        type="button"
+        aria-label="Search artworks"
+        aria-expanded={expanded}
+        onClick={() => (expanded ? closeSearch() : openSearch())}
+        className="icon-btn"
+      >
+        {expanded ? (
+          <X className="h-[18px] w-[18px]" strokeWidth={1.5} />
+        ) : (
+          <Search className="h-[18px] w-[18px]" strokeWidth={1.5} />
+        )}
+      </button>
+
+      {isClient && panel ? createPortal(panel, document.body) : null}
+    </>
   );
 }

@@ -27,6 +27,8 @@ const SECTION_LABELS: Record<HomepageSectionId, string> = {
   trustBadges: "Trust badges",
   collections: "Collections",
   featured: "Featured works",
+  signatureWallArt: "Signature Wall Art",
+  portfolio: "Portfolio",
   offers: "Offers",
   features: "Features",
   testimonials: "Testimonials",

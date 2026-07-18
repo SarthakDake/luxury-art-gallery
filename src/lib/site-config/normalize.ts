@@ -164,6 +164,19 @@ function mergeSectionCopy(
   };
 }
 
+function mergeCuratedWorksCopy(
+  raw: unknown,
+  fallback: SiteHomepageConfig["signatureWallArt"],
+): SiteHomepageConfig["signatureWallArt"] {
+  const source = isRecord(raw) ? raw : {};
+  return {
+    ...mergeSectionCopy(source, fallback),
+    subtitle: asString(source.subtitle, fallback.subtitle),
+    limit: asPositiveInt(source.limit, fallback.limit),
+    categoryFilter: asString(source.categoryFilter, fallback.categoryFilter),
+  };
+}
+
 function mergeHomepage(raw: unknown): SiteHomepageConfig {
   const source = isRecord(raw) ? raw : {};
   const heroSource = isRecord(source.hero) ? source.hero : {};
@@ -195,6 +208,14 @@ function mergeHomepage(raw: unknown): SiteHomepageConfig {
       ...mergeSectionCopy(source.featured, DEFAULT_HOMEPAGE.featured),
       limit: asPositiveInt(featuredSource.limit, DEFAULT_HOMEPAGE.featured.limit),
     },
+    signatureWallArt: mergeCuratedWorksCopy(
+      source.signatureWallArt,
+      DEFAULT_HOMEPAGE.signatureWallArt,
+    ),
+    portfolio: mergeCuratedWorksCopy(
+      source.portfolio,
+      DEFAULT_HOMEPAGE.portfolio,
+    ),
     offers: mergeSectionCopy(source.offers, DEFAULT_HOMEPAGE.offers),
     features: mergeSectionCopy(source.features, DEFAULT_HOMEPAGE.features),
     testimonials: mergeSectionCopy(

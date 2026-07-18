@@ -1,4 +1,5 @@
 import { CollectionsSection } from "@/components/home/CollectionsSection";
+import { CuratedWorksSection } from "@/components/home/CuratedWorksSection";
 import { FeaturedWorksSection } from "@/components/home/FeaturedWorksSection";
 import { FeaturesSection } from "@/components/home/FeaturesSection";
 import { HeroSection } from "@/components/home/HeroSection";
@@ -23,6 +24,22 @@ function renderSection(
       return <CollectionsSection key={id} config={config} artworks={artworks} />;
     case "featured":
       return <FeaturedWorksSection key={id} config={config} artworks={artworks} />;
+    case "signatureWallArt":
+      return (
+        <CuratedWorksSection
+          key={id}
+          copy={config.homepage.signatureWallArt}
+          artworks={artworks}
+        />
+      );
+    case "portfolio":
+      return (
+        <CuratedWorksSection
+          key={id}
+          copy={config.homepage.portfolio}
+          artworks={artworks}
+        />
+      );
     case "offers":
       return <OffersSection key={id} config={config} />;
     case "features":

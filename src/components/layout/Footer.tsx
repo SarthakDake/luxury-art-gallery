@@ -1,16 +1,10 @@
 import { ContactEmailLinks } from "@/components/ui/ContactEmailLinks";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 import { VisitorCounter } from "@/components/ui/VisitorCounter";
+import { FOOTER_EXPLORE_LINKS } from "@/lib/nav-links";
 import type { SiteConfig } from "@/types/site-config";
 import { MapPin } from "lucide-react";
 import Link from "next/link";
-
-const exploreLinks = [
-  { href: "/shop", label: "Shop" },
-  { href: "/about", label: "About us" },
-  { href: "/contact", label: "Contact us" },
-  { href: "/cart", label: "Cart" },
-] as const;
 
 export function Footer({ config }: { config: SiteConfig }) {
   return (
@@ -31,7 +25,7 @@ export function Footer({ config }: { config: SiteConfig }) {
           >
             <h2 className="footer-heading">Explore</h2>
             <ul className="footer-nav">
-              {exploreLinks.map((link) => (
+              {FOOTER_EXPLORE_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className="footer-link">
                     {link.label}

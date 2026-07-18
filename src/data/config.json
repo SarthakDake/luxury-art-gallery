@@ -105,6 +105,14 @@
         "enabled": true
       },
       {
+        "id": "signatureWallArt",
+        "enabled": true
+      },
+      {
+        "id": "portfolio",
+        "enabled": true
+      },
+      {
         "id": "offers",
         "enabled": false
       },
@@ -119,10 +127,10 @@
     ],
     "hero": {
       "imageUrl": "/site/hero-banner.png?v=1784362778820",
-      "primaryCtaLabel": "Shop Gallery",
-      "primaryCtaHref": "/shop",
-      "secondaryCtaLabel": "About the Artist",
-      "secondaryCtaHref": "/about"
+      "primaryCtaLabel": "Signature Wall Art",
+      "primaryCtaHref": "/signature-wall-art",
+      "secondaryCtaLabel": "Shop",
+      "secondaryCtaHref": "/shop"
     },
     "collections": {
       "eyebrow": "Browse by Medium",
@@ -136,6 +144,24 @@
       "actionLabel": "View Full Gallery",
       "actionHref": "/shop",
       "limit": 4
+    },
+    "signatureWallArt": {
+      "eyebrow": "Signature Collection",
+      "title": "Signature Wall Art",
+      "subtitle": "Statement pieces made to anchor living rooms, studios, and quiet corners.",
+      "actionLabel": "Explore Signature Works",
+      "actionHref": "/signature-wall-art",
+      "limit": 4,
+      "categoryFilter": "Ready to hang"
+    },
+    "portfolio": {
+      "eyebrow": "Artist Portfolio",
+      "title": "Selected Portfolio",
+      "subtitle": "A wider look at the practice behind Colors N Joy — from florals to contemplative abstracts.",
+      "actionLabel": "View Full Portfolio",
+      "actionHref": "/portfolio",
+      "limit": 8,
+      "categoryFilter": ""
     },
     "offers": {
       "eyebrow": "Studio Offers",
