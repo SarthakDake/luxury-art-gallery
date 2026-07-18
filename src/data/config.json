@@ -105,14 +105,6 @@
         "enabled": true
       },
       {
-        "id": "collections",
-        "enabled": false
-      },
-      {
-        "id": "portfolio",
-        "enabled": true
-      },
-      {
         "id": "offers",
         "enabled": false
       },
@@ -123,6 +115,14 @@
       {
         "id": "testimonials",
         "enabled": false
+      },
+      {
+        "id": "collections",
+        "enabled": true
+      },
+      {
+        "id": "portfolio",
+        "enabled": true
       }
     ],
     "hero": {
@@ -148,9 +148,9 @@
     "signatureWallArt": {
       "eyebrow": "Signature Collection",
       "title": "Signature Wall Art",
-      "subtitle": "Statement pieces made to anchor living rooms, studios, and quiet corners.",
       "actionLabel": "Explore Signature Works",
       "actionHref": "/signature-wall-art",
+      "subtitle": "Statement pieces made to anchor living rooms, studios, and quiet corners.",
       "limit": 4,
       "categoryFilter": "Ready to hang",
       "pageImageUrl": "/site/signature-page-hero.jpg",
@@ -162,9 +162,9 @@
     "portfolio": {
       "eyebrow": "Trade Partners",
       "title": "For Interior Designers",
-      "subtitle": "Partner with Colors N Joy for custom wall art, trade-friendly process, and studio support on every project.",
       "actionLabel": "Explore Trade Partnership",
       "actionHref": "/for-interior-designers",
+      "subtitle": "Partner with Colors N Joy for custom wall art, trade-friendly process, and studio support on every project.",
       "limit": 4,
       "categoryFilter": "",
       "pageImageUrl": "",
@@ -185,23 +185,6 @@
       "eyebrow": "Collector Notes",
       "title": "What Clients Say"
     }
-  },
-  "testimonials": [
-    {
-      "quote": "The texture work transformed our living room — it feels custom, calm, and completely ours.",
-      "name": "Priya M.",
-      "role": "Homeowner, Mumbai"
-    },
-    {
-      "quote": "Aishwarya understood the space instantly. The relief piece is the highlight of the lobby.",
-      "name": "Rahul S.",
-      "role": "Interior Designer, Pune"
-    }
-  ],
-  "features": {
-    "homepageOffers": false,
-    "homepageFeatures": false,
-    "homepageTestimonials": false
   },
   "forInteriorDesigners": {
     "hero": {
@@ -295,5 +278,22 @@
       "successMessage": "Thank you — your inquiry has been sent. The studio will be in touch shortly.",
       "defaultSubject": "Interior Designer Trade Inquiry"
     }
+  },
+  "testimonials": [
+    {
+      "quote": "The texture work transformed our living room — it feels custom, calm, and completely ours.",
+      "name": "Priya M.",
+      "role": "Homeowner, Mumbai"
+    },
+    {
+      "quote": "Aishwarya understood the space instantly. The relief piece is the highlight of the lobby.",
+      "name": "Rahul S.",
+      "role": "Interior Designer, Pune"
+    }
+  ],
+  "features": {
+    "homepageOffers": false,
+    "homepageFeatures": false,
+    "homepageTestimonials": false
   }
 }
