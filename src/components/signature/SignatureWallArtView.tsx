@@ -2,6 +2,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { SignatureFaq } from "@/components/signature/SignatureFaq";
 import { SignatureHashScroll } from "@/components/signature/SignatureHashScroll";
 import { SignatureInquiryForm } from "@/components/signature/SignatureInquiryForm";
+import { RichText } from "@/components/ui/RichText";
 import { SoftImage } from "@/components/ui/SoftImage";
 import { getArtworkImageSrc } from "@/lib/artwork-image";
 import {
@@ -55,9 +56,10 @@ function ProjectCard({
         <div className="signature-project-tile-copy">
           <h3 className="signature-project-card-title">{project.title}</h3>
           {project.summary ? (
-            <p className="body-text signature-project-card-summary">
-              {project.summary}
-            </p>
+            <RichText
+              content={project.summary}
+              className="body-text signature-project-card-summary"
+            />
           ) : null}
           <span className="signature-project-card-action">View project</span>
         </div>
@@ -94,7 +96,7 @@ function ProjectsSection({
           {resolved.projects.title}
         </h2>
         {resolved.projects.subtitle ? (
-          <p className="body-text mt-3">{resolved.projects.subtitle}</p>
+          <RichText content={resolved.projects.subtitle} className="body-text mt-3" />
         ) : null}
       </div>
 
@@ -130,7 +132,7 @@ function ProcessSection({
           {resolved.process.title}
         </h2>
         {resolved.process.subtitle ? (
-          <p className="body-text mt-3">{resolved.process.subtitle}</p>
+          <RichText content={resolved.process.subtitle} className="body-text mt-3" />
         ) : null}
       </div>
       <ol className="signature-process-list" data-reveal-stagger>
@@ -141,7 +143,7 @@ function ProcessSection({
             </span>
             <div>
               <h3 className="signature-process-title">{step.title}</h3>
-              <p className="body-text mt-2">{step.description}</p>
+              <RichText content={step.description} className="body-text mt-2" />
             </div>
           </li>
         ))}
@@ -164,7 +166,7 @@ function FaqSection({ resolved }: { resolved: SignatureWallArtPageConfig }) {
           {resolved.faq.title}
         </h2>
         {resolved.faq.subtitle ? (
-          <p className="body-text mt-3">{resolved.faq.subtitle}</p>
+          <RichText content={resolved.faq.subtitle} className="body-text mt-3" />
         ) : null}
       </div>
       <SignatureFaq items={resolved.faq.items} />
@@ -194,7 +196,7 @@ function InquirySection({
             {resolved.inquiry.title}
           </h2>
           {resolved.inquiry.subtitle ? (
-            <p className="body-text mt-3">{resolved.inquiry.subtitle}</p>
+            <RichText content={resolved.inquiry.subtitle} className="body-text mt-3" />
           ) : null}
           <div className="signature-inquiry-actions">
             {whatsappHref ? (
@@ -283,7 +285,10 @@ export function SignatureWallArtView({
           <p className="eyebrow">{resolved.intro.eyebrow}</p>
           <h1 className="page-title">{resolved.intro.title}</h1>
           {resolved.intro.subtitle ? (
-            <p className="body-text signature-page-intro-copy">{resolved.intro.subtitle}</p>
+            <RichText
+              content={resolved.intro.subtitle}
+              className="body-text signature-page-intro-copy"
+            />
           ) : null}
         </Reveal>
 

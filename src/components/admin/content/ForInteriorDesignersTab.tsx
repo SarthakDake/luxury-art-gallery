@@ -11,8 +11,8 @@ import {
   StudioRepeaterItem,
   StudioSection,
   StudioShell,
-  StudioTextarea,
 } from "./shared";
+import { RichTextEditor } from "./RichTextEditor";
 import type { StudioPreviewTarget } from "./preview-targets";
 import { DEFAULT_FOR_INTERIOR_DESIGNERS } from "@/lib/site-config/defaults";
 import type {
@@ -49,6 +49,13 @@ export function ForInteriorDesignersTab({
       DEFAULT_FOR_INTERIOR_DESIGNERS.homepageImages,
   };
 
+  function preview(
+    region: Extract<StudioPreviewTarget, { scope: "trade" }>["region"],
+    label: string,
+  ) {
+    onRequestPreview?.({ scope: "trade", region, label });
+  }
+
   function commitPage(next: ForInteriorDesignersConfig) {
     onChange({
       ...config,
@@ -77,15 +84,9 @@ export function ForInteriorDesignersTab({
   return (
     <StudioShell>
       <StudioSection
-        title="For Interior Designers"
-        subtitle="Trade page"
-        onPreview={() =>
-          onRequestPreview?.({
-            scope: "site",
-            region: "homepage",
-            label: "For Interior Designers homepage teaser",
-          })
-        }
+        title="Hero"
+        subtitle="Trade page hero"
+        onPreview={() => preview("hero", "For Interior Designers — hero")}
       >
         <StudioGroup eyebrow="Hero" title="Page hero">
           <StudioFormGrid>
@@ -106,13 +107,15 @@ export function ForInteriorDesignersTab({
               />
             </StudioField>
           </StudioFormGrid>
-          <StudioField label="Subtitle">
-            <StudioTextarea
-              rows={3}
+          <StudioField label="Subtitle" fullWidth>
+            <RichTextEditor
               value={page.hero.subtitle}
-              onChange={(event) =>
-                updatePage({ hero: { ...page.hero, subtitle: event.target.value } })
+              onChange={(subtitle) =>
+                updatePage({ hero: { ...page.hero, subtitle } })
               }
+              rows={3}
+              compact
+              showHint={false}
             />
           </StudioField>
           <ImageUploadField
@@ -168,7 +171,13 @@ export function ForInteriorDesignersTab({
             </StudioField>
           </StudioFormGrid>
         </StudioGroup>
+      </StudioSection>
 
+      <StudioSection
+        title="Why Partner"
+        subtitle="Partnership story"
+        onPreview={() => preview("whyPartner", "For Interior Designers — why partner")}
+      >
         <StudioGroup eyebrow="Why Partner With Us" title="Partnership story">
           <StudioFormGrid>
             <StudioField label="Eyebrow">
@@ -192,15 +201,17 @@ export function ForInteriorDesignersTab({
               />
             </StudioField>
           </StudioFormGrid>
-          <StudioField label="Subtitle">
-            <StudioTextarea
-              rows={3}
+          <StudioField label="Subtitle" fullWidth>
+            <RichTextEditor
               value={page.whyPartner.subtitle}
-              onChange={(event) =>
+              onChange={(subtitle) =>
                 updatePage({
-                  whyPartner: { ...page.whyPartner, subtitle: event.target.value },
+                  whyPartner: { ...page.whyPartner, subtitle },
                 })
               }
+              rows={3}
+              compact
+              showHint={false}
             />
           </StudioField>
           <StudioRepeaterHeader
@@ -240,14 +251,16 @@ export function ForInteriorDesignersTab({
                     />
                   </StudioField>
                   <StudioField label="Description" fullWidth>
-                    <StudioTextarea
-                      rows={2}
+                    <RichTextEditor
                       value={point.description}
-                      onChange={(event) => {
+                      onChange={(description) => {
                         const next = [...page.whyPartner.points];
-                        next[index] = { ...point, description: event.target.value };
+                        next[index] = { ...point, description };
                         updatePoints("whyPartner", "points", next);
                       }}
+                      rows={2}
+                      compact
+                      showHint={false}
                     />
                   </StudioField>
                 </StudioFormGrid>
@@ -255,7 +268,13 @@ export function ForInteriorDesignersTab({
             ))}
           </div>
         </StudioGroup>
+      </StudioSection>
 
+      <StudioSection
+        title="Benefits"
+        subtitle="Partner benefits"
+        onPreview={() => preview("benefits", "For Interior Designers — benefits")}
+      >
         <StudioGroup eyebrow="Benefits" title="Partner benefits">
           <StudioFormGrid>
             <StudioField label="Eyebrow">
@@ -279,15 +298,17 @@ export function ForInteriorDesignersTab({
               />
             </StudioField>
           </StudioFormGrid>
-          <StudioField label="Subtitle">
-            <StudioTextarea
-              rows={3}
+          <StudioField label="Subtitle" fullWidth>
+            <RichTextEditor
               value={page.benefits.subtitle}
-              onChange={(event) =>
+              onChange={(subtitle) =>
                 updatePage({
-                  benefits: { ...page.benefits, subtitle: event.target.value },
+                  benefits: { ...page.benefits, subtitle },
                 })
               }
+              rows={3}
+              compact
+              showHint={false}
             />
           </StudioField>
           <StudioRepeaterHeader
@@ -327,14 +348,16 @@ export function ForInteriorDesignersTab({
                     />
                   </StudioField>
                   <StudioField label="Description" fullWidth>
-                    <StudioTextarea
-                      rows={2}
+                    <RichTextEditor
                       value={item.description}
-                      onChange={(event) => {
+                      onChange={(description) => {
                         const next = [...page.benefits.items];
-                        next[index] = { ...item, description: event.target.value };
+                        next[index] = { ...item, description };
                         updatePoints("benefits", "items", next);
                       }}
+                      rows={2}
+                      compact
+                      showHint={false}
                     />
                   </StudioField>
                 </StudioFormGrid>
@@ -342,7 +365,13 @@ export function ForInteriorDesignersTab({
             ))}
           </div>
         </StudioGroup>
+      </StudioSection>
 
+      <StudioSection
+        title="Trade Process"
+        subtitle="Collaboration steps"
+        onPreview={() => preview("process", "For Interior Designers — process")}
+      >
         <StudioGroup eyebrow="Trade Process" title="Collaboration steps">
           <StudioFormGrid>
             <StudioField label="Eyebrow">
@@ -372,18 +401,20 @@ export function ForInteriorDesignersTab({
               />
             </StudioField>
           </StudioFormGrid>
-          <StudioField label="Subtitle">
-            <StudioTextarea
-              rows={3}
+          <StudioField label="Subtitle" fullWidth>
+            <RichTextEditor
               value={page.tradeProcess.subtitle}
-              onChange={(event) =>
+              onChange={(subtitle) =>
                 updatePage({
                   tradeProcess: {
                     ...page.tradeProcess,
-                    subtitle: event.target.value,
+                    subtitle,
                   },
                 })
               }
+              rows={3}
+              compact
+              showHint={false}
             />
           </StudioField>
           <StudioRepeaterHeader
@@ -429,19 +460,21 @@ export function ForInteriorDesignersTab({
                     />
                   </StudioField>
                   <StudioField label="Description" fullWidth>
-                    <StudioTextarea
-                      rows={2}
+                    <RichTextEditor
                       value={step.description}
-                      onChange={(event) => {
+                      onChange={(description) => {
                         const steps = [...page.tradeProcess.steps];
                         steps[index] = {
                           ...step,
-                          description: event.target.value,
+                          description,
                         };
                         updatePage({
                           tradeProcess: { ...page.tradeProcess, steps },
                         });
                       }}
+                      rows={2}
+                      compact
+                      showHint={false}
                     />
                   </StudioField>
                 </StudioFormGrid>
@@ -449,7 +482,13 @@ export function ForInteriorDesignersTab({
             ))}
           </div>
         </StudioGroup>
+      </StudioSection>
 
+      <StudioSection
+        title="Portfolio PDF"
+        subtitle="Designer portfolio document"
+        onPreview={() => preview("pdf", "For Interior Designers — portfolio PDF")}
+      >
         <StudioGroup
           eyebrow="Portfolio PDF"
           title="Designer portfolio document"
@@ -509,18 +548,20 @@ export function ForInteriorDesignersTab({
               />
             </StudioField>
           </StudioFormGrid>
-          <StudioField label="Subtitle">
-            <StudioTextarea
-              rows={3}
+          <StudioField label="Subtitle" fullWidth>
+            <RichTextEditor
               value={page.portfolioPdf.subtitle}
-              onChange={(event) =>
+              onChange={(subtitle) =>
                 updatePage({
                   portfolioPdf: {
                     ...page.portfolioPdf,
-                    subtitle: event.target.value,
+                    subtitle,
                   },
                 })
               }
+              rows={3}
+              compact
+              showHint={false}
             />
           </StudioField>
           <DocumentUploadField
@@ -550,7 +591,13 @@ export function ForInteriorDesignersTab({
             Studio Portfolio PDF block.
           </p>
         </StudioGroup>
+      </StudioSection>
 
+      <StudioSection
+        title="Inquiry"
+        subtitle="Trade inquiry form"
+        onPreview={() => preview("inquiry", "For Interior Designers — inquiry")}
+      >
         <StudioGroup eyebrow="Inquiry Form" title="Trade inquiry copy">
           <StudioFormGrid>
             <StudioField label="Eyebrow">
@@ -606,36 +653,46 @@ export function ForInteriorDesignersTab({
               />
             </StudioField>
           </StudioFormGrid>
-          <StudioField label="Subtitle">
-            <StudioTextarea
-              rows={3}
+          <StudioField label="Subtitle" fullWidth>
+            <RichTextEditor
               value={page.inquiryForm.subtitle}
-              onChange={(event) =>
+              onChange={(subtitle) =>
                 updatePage({
                   inquiryForm: {
                     ...page.inquiryForm,
-                    subtitle: event.target.value,
+                    subtitle,
                   },
                 })
               }
+              rows={3}
+              compact
+              showHint={false}
             />
           </StudioField>
-          <StudioField label="Success message">
-            <StudioTextarea
-              rows={2}
+          <StudioField label="Success message" fullWidth>
+            <RichTextEditor
               value={page.inquiryForm.successMessage}
-              onChange={(event) =>
+              onChange={(successMessage) =>
                 updatePage({
                   inquiryForm: {
                     ...page.inquiryForm,
-                    successMessage: event.target.value,
+                    successMessage,
                   },
                 })
               }
+              rows={2}
+              compact
+              showHint={false}
             />
           </StudioField>
         </StudioGroup>
+      </StudioSection>
 
+      <StudioSection
+        title="Homepage teaser"
+        subtitle="Trade Partners section on the homepage"
+        onPreview={() => preview("homepage", "For Interior Designers homepage teaser")}
+      >
         <StudioGroup
           eyebrow="Homepage teaser"
           title="Homepage “For Interior Designers” section"
@@ -711,22 +768,24 @@ export function ForInteriorDesignersTab({
               />
             </StudioField>
           </StudioFormGrid>
-          <StudioField label="Subtitle">
-            <StudioTextarea
-              rows={3}
+          <StudioField label="Subtitle" fullWidth>
+            <RichTextEditor
               value={config.homepage.portfolio.subtitle}
-              onChange={(event) =>
+              onChange={(subtitle) =>
                 onChange({
                   ...config,
                   homepage: {
                     ...config.homepage,
                     portfolio: {
                       ...config.homepage.portfolio,
-                      subtitle: event.target.value,
+                      subtitle,
                     },
                   },
                 })
               }
+              rows={3}
+              compact
+              showHint={false}
             />
           </StudioField>
 

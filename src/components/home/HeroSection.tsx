@@ -1,4 +1,5 @@
 import { Reveal } from "@/components/motion/Reveal";
+import { RichText } from "@/components/ui/RichText";
 import { SiteBrandName } from "@/components/ui/SiteBrandName";
 import { SoftImage } from "@/components/ui/SoftImage";
 import { getArtworkImageSrc } from "@/lib/artwork-image";
@@ -38,8 +39,8 @@ export function HeroSection({ config }: { config: SiteConfig }) {
           <Reveal as="h1" variant="slide-up" immediate delay={100} className="hero-title">
             {config.heroTitle}
           </Reveal>
-          <Reveal as="p" variant="slide-up" immediate delay={180} className="hero-subtitle">
-            {config.heroSubtitle}
+          <Reveal as="div" variant="slide-up" immediate delay={180} className="hero-subtitle">
+            <RichText content={config.heroSubtitle} />
           </Reveal>
 
           <Reveal

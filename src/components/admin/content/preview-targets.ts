@@ -23,6 +23,24 @@ export type StudioPreviewTarget =
       scope: "about";
       region: "identity" | "exhibitions" | "press";
       label: string;
+    }
+  | {
+      scope: "signature";
+      region: "page" | "projects" | "process" | "faq" | "inquiry" | "homepage";
+      label: string;
+    }
+  | {
+      scope: "trade";
+      region:
+        | "page"
+        | "hero"
+        | "whyPartner"
+        | "benefits"
+        | "process"
+        | "pdf"
+        | "inquiry"
+        | "homepage";
+      label: string;
     };
 
 export const ARTWORK_STEP_PREVIEW_LABELS: Record<ArtworkEditorStep, string> = {

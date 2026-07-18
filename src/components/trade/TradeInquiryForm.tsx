@@ -1,5 +1,6 @@
 "use client";
 
+import { RichText } from "@/components/ui/RichText";
 import type { ForInteriorDesignersConfig } from "@/types/site-config";
 import { useState } from "react";
 
@@ -120,9 +121,9 @@ export function TradeInquiryForm({
         </p>
       ) : null}
       {success ? (
-        <p className="contact-form-success" role="status">
-          {copy.successMessage}
-        </p>
+        <div role="status">
+          <RichText content={copy.successMessage} className="contact-form-success" />
+        </div>
       ) : null}
 
       <button

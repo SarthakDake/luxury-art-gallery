@@ -62,6 +62,22 @@ export async function GET(
     new URL(request.url).searchParams.get("filename") ||
     path.basename(relativePath);
 
+  function pdfHeaders(): Headers {
+    const headers = new Headers();
+    headers.set("Content-Type", "application/pdf");
+    headers.set("Cache-Control", cacheControl);
+    headers.set(
+      "Content-Disposition",
+      download
+        ? `attachment; filename="${filename.replace(/"/g, "")}"`
+        : `inline; filename="${filename.replace(/"/g, "")}"`,
+    );
+    // Belt-and-suspenders with next.config: allow same-origin iframe embed.
+    headers.set("X-Frame-Options", "SAMEORIGIN");
+    headers.set("Content-Security-Policy", "frame-ancestors 'self'");
+    return headers;
+  }
+
   if (isBlobStorageEnabled()) {
     try {
       const result = await get(relativePath, { access: getBlobAccess() });
@@ -69,17 +85,7 @@ export async function GET(
         return new Response("Not found", { status: 404 });
       }
 
-      const headers = new Headers();
-      headers.set("Content-Type", "application/pdf");
-      headers.set("Cache-Control", cacheControl);
-      headers.set(
-        "Content-Disposition",
-        download
-          ? `attachment; filename="${filename.replace(/"/g, "")}"`
-          : `inline; filename="${filename.replace(/"/g, "")}"`,
-      );
-
-      return new Response(result.stream, { status: 200, headers });
+      return new Response(result.stream, { status: 200, headers: pdfHeaders() });
     } catch (error) {
       console.error("[site-document] blob read failed:", error);
       return new Response("Not found", { status: 404 });
@@ -93,12 +99,7 @@ export async function GET(
 
   const bytes = await readFile(localFile);
   return new Response(bytes, {
-    headers: {
-      "Content-Type": "application/pdf",
-      "Cache-Control": cacheControl,
-      "Content-Disposition": download
-        ? `attachment; filename="${filename.replace(/"/g, "")}"`
-        : `inline; filename="${filename.replace(/"/g, "")}"`,
-    },
+    status: 200,
+    headers: pdfHeaders(),
   });
 }

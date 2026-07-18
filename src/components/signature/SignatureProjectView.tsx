@@ -1,4 +1,5 @@
 import { Reveal } from "@/components/motion/Reveal";
+import { RichText } from "@/components/ui/RichText";
 import { SoftImage } from "@/components/ui/SoftImage";
 import { getArtworkImageSrc } from "@/lib/artwork-image";
 import { DEFAULT_SIGNATURE_WALL_ART_PAGE } from "@/lib/site-config/defaults";
@@ -39,7 +40,10 @@ export function SignatureProjectView({
         <p className="eyebrow">Signature Project</p>
         <h1 className="page-title">{project.title}</h1>
         {project.summary ? (
-          <p className="body-text signature-project-summary">{project.summary}</p>
+          <RichText
+            content={project.summary}
+            className="body-text signature-project-summary"
+          />
         ) : null}
         <div className="signature-project-cta-row">
           {whatsappHref ? (
@@ -109,7 +113,7 @@ export function SignatureProjectView({
                   <div className="signature-style-copy">
                     <h3 className="signature-style-title">{style.title}</h3>
                     {style.description ? (
-                      <p className="body-text mt-3">{style.description}</p>
+                      <RichText content={style.description} className="body-text mt-3" />
                     ) : null}
                   </div>
                 </Reveal>
@@ -158,7 +162,9 @@ export function SignatureProjectView({
           <ul className="signature-project-testimonial-grid">
             {project.testimonials.map((item) => (
               <li key={`${item.name}-${item.quote.slice(0, 24)}`} className="signature-project-testimonial">
-                <blockquote className="signature-project-quote">“{item.quote}”</blockquote>
+                <blockquote className="signature-project-quote">
+                  <RichText content={item.quote} className="signature-project-rich-quote" />
+                </blockquote>
                 <p className="signature-project-quote-name">{item.name}</p>
                 {item.role ? (
                   <p className="signature-project-quote-role">{item.role}</p>

@@ -1,5 +1,6 @@
 "use client";
 
+import { RichText } from "@/components/ui/RichText";
 import type { SignatureFaqItem } from "@/types/site-config";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
@@ -35,7 +36,7 @@ export function SignatureFaq({ items }: { items: SignatureFaqItem[] }) {
               aria-hidden={!isOpen}
             >
               <div className="accordion-panel-inner">
-                <p className="body-text">{item.answer}</p>
+                <RichText content={item.answer} className="body-text" />
               </div>
             </div>
           </div>

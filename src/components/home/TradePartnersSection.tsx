@@ -1,4 +1,5 @@
 import { Reveal } from "@/components/motion/Reveal";
+import { RichText } from "@/components/ui/RichText";
 import { SoftImage } from "@/components/ui/SoftImage";
 import { getArtworkImageSrc } from "@/lib/artwork-image";
 import {
@@ -38,7 +39,7 @@ export function TradePartnersSection({
           <p className="eyebrow">{resolvedCopy.eyebrow}</p>
           <h2 className="section-title">{resolvedCopy.title}</h2>
           {resolvedCopy.subtitle ? (
-            <p className="body-text mt-3 max-w-2xl">{resolvedCopy.subtitle}</p>
+            <RichText content={resolvedCopy.subtitle} className="body-text mt-3 max-w-2xl" />
           ) : null}
         </div>
         {resolvedCopy.actionHref && resolvedCopy.actionLabel ? (
