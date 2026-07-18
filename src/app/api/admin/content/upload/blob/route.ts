@@ -1,10 +1,7 @@
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { assertAdminSession } from "@/lib/admin";
-import { getBlobAccess, isBlobStorageEnabled } from "@/lib/blob-storage";
-import {
-  ALLOWED_UPLOAD_CONTENT_TYPES,
-  isAllowedUploadPathname,
-} from "@/lib/upload-path";
+import { isBlobStorageEnabled } from "@/lib/blob-storage";
+import { isAllowedUploadPathname } from "@/lib/upload-path";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -12,6 +9,10 @@ export const maxDuration = 300;
 /**
  * Issues client tokens so the browser can upload originals directly to Vercel Blob
  * (bypasses serverless request body limits for large iPhone photos).
+ *
+ * Content-type allowlists are intentionally omitted: iPhone HEIC/HEIF files often
+ * arrive with an empty MIME type, and Blob's allowlist check rejects them even
+ * when the pathname extension is valid. Pathname validation is enough here.
  */
 export async function POST(request: Request): Promise<Response> {
   try {
@@ -41,15 +42,16 @@ export async function POST(request: Request): Promise<Response> {
       request,
       onBeforeGenerateToken: async (pathname) => {
         if (!isAllowedUploadPathname(pathname)) {
-          throw new Error("Invalid upload path.");
+          throw new Error(
+            "Invalid upload path. Use an artworks/ or portraits/ image path.",
+          );
         }
 
         return {
-          allowedContentTypes: ALLOWED_UPLOAD_CONTENT_TYPES,
-          // No app-level byte cap — artists may upload full-resolution originals.
           addRandomSuffix: false,
           allowOverwrite: true,
-          tokenPayload: JSON.stringify({ access: getBlobAccess() }),
+          // Client tokens default to a short TTL; large mobile uploads need more.
+          validUntil: Date.now() + 30 * 60 * 1000,
         };
       },
     });

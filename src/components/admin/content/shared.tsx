@@ -7,7 +7,27 @@ import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import {
   buildUploadPathname,
   resolveClientImageExtension,
+  resolveUploadContentType,
+  SERVER_UPLOAD_PREFERRED_MAX_BYTES,
 } from "@/lib/upload-path";
+
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = window.setTimeout(() => {
+      reject(new Error(`${label} timed out.`));
+    }, ms);
+    promise.then(
+      (value) => {
+        window.clearTimeout(timer);
+        resolve(value);
+      },
+      (error: unknown) => {
+        window.clearTimeout(timer);
+        reject(error instanceof Error ? error : new Error(String(error)));
+      },
+    );
+  });
+}
 
 export function StudioTabs({
   tabs,
@@ -324,11 +344,22 @@ export function ImageUploadField({
   compact?: boolean;
 }) {
   const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   async function uploadViaServer(file: File): Promise<string> {
+    const contentType = resolveUploadContentType(file.name, file.type);
+    const typedFile =
+      file.type && file.type === contentType
+        ? file
+        : new File([file], file.name, {
+            type: contentType,
+            lastModified: file.lastModified,
+          });
+
     const formData = new FormData();
-    formData.append("file", file);
-    formData.append("mimeType", file.type);
+    formData.append("file", typedFile);
+    formData.append("mimeType", contentType);
     formData.append("kind", kind);
     formData.append("slug", slug);
     if (galleryIndex !== undefined) {
@@ -344,22 +375,25 @@ export function ImageUploadField({
       body: formData,
     });
 
-    const payload = (await response.json()) as { path?: string; error?: string };
+    const payload = (await response.json().catch(() => null)) as {
+      path?: string;
+      error?: string;
+    } | null;
 
-    if (!response.ok || !payload.path) {
-      throw new Error(payload.error ?? "Upload failed.");
+    if (!response.ok || !payload?.path) {
+      throw new Error(payload?.error ?? "Upload failed.");
     }
 
     return payload.path;
   }
 
-  async function uploadViaDirectBlob(file: File): Promise<string | null> {
+  async function uploadViaDirectBlob(file: File): Promise<string> {
     const capabilitiesResponse = await fetch("/api/admin/content/upload/capabilities", {
       credentials: "same-origin",
     });
 
     if (!capabilitiesResponse.ok) {
-      return null;
+      throw new Error("Direct upload is unavailable.");
     }
 
     const capabilities = (await capabilitiesResponse.json()) as {
@@ -368,10 +402,11 @@ export function ImageUploadField({
     };
 
     if (!capabilities.directBlob) {
-      return null;
+      throw new Error("Direct upload is unavailable.");
     }
 
-    const extension = resolveClientImageExtension(file.name, file.type);
+    const contentType = resolveUploadContentType(file.name, file.type);
+    const extension = resolveClientImageExtension(file.name, contentType);
     if (!extension) {
       throw new Error(
         "Unsupported image type. Use JPG, PNG, WebP, AVIF, GIF, HEIC/HEIF, TIFF, or BMP.",
@@ -386,11 +421,15 @@ export function ImageUploadField({
       videoIndex,
     });
 
+    // Multipart is only needed for large files; for ~2MB HEIC it is slower and
+    // more fragile when the browser reports an empty MIME type.
+    const useMultipart = file.size > SERVER_UPLOAD_PREFERRED_MAX_BYTES;
+
     await upload(pathname, file, {
       access: capabilities.access ?? "private",
       handleUploadUrl: "/api/admin/content/upload/blob",
-      multipart: true,
-      contentType: file.type || undefined,
+      multipart: useMultipart,
+      contentType,
     });
 
     // Store virtual path (not the signed blob URL) so the site proxy can serve it.
@@ -404,20 +443,47 @@ export function ImageUploadField({
     }
 
     setUploading(true);
+    setError("");
+    setSuccess("");
 
     try {
-      const directPath = await uploadViaDirectBlob(file);
-      if (directPath) {
-        onUploaded(directPath);
-        return;
+      // Prefer server FormData for typical CMS images (incl. ~2MB iPhone HEIC).
+      // Direct Blob multipart often hangs when File.type is empty.
+      const preferServer = file.size <= SERVER_UPLOAD_PREFERRED_MAX_BYTES;
+      let uploadedPath = "";
+
+      if (preferServer) {
+        try {
+          uploadedPath = await withTimeout(uploadViaServer(file), 90_000, "Server upload");
+        } catch (serverError) {
+          console.warn("[ImageUploadField] server upload failed, trying direct:", serverError);
+          uploadedPath = await withTimeout(
+            uploadViaDirectBlob(file),
+            120_000,
+            "Direct upload",
+          );
+        }
+      } else {
+        try {
+          uploadedPath = await withTimeout(
+            uploadViaDirectBlob(file),
+            180_000,
+            "Direct upload",
+          );
+        } catch (directError) {
+          console.warn("[ImageUploadField] direct upload failed, trying server:", directError);
+          uploadedPath = await withTimeout(uploadViaServer(file), 180_000, "Server upload");
+        }
       }
 
-      onUploaded(await uploadViaServer(file));
-    } catch (error) {
-      console.error("[ImageUploadField] upload failed:", error);
-      window.alert(
-        error instanceof Error
-          ? error.message
+      onUploaded(uploadedPath);
+      setSuccess(`Successfully uploaded ${file.name}`);
+    } catch (uploadError) {
+      console.error("[ImageUploadField] upload failed:", uploadError);
+      setSuccess("");
+      setError(
+        uploadError instanceof Error
+          ? uploadError.message
           : "Upload failed. Check your connection and try again.",
       );
     } finally {
@@ -427,10 +493,18 @@ export function ImageUploadField({
   }
 
   const previewSrc = path ?? null;
+  const dropzoneClassName = [
+    "studio-dropzone",
+    compact ? "studio-dropzone--compact" : "",
+    uploading ? "is-uploading" : "",
+    success ? "is-success" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <StudioField label={label} hint={hint} fullWidth>
-      <label className={`studio-dropzone${compact ? " studio-dropzone--compact" : ""}`}>
+      <label className={dropzoneClassName}>
         {previewSrc ? (
           <ArtworkImage
             key={previewSrc}
@@ -448,7 +522,13 @@ export function ImageUploadField({
 
         <span className="studio-dropzone-copy">
           <span className="studio-dropzone-title">
-            {uploading ? "Uploading…" : previewSrc ? "Replace image" : "Upload image"}
+            {uploading
+              ? "Uploading…"
+              : success
+                ? "Upload complete"
+                : previewSrc
+                  ? "Replace image"
+                  : "Upload image"}
           </span>
           <span className="studio-field-hint">
             Any image format (incl. iPhone HEIC/HEIF) · stored as-is, no size limit ·
@@ -466,9 +546,20 @@ export function ImageUploadField({
           type="file"
           accept="image/*,.heic,.heif,.tif,.tiff,.avif,.bmp"
           hidden
+          disabled={uploading}
           onChange={handleChange}
         />
       </label>
+      {success ? (
+        <p className="studio-upload-feedback studio-upload-feedback--success" role="status">
+          {success}
+        </p>
+      ) : null}
+      {error ? (
+        <p className="studio-upload-feedback studio-upload-feedback--error" role="alert">
+          {error}
+        </p>
+      ) : null}
     </StudioField>
   );
 }
