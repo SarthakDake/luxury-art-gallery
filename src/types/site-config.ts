@@ -111,6 +111,64 @@ export interface SiteFeatureFlags {
   homepageTestimonials: boolean;
 }
 
+export interface TradePoint {
+  title: string;
+  description: string;
+}
+
+export interface TradeProcessStep {
+  title: string;
+  description: string;
+}
+
+/** CMS config for the For Interior Designers / trade partner page. */
+export interface ForInteriorDesignersConfig {
+  hero: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    imageUrl: string;
+    primaryCtaLabel: string;
+    primaryCtaHref: string;
+    secondaryCtaLabel: string;
+    secondaryCtaHref: string;
+  };
+  whyPartner: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    points: TradePoint[];
+  };
+  benefits: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    items: TradePoint[];
+  };
+  portfolioPdf: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    downloadLabel: string;
+    url: string;
+    filename: string;
+  };
+  tradeProcess: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    steps: TradeProcessStep[];
+  };
+  inquiryForm: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    submitLabel: string;
+    successMessage: string;
+    defaultSubject: string;
+  };
+}
+
 export interface SiteConfig {
   siteName: string;
   contactEmail: string;
@@ -131,6 +189,7 @@ export interface SiteConfig {
   socialLinks: SiteSocialLinks;
   brand: SiteBrandTokens;
   homepage: SiteHomepageConfig;
+  forInteriorDesigners: ForInteriorDesignersConfig;
   testimonials: SiteTestimonial[];
   features: SiteFeatureFlags;
 }

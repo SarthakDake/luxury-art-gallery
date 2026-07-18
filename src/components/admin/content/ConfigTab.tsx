@@ -28,7 +28,7 @@ const SECTION_LABELS: Record<HomepageSectionId, string> = {
   collections: "Collections",
   featured: "Featured works",
   signatureWallArt: "Signature Wall Art",
-  portfolio: "Portfolio",
+  portfolio: "For Interior Designers",
   offers: "Offers",
   features: "Features",
   testimonials: "Testimonials",

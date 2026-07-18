@@ -20,7 +20,7 @@ const securityHeaders = [
       "img-src 'self' data: blob: https:",
       "font-src 'self'",
       "connect-src 'self' https://api.razorpay.com https://*.vercel-storage.com https://vitals.vercel-insights.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io",
-      "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://www.instagram.com https://api.razorpay.com https://checkout.razorpay.com",
+      "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://www.instagram.com https://api.razorpay.com https://checkout.razorpay.com",
       "media-src 'self' https: blob:",
     ].join("; "),
   },
@@ -36,6 +36,15 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ["@phonepe-pg/pg-sdk-node", "heic-decode", "libheif-js", "sharp"],
+  async redirects() {
+    return [
+      {
+        source: "/portfolio",
+        destination: "/for-interior-designers",
+        permanent: true,
+      },
+    ];
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     localPatterns: [

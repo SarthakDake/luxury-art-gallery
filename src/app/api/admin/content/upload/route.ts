@@ -1,5 +1,5 @@
 import { assertAdminSession } from "@/lib/admin";
-import { uploadContentImage } from "@/lib/content-upload";
+import { uploadContentDocument, uploadContentImage } from "@/lib/content-upload";
 import { toSafeBuffer } from "@/lib/buffer-utils";
 import { resolveUploadImageExtension } from "@/lib/image-format";
 import {
@@ -8,6 +8,7 @@ import {
   buildPortraitFilename,
 } from "@/lib/site-data/slug";
 import { ARTWORK_IMAGE_EXTENSIONS } from "@/lib/artwork-image";
+import { isPdfUpload } from "@/lib/upload-path";
 
 export const runtime = "nodejs";
 /** Large iPhone originals can take longer to stream into Blob storage. */
@@ -36,7 +37,7 @@ export async function POST(request: Request) {
   const mimeType = String(formData.get("mimeType") ?? "");
 
   if (!(file instanceof File)) {
-    return Response.json({ error: "Choose an image file to upload." }, { status: 400 });
+    return Response.json({ error: "Choose a file to upload." }, { status: 400 });
   }
 
   if (file.size <= 0) {
@@ -44,22 +45,44 @@ export async function POST(request: Request) {
   }
 
   const buffer = toSafeBuffer(new Uint8Array(await file.arrayBuffer()));
-  const extension = resolveUploadImageExtension(
-    buffer,
-    file.name,
-    mimeType || file.type,
-  );
-
-  if (!extension) {
-    return Response.json(
-      {
-        error: `Unsupported image type. Use ${ARTWORK_IMAGE_EXTENSIONS.join(", ")}.`,
-      },
-      { status: 400 },
-    );
-  }
 
   try {
+    if (kind === "document") {
+      if (!isPdfUpload(file.name, mimeType || file.type)) {
+        return Response.json(
+          { error: "Unsupported document type. Upload a PDF file." },
+          { status: 400 },
+        );
+      }
+
+      const slugBase =
+        slug.replace(/[^a-z0-9-_]+/gi, "-").toLowerCase() ||
+        "designer-portfolio";
+      const filename = `${slugBase}.pdf`;
+      const publicPath = await uploadContentDocument({
+        directory: "documents",
+        filename,
+        buffer,
+        contentType: "application/pdf",
+      });
+      return Response.json({ path: publicPath, filename });
+    }
+
+    const extension = resolveUploadImageExtension(
+      buffer,
+      file.name,
+      mimeType || file.type,
+    );
+
+    if (!extension) {
+      return Response.json(
+        {
+          error: `Unsupported image type. Use ${ARTWORK_IMAGE_EXTENSIONS.join(", ")}.`,
+        },
+        { status: 400 },
+      );
+    }
+
     if (kind === "portrait") {
       const filename = buildPortraitFilename(extension);
       const publicPath = await uploadContentImage({

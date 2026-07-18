@@ -2633,4 +2633,115 @@
     flex-direction: column;
   }
 
+  /* For Interior Designers / trade page */
+  .trade-section {
+    padding-block: clamp(3rem, 6vw, 5rem);
+  }
+
+  .trade-point-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 768px) {
+    .trade-point-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 2rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .trade-point-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .trade-point-item {
+    border-top: 1px solid var(--border);
+    padding-top: 1.25rem;
+  }
+
+  .trade-point-title {
+    font-family: var(--font-serif, Georgia, serif);
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--foreground);
+  }
+
+  .trade-pdf-frame {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    overflow: hidden;
+    min-height: 28rem;
+  }
+
+  .trade-pdf-embed {
+    display: block;
+    width: 100%;
+    min-height: 32rem;
+    height: 70vh;
+    border: 0;
+    background: var(--background);
+  }
+
+  .trade-pdf-empty {
+    display: flex;
+    min-height: 14rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    border: 1px dashed var(--border);
+    background: var(--surface);
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .trade-process-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 2.5rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .trade-process-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.25rem;
+    border-top: 1px solid var(--border);
+    padding-block: 1.5rem;
+  }
+
+  .trade-process-index {
+    font-family: var(--font-serif, Georgia, serif);
+    font-size: 1.125rem;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+
+  .trade-inquiry-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    .trade-inquiry-layout {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 4rem;
+      align-items: start;
+    }
+  }
+
+  .trade-inquiry-form .btn-primary {
+    align-self: flex-start;
+  }
+
 }

@@ -180,3 +180,63 @@ export async function sendContactFormEmail(
     ].join("\n"),
   });
 }
+
+export interface TradeInquiryEmailPayload {
+  name: string;
+  email: string;
+  company?: string;
+  projectType?: string;
+  subject: string;
+  message: string;
+}
+
+export async function sendTradeInquiryEmail(
+  payload: TradeInquiryEmailPayload,
+): Promise<void> {
+  const transporter = createTransporter();
+  const [contactEmails, config] = await Promise.all([
+    getContactEmails(),
+    getSiteConfig(),
+  ]);
+  const primaryContactEmail = contactEmails[0] ?? config.contactEmail;
+  const from =
+    process.env.SMTP_FROM ??
+    `${config.siteName} <${process.env.SMTP_USER ?? primaryContactEmail}>`;
+  const safeName = escapeHtml(payload.name);
+  const safeEmail = escapeHtml(payload.email);
+  const safeCompany = escapeHtml(payload.company ?? "");
+  const safeProjectType = escapeHtml(payload.projectType ?? "");
+  const safeSubject = escapeHtml(payload.subject);
+  const safeMessage = escapeHtml(payload.message);
+
+  await transporter.sendMail({
+    from,
+    to: formatEmailList(contactEmails),
+    replyTo: payload.email,
+    subject: `[Trade Inquiry] ${payload.subject}`,
+    html: `
+      <div style="font-family: Georgia, 'Times New Roman', serif; color: #171717; line-height: 1.6;">
+        <p style="font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #6b7280;">For Interior Designers</p>
+        <h1 style="font-size: 24px; font-weight: 500; margin: 0 0 16px;">${safeSubject}</h1>
+        <p style="margin: 0 0 8px;"><strong>Name:</strong> ${safeName}</p>
+        <p style="margin: 0 0 8px;"><strong>Email:</strong> ${safeEmail}</p>
+        ${safeCompany ? `<p style="margin: 0 0 8px;"><strong>Company / Studio:</strong> ${safeCompany}</p>` : ""}
+        ${safeProjectType ? `<p style="margin: 0 0 24px;"><strong>Project type:</strong> ${safeProjectType}</p>` : `<p style="margin: 0 0 24px;"></p>`}
+        <p style="margin: 0 0 8px; color: #6b7280; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;">Project notes</p>
+        <p style="margin: 0; white-space: pre-wrap;">${safeMessage}</p>
+      </div>
+    `,
+    text: [
+      "For Interior Designers — Trade Inquiry",
+      `Name: ${payload.name}`,
+      `Email: ${payload.email}`,
+      payload.company ? `Company / Studio: ${payload.company}` : "",
+      payload.projectType ? `Project type: ${payload.projectType}` : "",
+      `Subject: ${payload.subject}`,
+      "",
+      payload.message,
+    ]
+      .filter(Boolean)
+      .join("\n"),
+  });
+}

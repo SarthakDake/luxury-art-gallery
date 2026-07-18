@@ -1,11 +1,13 @@
 import {
   DEFAULT_BRAND_TOKENS,
   DEFAULT_FEATURE_FLAGS,
+  DEFAULT_FOR_INTERIOR_DESIGNERS,
   DEFAULT_HOMEPAGE,
   DEFAULT_HOMEPAGE_SECTION_ORDER,
   DEFAULT_TESTIMONIALS,
 } from "@/lib/site-config/defaults";
 import type {
+  ForInteriorDesignersConfig,
   HomepageSectionConfig,
   HomepageSectionId,
   SiteBrandTokens,
@@ -13,6 +15,8 @@ import type {
   SiteFeatureFlags,
   SiteHomepageConfig,
   SiteTestimonial,
+  TradePoint,
+  TradeProcessStep,
 } from "@/types/site-config";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -284,6 +288,116 @@ function mergeHomepage(raw: unknown): SiteHomepageConfig {
   };
 }
 
+function mergeTradePoints(raw: unknown, fallback: TradePoint[]): TradePoint[] {
+  if (!Array.isArray(raw) || raw.length === 0) {
+    return structuredClone(fallback);
+  }
+
+  return raw
+    .filter(isRecord)
+    .map((entry) => ({
+      title: asString(entry.title).trim(),
+      description: asString(entry.description).trim(),
+    }))
+    .filter((entry) => entry.title);
+}
+
+function mergeTradeSteps(
+  raw: unknown,
+  fallback: TradeProcessStep[],
+): TradeProcessStep[] {
+  if (!Array.isArray(raw) || raw.length === 0) {
+    return structuredClone(fallback);
+  }
+
+  return raw
+    .filter(isRecord)
+    .map((entry) => ({
+      title: asString(entry.title).trim(),
+      description: asString(entry.description).trim(),
+    }))
+    .filter((entry) => entry.title);
+}
+
+function mergeForInteriorDesigners(raw: unknown): ForInteriorDesignersConfig {
+  const source = isRecord(raw) ? raw : {};
+  const hero = isRecord(source.hero) ? source.hero : {};
+  const whyPartner = isRecord(source.whyPartner) ? source.whyPartner : {};
+  const benefits = isRecord(source.benefits) ? source.benefits : {};
+  const portfolioPdf = isRecord(source.portfolioPdf) ? source.portfolioPdf : {};
+  const tradeProcess = isRecord(source.tradeProcess) ? source.tradeProcess : {};
+  const inquiryForm = isRecord(source.inquiryForm) ? source.inquiryForm : {};
+  const defaults = DEFAULT_FOR_INTERIOR_DESIGNERS;
+
+  return {
+    hero: {
+      eyebrow: asString(hero.eyebrow, defaults.hero.eyebrow),
+      title: asString(hero.title, defaults.hero.title),
+      subtitle: asString(hero.subtitle, defaults.hero.subtitle),
+      imageUrl: asString(hero.imageUrl, defaults.hero.imageUrl),
+      primaryCtaLabel: asString(
+        hero.primaryCtaLabel,
+        defaults.hero.primaryCtaLabel,
+      ),
+      primaryCtaHref: asString(hero.primaryCtaHref, defaults.hero.primaryCtaHref),
+      secondaryCtaLabel: asString(
+        hero.secondaryCtaLabel,
+        defaults.hero.secondaryCtaLabel,
+      ),
+      secondaryCtaHref: asString(
+        hero.secondaryCtaHref,
+        defaults.hero.secondaryCtaHref,
+      ),
+    },
+    whyPartner: {
+      eyebrow: asString(whyPartner.eyebrow, defaults.whyPartner.eyebrow),
+      title: asString(whyPartner.title, defaults.whyPartner.title),
+      subtitle: asString(whyPartner.subtitle, defaults.whyPartner.subtitle),
+      points: mergeTradePoints(whyPartner.points, defaults.whyPartner.points),
+    },
+    benefits: {
+      eyebrow: asString(benefits.eyebrow, defaults.benefits.eyebrow),
+      title: asString(benefits.title, defaults.benefits.title),
+      subtitle: asString(benefits.subtitle, defaults.benefits.subtitle),
+      items: mergeTradePoints(benefits.items, defaults.benefits.items),
+    },
+    portfolioPdf: {
+      eyebrow: asString(portfolioPdf.eyebrow, defaults.portfolioPdf.eyebrow),
+      title: asString(portfolioPdf.title, defaults.portfolioPdf.title),
+      subtitle: asString(portfolioPdf.subtitle, defaults.portfolioPdf.subtitle),
+      downloadLabel: asString(
+        portfolioPdf.downloadLabel,
+        defaults.portfolioPdf.downloadLabel,
+      ),
+      url: asString(portfolioPdf.url, defaults.portfolioPdf.url),
+      filename: asString(portfolioPdf.filename, defaults.portfolioPdf.filename),
+    },
+    tradeProcess: {
+      eyebrow: asString(tradeProcess.eyebrow, defaults.tradeProcess.eyebrow),
+      title: asString(tradeProcess.title, defaults.tradeProcess.title),
+      subtitle: asString(tradeProcess.subtitle, defaults.tradeProcess.subtitle),
+      steps: mergeTradeSteps(tradeProcess.steps, defaults.tradeProcess.steps),
+    },
+    inquiryForm: {
+      eyebrow: asString(inquiryForm.eyebrow, defaults.inquiryForm.eyebrow),
+      title: asString(inquiryForm.title, defaults.inquiryForm.title),
+      subtitle: asString(inquiryForm.subtitle, defaults.inquiryForm.subtitle),
+      submitLabel: asString(
+        inquiryForm.submitLabel,
+        defaults.inquiryForm.submitLabel,
+      ),
+      successMessage: asString(
+        inquiryForm.successMessage,
+        defaults.inquiryForm.successMessage,
+      ),
+      defaultSubject: asString(
+        inquiryForm.defaultSubject,
+        defaults.inquiryForm.defaultSubject,
+      ),
+    },
+  };
+}
+
 function mergeTestimonials(raw: unknown): SiteTestimonial[] {
   if (!Array.isArray(raw)) {
     return structuredClone(DEFAULT_TESTIMONIALS);
@@ -367,6 +481,7 @@ export function normalizeSiteConfig(raw: unknown): SiteConfig {
     },
     brand: mergeBrand(source.brand),
     homepage: mergeHomepage(source.homepage),
+    forInteriorDesigners: mergeForInteriorDesigners(source.forInteriorDesigners),
     testimonials: mergeTestimonials(source.testimonials),
     features: mergeFeatureFlags(source.features),
   };
@@ -418,6 +533,7 @@ export function toPublicSiteConfig(config: SiteConfig) {
     socialLinks: config.socialLinks,
     brand: config.brand,
     homepage: config.homepage,
+    forInteriorDesigners: config.forInteriorDesigners,
     testimonials: config.testimonials,
     features: config.features,
   };

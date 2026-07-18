@@ -1,7 +1,13 @@
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
-type RateLimitBucket = "checkout" | "instagram-video" | "artwork-image" | "contact";
+type RateLimitBucket =
+  | "checkout"
+  | "instagram-video"
+  | "artwork-image"
+  | "contact"
+  | "trade-inquiry"
+  | "site-document";
 
 interface MemoryEntry {
   count: number;
@@ -20,6 +26,8 @@ const BUCKET_CONFIG: Record<
   "instagram-video": { requests: 20, window: "1 h", windowMs: 60 * 60 * 1000 },
   "artwork-image": { requests: 120, window: "10 m", windowMs: 10 * 60 * 1000 },
   contact: { requests: 5, window: "1 h", windowMs: 60 * 60 * 1000 },
+  "trade-inquiry": { requests: 5, window: "1 h", windowMs: 60 * 60 * 1000 },
+  "site-document": { requests: 60, window: "10 m", windowMs: 10 * 60 * 1000 },
 };
 
 function getUpstashLimiter(bucket: RateLimitBucket): Ratelimit | null {

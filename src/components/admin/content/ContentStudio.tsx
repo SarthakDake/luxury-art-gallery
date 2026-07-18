@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ArtworksTab } from "./ArtworksTab";
 import { ConfigTab } from "./ConfigTab";
 import { CuratedPageTab } from "./CuratedPageTab";
+import { ForInteriorDesignersTab } from "./ForInteriorDesignersTab";
 import { ProfileTab } from "./ProfileTab";
 import type { StudioPreviewTarget } from "./preview-targets";
 import { StudioSitePreview } from "./StudioSitePreview";
@@ -29,8 +30,9 @@ const TABS = [
   },
   {
     id: "portfolio",
-    label: "Portfolio",
-    description: "Configure the artist Portfolio page and its homepage section.",
+    label: "For Interior Designers",
+    description:
+      "Configure the For Interior Designers trade page, PDF portfolio, and homepage teaser.",
   },
   {
     id: "profile",
@@ -260,11 +262,8 @@ export function ContentStudio() {
               />
             ) : null}
             {activeTab === "portfolio" ? (
-              <CuratedPageTab
+              <ForInteriorDesignersTab
                 config={config}
-                pageKey="portfolio"
-                title="Portfolio"
-                subtitle="Page copy"
                 onChange={setConfig}
                 onRequestPreview={setActivePreview}
               />
