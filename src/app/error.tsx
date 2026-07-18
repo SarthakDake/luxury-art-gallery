@@ -23,7 +23,7 @@ export default function Error({
         We could not load this page
       </h1>
       <p className="max-w-md body-text text-[var(--muted)]">
-        Please try again. If the problem continues, contact the gallery.
+        Please try again. If the problem continues, contact us.
       </p>
       <div className="flex flex-wrap items-center justify-center gap-3">
         <button type="button" className="btn-primary btn-responsive" onClick={reset}>

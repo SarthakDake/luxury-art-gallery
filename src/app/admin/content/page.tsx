@@ -22,7 +22,7 @@ export default async function AdminContentPage() {
         <p className="eyebrow">Artist Dashboard</p>
         <h1 className="page-title">Content Studio</h1>
         <p className="body-text max-w-2xl">
-          A simple editor for your gallery, site copy, and profile. Choose a section,
+          A simple editor for your shop, site copy, and profile. Choose a section,
           fill in the details, and save when you are ready.
         </p>
         <div className="content-studio-links">

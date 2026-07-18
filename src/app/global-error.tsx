@@ -19,7 +19,7 @@ export default function GlobalError({
       <body className="flex min-h-screen items-center justify-center bg-white p-6 font-sans text-neutral-900">
         <div className="max-w-md space-y-4 text-center">
           <h1 className="text-2xl font-semibold">Something went wrong</h1>
-          <p className="text-neutral-600">The gallery could not load. Please try again.</p>
+          <p className="text-neutral-600">The shop could not load. Please try again.</p>
           <button
             type="button"
             onClick={reset}

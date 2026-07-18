@@ -585,7 +585,6 @@ export function ImageUploadField({
             Any image format (incl. iPhone HEIC/HEIF) · stored as-is, no size limit ·
             click Save to publish
           </span>
-          {path ? <span className="studio-upload-path">{path}</span> : null}
         </span>
 
         <span className="btn-secondary studio-dropzone-action">

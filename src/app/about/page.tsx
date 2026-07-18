@@ -15,7 +15,7 @@ interface PressFeature {
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "About the Artist",
+  title: "About us",
   description: "Biography, exhibitions, and press for the studio.",
 };
 
@@ -32,12 +32,12 @@ export default async function AboutPage() {
         <Breadcrumbs
           items={[
             { label: "Home", href: "/" },
-            { label: "About" },
+            { label: "About us" },
           ]}
         />
 
         <Reveal as="header" variant="slide-up" className="about-intro">
-          <p className="eyebrow">About the Artist</p>
+          <p className="eyebrow">About us</p>
           <h1 className="page-title">{profile.artistName}</h1>
           <p className="body-text max-w-2xl">{profile.artistTagline}</p>
         </Reveal>
@@ -200,7 +200,7 @@ export default async function AboutPage() {
           </div>
           <div className="about-cta-actions">
             <Link href="/shop" className="btn-primary btn-responsive">
-              View Gallery
+              View Shop
             </Link>
             <Link href="/contact" className="btn-secondary btn-responsive">
               Get in Touch

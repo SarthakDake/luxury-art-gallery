@@ -6,7 +6,7 @@ import ShopPageContent from "./ShopPageContent";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Gallery",
+  title: "Shop",
   description: "Browse the full collection of original artworks.",
 };
 
@@ -17,7 +17,7 @@ export default async function ShopPage() {
     <Suspense
       fallback={
         <div className="site-container py-16 text-sm text-[var(--muted)]">
-          Loading gallery...
+          Loading shop...
         </div>
       }
     >

@@ -23,7 +23,7 @@ export const ARTWORK_EDITOR_STEPS: {
   icon: typeof Sparkles;
 }[] = [
   { id: "details", label: "Details", hint: "Name & description", icon: Sparkles },
-  { id: "photos", label: "Photos", hint: "Cover & gallery", icon: ImageIcon },
+  { id: "photos", label: "Photos", hint: "Cover & photos", icon: ImageIcon },
   { id: "pricing", label: "Pricing", hint: "Sizes & prices", icon: Tag },
   { id: "videos", label: "Videos", hint: "YouTube & more", icon: Video },
   { id: "more", label: "More", hint: "Extra options", icon: MoreHorizontal },

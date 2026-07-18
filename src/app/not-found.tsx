@@ -12,7 +12,7 @@ export default function NotFound() {
       </p>
       <div className="flex flex-wrap items-center justify-center gap-3">
         <Link href="/shop" className="btn-primary btn-responsive">
-          Browse gallery
+          Browse shop
         </Link>
         <Link href="/" className="btn-secondary btn-responsive">
           Go home

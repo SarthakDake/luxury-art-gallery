@@ -35,8 +35,8 @@ export function ProfileTab({
     <StudioShell>
       <StudioSection
         title="Artist identity"
-        subtitle="About page"
-        onPreview={() => preview("identity", "About page — identity & portrait")}
+        subtitle="About us"
+        onPreview={() => preview("identity", "About us — identity & portrait")}
       >
         <StudioGroup eyebrow="Profile" title="Name & tagline">
           <StudioFormGrid>
@@ -58,20 +58,20 @@ export function ProfileTab({
         <StudioGroup
           eyebrow="Story"
           title="Biography"
-          description="Formatting is preserved on the About page. Use headings, bold, lists, and blank lines for spacing."
+          description="Formatting is preserved on the About us page. Use headings, bold, lists, and blank lines for spacing."
         >
           <StudioField label="About you" fullWidth>
             <RichTextEditor
               value={profile.biography}
               onChange={(biography) => onChange({ ...profile, biography })}
               placeholder={
-                "## About the studio\n\nTell visitors about your practice.\n\n### Process\n\nUse **bold** for emphasis and blank lines between sections."
+                "## About us\n\nTell visitors about your practice.\n\n### Process\n\nUse **bold** for emphasis and blank lines between sections."
               }
             />
           </StudioField>
         </StudioGroup>
 
-        <StudioGroup eyebrow="Photo" title="Portrait" description="Shown on the About page.">
+        <StudioGroup eyebrow="Photo" title="Portrait" description="Shown on the About us page.">
           <ImageUploadField
             label="Portrait photo"
             path={profile.portraitImageUrl}
@@ -156,7 +156,7 @@ export function ProfileTab({
       <StudioSection
         title="Exhibitions"
         subtitle="Career"
-        onPreview={() => preview("exhibitions", "About page — exhibitions")}
+        onPreview={() => preview("exhibitions", "About us — exhibitions")}
       >
         <StudioGroup eyebrow="Shows" title="Exhibition history">
           <StudioRepeaterHeader
@@ -245,7 +245,7 @@ export function ProfileTab({
         title="Press"
         subtitle="Media"
         defaultOpen={Boolean(profile.press.length)}
-        onPreview={() => preview("press", "About page — press")}
+        onPreview={() => preview("press", "About us — press")}
       >
         <StudioGroup eyebrow="Media" title="Press features">
           <StudioRepeaterHeader
