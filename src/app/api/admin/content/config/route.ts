@@ -1,51 +1,9 @@
 import { assertAdminSession } from "@/lib/admin";
+import { normalizeSiteConfig } from "@/lib/site-config";
 import { getSiteConfig, summarizeMirrorResults, saveSiteConfig } from "@/lib/site-data";
 import type { SiteConfig } from "@/types/site-config";
 
 export const dynamic = "force-dynamic";
-
-function normalizeConfig(raw: SiteConfig): SiteConfig {
-  return {
-    siteName: raw.siteName.trim(),
-    contactEmail: raw.contactEmail.trim(),
-    adminEmail: raw.adminEmail.trim(),
-    whatsappNumber: raw.whatsappNumber.trim(),
-    studioAddress: raw.studioAddress.trim(),
-    heroTitle: raw.heroTitle.trim(),
-    heroSubtitle: raw.heroSubtitle.trim(),
-    announcements: (raw.announcements ?? []).map((item) => item.trim()).filter(Boolean),
-    trustBadges: (raw.trustBadges ?? []).map((item) => item.trim()).filter(Boolean),
-    defaultDispatchNote: raw.defaultDispatchNote.trim(),
-    defaultCareGuide: raw.defaultCareGuide.trim(),
-    defaultShippingReturns: raw.defaultShippingReturns.trim(),
-    defaultBeforeYouBuy: raw.defaultBeforeYouBuy.trim(),
-    offers: (raw.offers ?? [])
-      .filter((offer) => offer.headline.trim() && offer.code.trim())
-      .map((offer) => ({
-        headline: offer.headline.trim(),
-        code: offer.code.trim(),
-        detail: offer.detail.trim(),
-      })),
-    productFeatures: (raw.productFeatures ?? [])
-      .filter((feature) => feature.title.trim())
-      .map((feature) => ({
-        title: feature.title.trim(),
-        description: feature.description.trim(),
-      })),
-    visitorCounter: {
-      eyebrow: raw.visitorCounter.eyebrow.trim(),
-      singularLabel: raw.visitorCounter.singularLabel.trim(),
-      pluralLabel: raw.visitorCounter.pluralLabel.trim(),
-    },
-    socialLinks: {
-      instagram: raw.socialLinks.instagram.trim(),
-      facebook: raw.socialLinks.facebook.trim(),
-      youtube: raw.socialLinks.youtube.trim(),
-      pinterest: raw.socialLinks.pinterest.trim(),
-      whatsapp: raw.socialLinks.whatsapp.trim(),
-    },
-  };
-}
 
 export async function GET() {
   try {
@@ -76,7 +34,7 @@ export async function PUT(request: Request) {
     return Response.json({ error: "config object is required." }, { status: 400 });
   }
 
-  const config = normalizeConfig(payload.config);
+  const config = normalizeSiteConfig(payload.config);
 
   if (!config.siteName || !config.contactEmail) {
     return Response.json(

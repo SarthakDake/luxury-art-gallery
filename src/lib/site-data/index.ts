@@ -1,6 +1,7 @@
 import "server-only";
 import type { ArtistProfile, SiteConfig } from "@/types/site-config";
 import type { Artwork } from "@/types/artwork";
+import { normalizeSiteConfig } from "@/lib/site-config";
 import {
   readArtistProfileFromFile,
   readArtworksFromFile,
@@ -29,7 +30,10 @@ const getArtworksCached = unstable_cache(
 );
 
 const getSiteConfigCached = unstable_cache(
-  async () => loadSiteContent<SiteConfig>("config", readSiteConfigFromFile),
+  async () => {
+    const raw = await loadSiteContent<unknown>("config", readSiteConfigFromFile);
+    return normalizeSiteConfig(raw);
+  },
   ["site-content", SITE_CONTENT_TAGS.config],
   {
     tags: [SITE_CONTENT_TAGS.config],

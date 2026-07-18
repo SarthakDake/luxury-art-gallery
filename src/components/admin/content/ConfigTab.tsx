@@ -10,11 +10,54 @@ import {
   StudioSection,
   StudioShell,
   StudioTextarea,
+  StudioToggle,
 } from "./shared";
-import type { SiteConfig } from "@/types/site-config";
+import type { HomepageSectionId, SiteBrandTokens, SiteConfig } from "@/types/site-config";
 
 function updateStringList(list: string[], index: number, value: string) {
   return list.map((entry, entryIndex) => (entryIndex === index ? value : entry));
+}
+
+const SECTION_LABELS: Record<HomepageSectionId, string> = {
+  hero: "Hero",
+  trustBadges: "Trust badges",
+  collections: "Collections",
+  featured: "Featured works",
+  offers: "Offers",
+  features: "Features",
+  testimonials: "Testimonials",
+};
+
+const BRAND_COLOR_FIELDS: Array<{ key: keyof SiteBrandTokens; label: string }> = [
+  { key: "accent", label: "Accent" },
+  { key: "accentForeground", label: "Accent text" },
+  { key: "background", label: "Background" },
+  { key: "foreground", label: "Foreground" },
+  { key: "muted", label: "Muted text" },
+  { key: "surface", label: "Surface" },
+  { key: "border", label: "Border" },
+  { key: "darkAccent", label: "Dark accent" },
+  { key: "darkBackground", label: "Dark background" },
+  { key: "darkForeground", label: "Dark foreground" },
+  { key: "darkMuted", label: "Dark muted" },
+  { key: "darkSurface", label: "Dark surface" },
+  { key: "darkBorder", label: "Dark border" },
+];
+
+function moveHomepageSection(
+  sections: SiteConfig["homepage"]["sections"],
+  index: number,
+  direction: -1 | 1,
+) {
+  const target = index + direction;
+  if (target < 0 || target >= sections.length) {
+    return sections;
+  }
+
+  const next = [...sections];
+  const [item] = next.splice(index, 1);
+  next.splice(target, 0, item);
+  return next;
 }
 
 export function ConfigTab({
@@ -413,6 +456,425 @@ export function ConfigTab({
               ),
             )}
           </StudioFormGrid>
+        </StudioGroup>
+      </StudioSection>
+
+      <StudioSection title="Brand tokens" subtitle="Theme" defaultOpen={false}>
+        <StudioGroup
+          eyebrow="Look"
+          title="Colors & radii"
+          description="These map to CSS variables and the Tailwind theme bridge. Leave defaults unless you are restyling the storefront."
+        >
+          <StudioFormGrid>
+            {BRAND_COLOR_FIELDS.map(({ key, label }) => (
+              <StudioField key={key} label={label}>
+                <StudioInput
+                  value={config.brand[key]}
+                  onChange={(event) =>
+                    onChange({
+                      ...config,
+                      brand: { ...config.brand, [key]: event.target.value },
+                    })
+                  }
+                />
+              </StudioField>
+            ))}
+            <StudioField label="Radius SM">
+              <StudioInput
+                value={config.brand.radiusSm}
+                onChange={(event) =>
+                  onChange({
+                    ...config,
+                    brand: { ...config.brand, radiusSm: event.target.value },
+                  })
+                }
+              />
+            </StudioField>
+            <StudioField label="Radius MD">
+              <StudioInput
+                value={config.brand.radiusMd}
+                onChange={(event) =>
+                  onChange({
+                    ...config,
+                    brand: { ...config.brand, radiusMd: event.target.value },
+                  })
+                }
+              />
+            </StudioField>
+            <StudioField label="Radius LG">
+              <StudioInput
+                value={config.brand.radiusLg}
+                onChange={(event) =>
+                  onChange({
+                    ...config,
+                    brand: { ...config.brand, radiusLg: event.target.value },
+                  })
+                }
+              />
+            </StudioField>
+          </StudioFormGrid>
+        </StudioGroup>
+      </StudioSection>
+
+      <StudioSection title="Homepage sections" subtitle="Layout" defaultOpen={false}>
+        <StudioGroup
+          eyebrow="Order"
+          title="Section visibility & order"
+          description="Reorder and toggle sections. Offers, features, and testimonials also need their feature flags on."
+        >
+          <div className="studio-repeater-list">
+            {config.homepage.sections.map((section, index) => (
+              <div key={section.id} className="studio-repeater-item">
+                <div className="studio-repeater-item-header">
+                  <div className="studio-repeater-item-label">
+                    <span className="studio-repeater-index">{index + 1}</span>
+                    <span className="studio-repeater-item-title">
+                      {SECTION_LABELS[section.id]}
+                    </span>
+                  </div>
+                  <div className="studio-inline-actions">
+                    <button
+                      type="button"
+                      className="btn-secondary studio-toolbar-btn"
+                      disabled={index === 0}
+                      onClick={() =>
+                        onChange({
+                          ...config,
+                          homepage: {
+                            ...config.homepage,
+                            sections: moveHomepageSection(
+                              config.homepage.sections,
+                              index,
+                              -1,
+                            ),
+                          },
+                        })
+                      }
+                    >
+                      Up
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-secondary studio-toolbar-btn"
+                      disabled={index === config.homepage.sections.length - 1}
+                      onClick={() =>
+                        onChange({
+                          ...config,
+                          homepage: {
+                            ...config.homepage,
+                            sections: moveHomepageSection(
+                              config.homepage.sections,
+                              index,
+                              1,
+                            ),
+                          },
+                        })
+                      }
+                    >
+                      Down
+                    </button>
+                  </div>
+                </div>
+                <div className="studio-repeater-item-body">
+                  <StudioToggle
+                    label={section.enabled ? "Shown on homepage" : "Hidden on homepage"}
+                    checked={section.enabled}
+                    onChange={(checked) =>
+                      onChange({
+                        ...config,
+                        homepage: {
+                          ...config.homepage,
+                          sections: config.homepage.sections.map((entry, i) =>
+                            i === index ? { ...entry, enabled: checked } : entry,
+                          ),
+                        },
+                      })
+                    }
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </StudioGroup>
+
+        <StudioGroup eyebrow="Hero CTAs" title="Call-to-action labels">
+          <StudioFormGrid>
+            <StudioField label="Primary CTA label">
+              <StudioInput
+                value={config.homepage.hero.primaryCtaLabel}
+                onChange={(event) =>
+                  onChange({
+                    ...config,
+                    homepage: {
+                      ...config.homepage,
+                      hero: {
+                        ...config.homepage.hero,
+                        primaryCtaLabel: event.target.value,
+                      },
+                    },
+                  })
+                }
+              />
+            </StudioField>
+            <StudioField label="Primary CTA link">
+              <StudioInput
+                value={config.homepage.hero.primaryCtaHref}
+                onChange={(event) =>
+                  onChange({
+                    ...config,
+                    homepage: {
+                      ...config.homepage,
+                      hero: {
+                        ...config.homepage.hero,
+                        primaryCtaHref: event.target.value,
+                      },
+                    },
+                  })
+                }
+              />
+            </StudioField>
+            <StudioField label="Secondary CTA label">
+              <StudioInput
+                value={config.homepage.hero.secondaryCtaLabel}
+                onChange={(event) =>
+                  onChange({
+                    ...config,
+                    homepage: {
+                      ...config.homepage,
+                      hero: {
+                        ...config.homepage.hero,
+                        secondaryCtaLabel: event.target.value,
+                      },
+                    },
+                  })
+                }
+              />
+            </StudioField>
+            <StudioField label="Secondary CTA link">
+              <StudioInput
+                value={config.homepage.hero.secondaryCtaHref}
+                onChange={(event) =>
+                  onChange({
+                    ...config,
+                    homepage: {
+                      ...config.homepage,
+                      hero: {
+                        ...config.homepage.hero,
+                        secondaryCtaHref: event.target.value,
+                      },
+                    },
+                  })
+                }
+              />
+            </StudioField>
+          </StudioFormGrid>
+        </StudioGroup>
+
+        <StudioGroup eyebrow="Copy" title="Collections & featured headings">
+          <StudioFormGrid>
+            <StudioField label="Collections eyebrow">
+              <StudioInput
+                value={config.homepage.collections.eyebrow}
+                onChange={(event) =>
+                  onChange({
+                    ...config,
+                    homepage: {
+                      ...config.homepage,
+                      collections: {
+                        ...config.homepage.collections,
+                        eyebrow: event.target.value,
+                      },
+                    },
+                  })
+                }
+              />
+            </StudioField>
+            <StudioField label="Collections title">
+              <StudioInput
+                value={config.homepage.collections.title}
+                onChange={(event) =>
+                  onChange({
+                    ...config,
+                    homepage: {
+                      ...config.homepage,
+                      collections: {
+                        ...config.homepage.collections,
+                        title: event.target.value,
+                      },
+                    },
+                  })
+                }
+              />
+            </StudioField>
+            <StudioField label="Featured eyebrow">
+              <StudioInput
+                value={config.homepage.featured.eyebrow}
+                onChange={(event) =>
+                  onChange({
+                    ...config,
+                    homepage: {
+                      ...config.homepage,
+                      featured: {
+                        ...config.homepage.featured,
+                        eyebrow: event.target.value,
+                      },
+                    },
+                  })
+                }
+              />
+            </StudioField>
+            <StudioField label="Featured title">
+              <StudioInput
+                value={config.homepage.featured.title}
+                onChange={(event) =>
+                  onChange({
+                    ...config,
+                    homepage: {
+                      ...config.homepage,
+                      featured: {
+                        ...config.homepage.featured,
+                        title: event.target.value,
+                      },
+                    },
+                  })
+                }
+              />
+            </StudioField>
+            <StudioField label="Featured count">
+              <StudioInput
+                type="number"
+                min={1}
+                value={config.homepage.featured.limit}
+                onChange={(event) =>
+                  onChange({
+                    ...config,
+                    homepage: {
+                      ...config.homepage,
+                      featured: {
+                        ...config.homepage.featured,
+                        limit: Number(event.target.value) || 4,
+                      },
+                    },
+                  })
+                }
+              />
+            </StudioField>
+          </StudioFormGrid>
+        </StudioGroup>
+      </StudioSection>
+
+      <StudioSection title="Feature flags" subtitle="Progressive ship" defaultOpen={false}>
+        <StudioGroup
+          eyebrow="Gates"
+          title="Turn new homepage modules on/off"
+          description="Ship the redesign incrementally. A section must be enabled above and its flag must be on."
+        >
+          <StudioToggle
+            label="Homepage offers section"
+            checked={config.features.homepageOffers}
+            onChange={(checked) =>
+              onChange({
+                ...config,
+                features: { ...config.features, homepageOffers: checked },
+              })
+            }
+          />
+          <StudioToggle
+            label="Homepage features section"
+            checked={config.features.homepageFeatures}
+            onChange={(checked) =>
+              onChange({
+                ...config,
+                features: { ...config.features, homepageFeatures: checked },
+              })
+            }
+          />
+          <StudioToggle
+            label="Homepage testimonials section"
+            checked={config.features.homepageTestimonials}
+            onChange={(checked) =>
+              onChange({
+                ...config,
+                features: { ...config.features, homepageTestimonials: checked },
+              })
+            }
+          />
+        </StudioGroup>
+      </StudioSection>
+
+      <StudioSection title="Testimonials" subtitle="Social proof" defaultOpen={false}>
+        <StudioGroup eyebrow="Quotes" title="Collector testimonials">
+          <StudioRepeaterHeader
+            title="Testimonials"
+            addLabel="Add testimonial"
+            onAdd={() =>
+              onChange({
+                ...config,
+                testimonials: [
+                  ...config.testimonials,
+                  { quote: "", name: "", role: "" },
+                ],
+              })
+            }
+          />
+          <div className="studio-repeater-list">
+            {config.testimonials.map((item, index) => (
+              <StudioRepeaterItem
+                key={`testimonial-${index}`}
+                index={index}
+                title={item.name || `Testimonial ${index + 1}`}
+                removeLabel="Remove testimonial"
+                onRemove={() =>
+                  onChange({
+                    ...config,
+                    testimonials: config.testimonials.filter((_, i) => i !== index),
+                  })
+                }
+              >
+                <StudioFormGrid>
+                  <StudioField label="Quote" fullWidth>
+                    <StudioTextarea
+                      value={item.quote}
+                      onChange={(event) =>
+                        onChange({
+                          ...config,
+                          testimonials: config.testimonials.map((entry, i) =>
+                            i === index ? { ...entry, quote: event.target.value } : entry,
+                          ),
+                        })
+                      }
+                    />
+                  </StudioField>
+                  <StudioField label="Name">
+                    <StudioInput
+                      value={item.name}
+                      onChange={(event) =>
+                        onChange({
+                          ...config,
+                          testimonials: config.testimonials.map((entry, i) =>
+                            i === index ? { ...entry, name: event.target.value } : entry,
+                          ),
+                        })
+                      }
+                    />
+                  </StudioField>
+                  <StudioField label="Role">
+                    <StudioInput
+                      value={item.role}
+                      onChange={(event) =>
+                        onChange({
+                          ...config,
+                          testimonials: config.testimonials.map((entry, i) =>
+                            i === index ? { ...entry, role: event.target.value } : entry,
+                          ),
+                        })
+                      }
+                    />
+                  </StudioField>
+                </StudioFormGrid>
+              </StudioRepeaterItem>
+            ))}
+          </div>
         </StudioGroup>
       </StudioSection>
     </StudioShell>

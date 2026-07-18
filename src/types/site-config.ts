@@ -23,6 +23,81 @@ export interface SiteSocialLinks {
   whatsapp: string;
 }
 
+/** CMS-editable brand tokens mapped onto CSS variables at runtime. */
+export interface SiteBrandTokens {
+  accent: string;
+  accentForeground: string;
+  background: string;
+  foreground: string;
+  muted: string;
+  surface: string;
+  border: string;
+  darkAccent: string;
+  darkBackground: string;
+  darkForeground: string;
+  darkMuted: string;
+  darkSurface: string;
+  darkBorder: string;
+  radiusSm: string;
+  radiusMd: string;
+  radiusLg: string;
+}
+
+export type HomepageSectionId =
+  | "hero"
+  | "trustBadges"
+  | "collections"
+  | "featured"
+  | "offers"
+  | "features"
+  | "testimonials";
+
+export interface HomepageSectionConfig {
+  id: HomepageSectionId;
+  enabled: boolean;
+}
+
+export interface HomepageHeroContent {
+  primaryCtaLabel: string;
+  primaryCtaHref: string;
+  secondaryCtaLabel: string;
+  secondaryCtaHref: string;
+}
+
+export interface HomepageSectionCopy {
+  eyebrow: string;
+  title: string;
+  actionLabel?: string;
+  actionHref?: string;
+}
+
+export interface HomepageFeaturedCopy extends HomepageSectionCopy {
+  limit: number;
+}
+
+export interface SiteHomepageConfig {
+  sections: HomepageSectionConfig[];
+  hero: HomepageHeroContent;
+  collections: HomepageSectionCopy;
+  featured: HomepageFeaturedCopy;
+  offers: HomepageSectionCopy;
+  features: HomepageSectionCopy;
+  testimonials: HomepageSectionCopy;
+}
+
+export interface SiteTestimonial {
+  quote: string;
+  name: string;
+  role: string;
+}
+
+/** Progressive ship toggles for new storefront capabilities. */
+export interface SiteFeatureFlags {
+  homepageOffers: boolean;
+  homepageFeatures: boolean;
+  homepageTestimonials: boolean;
+}
+
 export interface SiteConfig {
   siteName: string;
   contactEmail: string;
@@ -41,6 +116,10 @@ export interface SiteConfig {
   productFeatures: SiteProductFeature[];
   visitorCounter: SiteVisitorCounter;
   socialLinks: SiteSocialLinks;
+  brand: SiteBrandTokens;
+  homepage: SiteHomepageConfig;
+  testimonials: SiteTestimonial[];
+  features: SiteFeatureFlags;
 }
 
 export interface ArtistExhibition {

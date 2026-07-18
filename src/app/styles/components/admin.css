@@ -317,6 +317,13 @@
     color: var(--foreground);
   }
 
+  .studio-inline-actions {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
   .studio-toolbar-btn {
     display: inline-flex;
     align-items: center;
