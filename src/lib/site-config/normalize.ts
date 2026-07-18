@@ -514,6 +514,11 @@ export function getEnabledHomepageSections(config: SiteConfig): HomepageSectionI
         return false;
       }
 
+      // Browse by Medium / Collections is removed from the homepage.
+      if (section.id === "collections") {
+        return false;
+      }
+
       if (section.id === "offers") {
         return isFeatureEnabled(config, "homepageOffers");
       }

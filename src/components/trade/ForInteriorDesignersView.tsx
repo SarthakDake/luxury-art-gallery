@@ -137,6 +137,34 @@ export function ForInteriorDesignersView({
 
         <Reveal
           as="section"
+          variant="slide-up"
+          className="trade-section section-divider-top"
+          aria-labelledby="trade-process-heading"
+        >
+          <div className="section-header-copy max-w-2xl">
+            <p className="eyebrow">{page.tradeProcess.eyebrow}</p>
+            <h2 id="trade-process-heading" className="section-title">
+              {page.tradeProcess.title}
+            </h2>
+            <p className="body-text mt-3">{page.tradeProcess.subtitle}</p>
+          </div>
+          <ol className="trade-process-list" data-reveal-stagger>
+            {page.tradeProcess.steps.map((step, index) => (
+              <li key={step.title} className="trade-process-item">
+                <span className="trade-process-index" aria-hidden>
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <div>
+                  <h3 className="trade-point-title">{step.title}</h3>
+                  <p className="body-text mt-2">{step.description}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </Reveal>
+
+        <Reveal
+          as="section"
           id="portfolio-pdf"
           variant="slide-up"
           className="trade-section section-divider-top"
@@ -187,34 +215,6 @@ export function ForInteriorDesignersView({
       />
 
       <div className="site-container page-section-end">
-        <Reveal
-          as="section"
-          variant="slide-up"
-          className="trade-section section-divider-top"
-          aria-labelledby="trade-process-heading"
-        >
-          <div className="section-header-copy max-w-2xl">
-            <p className="eyebrow">{page.tradeProcess.eyebrow}</p>
-            <h2 id="trade-process-heading" className="section-title">
-              {page.tradeProcess.title}
-            </h2>
-            <p className="body-text mt-3">{page.tradeProcess.subtitle}</p>
-          </div>
-          <ol className="trade-process-list" data-reveal-stagger>
-            {page.tradeProcess.steps.map((step, index) => (
-              <li key={step.title} className="trade-process-item">
-                <span className="trade-process-index" aria-hidden>
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <div>
-                  <h3 className="trade-point-title">{step.title}</h3>
-                  <p className="body-text mt-2">{step.description}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </Reveal>
-
         <Reveal
           as="section"
           id="inquiry"
