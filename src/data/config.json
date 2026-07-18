@@ -97,7 +97,7 @@
         "enabled": true
       },
       {
-        "id": "collections",
+        "id": "signatureWallArt",
         "enabled": true
       },
       {
@@ -105,7 +105,7 @@
         "enabled": true
       },
       {
-        "id": "signatureWallArt",
+        "id": "collections",
         "enabled": true
       },
       {
