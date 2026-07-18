@@ -10,15 +10,15 @@ interface ThemeToggleProps {
 
 export function ThemeToggle({ className = "icon-btn" }: ThemeToggleProps) {
   const mounted = useMounted();
-  const { theme, setTheme, resolvedTheme } = useTheme();
-  const isDark = mounted && (resolvedTheme ?? theme) === "dark";
+  const { resolvedTheme, setTheme } = useTheme();
+  const isDark = mounted && resolvedTheme === "dark";
 
   return (
     <button
       type="button"
       role="switch"
       aria-checked={mounted ? isDark : false}
-      aria-label="Toggle dark mode"
+      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       onClick={() => setTheme(isDark ? "light" : "dark")}
       className={className}
     >
@@ -26,9 +26,10 @@ export function ThemeToggle({ className = "icon-btn" }: ThemeToggleProps) {
         {!mounted ? (
           <Sun className="h-[18px] w-[18px] opacity-0" strokeWidth={1.5} />
         ) : isDark ? (
-          <Moon className="h-[18px] w-[18px]" strokeWidth={1.5} />
-        ) : (
+          // In dark mode, show sun = action to return to light.
           <Sun className="h-[18px] w-[18px]" strokeWidth={1.5} />
+        ) : (
+          <Moon className="h-[18px] w-[18px]" strokeWidth={1.5} />
         )}
       </span>
     </button>
