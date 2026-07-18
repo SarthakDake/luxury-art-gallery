@@ -1,12 +1,13 @@
 "use client";
 
 import { upload } from "@vercel/blob/client";
-import { ChevronDown, Eye, ImageIcon, Plus, Trash2, Upload } from "lucide-react";
+import { ChevronDown, Eye, FileText, ImageIcon, Plus, Trash2, Upload } from "lucide-react";
 import { useState, type ReactNode, type SelectHTMLAttributes } from "react";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import { toColorInputValue } from "@/lib/color-input";
 import {
   buildUploadPathname,
+  isPdfUpload,
   resolveClientImageExtension,
   resolveUploadContentType,
   SERVER_UPLOAD_PREFERRED_MAX_BYTES,
@@ -595,6 +596,135 @@ export function ImageUploadField({
         <input
           type="file"
           accept="image/*,.heic,.heif,.tif,.tiff,.avif,.bmp"
+          hidden
+          disabled={uploading}
+          onChange={handleChange}
+        />
+      </label>
+      {success ? (
+        <p className="studio-upload-feedback studio-upload-feedback--success" role="status">
+          {success}
+        </p>
+      ) : null}
+      {error ? (
+        <p className="studio-upload-feedback studio-upload-feedback--error" role="alert">
+          {error}
+        </p>
+      ) : null}
+    </StudioField>
+  );
+}
+
+export function DocumentUploadField({
+  label,
+  path,
+  filename,
+  slug = "designer-portfolio",
+  onUploaded,
+  hint,
+}: {
+  label: string;
+  path?: string;
+  filename?: string;
+  slug?: string;
+  onUploaded: (path: string, filename: string) => void;
+  hint?: string;
+}) {
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  async function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    if (!isPdfUpload(file.name, file.type)) {
+      setError("Please upload a PDF file.");
+      event.target.value = "";
+      return;
+    }
+
+    setUploading(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("mimeType", file.type || "application/pdf");
+      formData.append("kind", "document");
+      formData.append("slug", slug);
+
+      const response = await withTimeout(
+        fetch("/api/admin/content/upload", {
+          method: "POST",
+          credentials: "same-origin",
+          body: formData,
+        }),
+        120_000,
+        "PDF upload",
+      );
+
+      const payload = (await response.json().catch(() => null)) as {
+        path?: string;
+        filename?: string;
+        error?: string;
+      } | null;
+
+      if (!response.ok || !payload?.path) {
+        throw new Error(payload?.error ?? "Upload failed.");
+      }
+
+      onUploaded(payload.path, payload.filename || file.name);
+      setSuccess(`Successfully uploaded ${file.name}`);
+    } catch (uploadError) {
+      setSuccess("");
+      setError(
+        uploadError instanceof Error
+          ? uploadError.message
+          : "Upload failed. Check your connection and try again.",
+      );
+    } finally {
+      setUploading(false);
+      event.target.value = "";
+    }
+  }
+
+  return (
+    <StudioField label={label} hint={hint} fullWidth>
+      <label
+        className={`studio-dropzone${uploading ? " is-uploading" : ""}${
+          success ? " is-success" : ""
+        }`}
+      >
+        <span className="studio-dropzone-placeholder" aria-hidden>
+          <FileText className="h-6 w-6" strokeWidth={1.5} />
+        </span>
+        <span className="studio-dropzone-copy">
+          <span className="studio-dropzone-title">
+            {uploading
+              ? "Uploading…"
+              : success
+                ? "Upload complete"
+                : path
+                  ? "Replace PDF"
+                  : "Upload PDF"}
+          </span>
+          <span className="studio-field-hint">
+            {path
+              ? filename || path.split("/").pop()?.split("?")[0] || "PDF uploaded"
+              : "PDF only · click Save to publish on the trade page"}
+          </span>
+        </span>
+        <span className="btn-secondary studio-dropzone-action">
+          <Upload className="h-4 w-4" strokeWidth={1.5} />
+          Choose PDF
+        </span>
+        <input
+          type="file"
+          accept="application/pdf,.pdf"
           hidden
           disabled={uploading}
           onChange={handleChange}

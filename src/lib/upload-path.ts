@@ -12,7 +12,11 @@ export type UploadKind =
   | "cover"
   | "gallery"
   | "video-poster"
-  | "artwork";
+  | "artwork"
+  | "document";
+
+export const DOCUMENT_UPLOAD_EXTENSIONS = [".pdf"] as const;
+export type DocumentUploadExtension = (typeof DOCUMENT_UPLOAD_EXTENSIONS)[number];
 
 /** Prefer the server FormData route under this size — avoids flaky client Blob multipart for typical iPhone HEIC (~1–3MB). */
 export const SERVER_UPLOAD_PREFERRED_MAX_BYTES = 4 * 1024 * 1024;
@@ -94,6 +98,16 @@ export function buildUploadPathname(options: {
     };
   }
 
+  if (kind === "document") {
+    const slugBase = options.slug.replace(/[^a-z0-9-_]+/gi, "-").toLowerCase() || "document";
+    const filename = `${slugBase}${options.extension}`;
+    return {
+      directory: "documents",
+      filename,
+      pathname: `documents/${filename}`,
+    };
+  }
+
   const filename =
     kind === "cover"
       ? buildArtworkImageFilename(options.slug, "cover", options.extension)
@@ -125,15 +139,29 @@ export function isAllowedUploadPathname(pathname: string): boolean {
     !(
       normalized.startsWith("artworks/") ||
       normalized.startsWith("portraits/") ||
-      normalized.startsWith("site/")
+      normalized.startsWith("site/") ||
+      normalized.startsWith("documents/")
     )
   ) {
     return false;
   }
 
   const extension = normalized.match(/(\.[a-z0-9]+)$/i)?.[1]?.toLowerCase();
-  return Boolean(
-    extension &&
-      ARTWORK_IMAGE_EXTENSIONS.includes(extension as ArtworkImageExtension),
-  );
+  if (!extension) {
+    return false;
+  }
+
+  if (normalized.startsWith("documents/")) {
+    return DOCUMENT_UPLOAD_EXTENSIONS.includes(
+      extension as DocumentUploadExtension,
+    );
+  }
+
+  return ARTWORK_IMAGE_EXTENSIONS.includes(extension as ArtworkImageExtension);
+}
+
+export function isPdfUpload(filename: string, mimeType?: string): boolean {
+  const lowerName = filename.toLowerCase();
+  const lowerMime = mimeType?.trim().toLowerCase() ?? "";
+  return lowerName.endsWith(".pdf") || lowerMime === "application/pdf";
 }

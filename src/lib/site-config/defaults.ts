@@ -1,4 +1,5 @@
 import type {
+  ForInteriorDesignersConfig,
   HomepageSectionId,
   SiteBrandTokens,
   SiteConfig,
@@ -87,13 +88,13 @@ export const DEFAULT_HOMEPAGE: SiteHomepageConfig = {
     categoryFilter: "Ready to hang",
   },
   portfolio: {
-    eyebrow: "Artist Portfolio",
-    title: "Selected Portfolio",
+    eyebrow: "Trade Partners",
+    title: "For Interior Designers",
     subtitle:
-      "A wider look at the practice behind Colors N Joy — from florals to contemplative abstracts.",
-    actionLabel: "View Full Portfolio",
-    actionHref: "/portfolio",
-    limit: 8,
+      "Partner with Colors N Joy for custom wall art, trade-friendly process, and studio support on every project.",
+    actionLabel: "Explore Trade Partnership",
+    actionHref: "/for-interior-designers",
+    limit: 4,
     categoryFilter: "",
   },
   offers: {
@@ -107,6 +108,117 @@ export const DEFAULT_HOMEPAGE: SiteHomepageConfig = {
   testimonials: {
     eyebrow: "Collector Notes",
     title: "What Clients Say",
+  },
+};
+
+export const DEFAULT_FOR_INTERIOR_DESIGNERS: ForInteriorDesignersConfig = {
+  hero: {
+    eyebrow: "For Interior Designers",
+    title: "Art Partnerships for Elevated Interiors",
+    subtitle:
+      "Collaborate with Colors N Joy for custom texture art, signature wall pieces, and a trade process built around your project timeline.",
+    imageUrl: "",
+    primaryCtaLabel: "Start a Trade Inquiry",
+    primaryCtaHref: "#inquiry",
+    secondaryCtaLabel: "Download Portfolio PDF",
+    secondaryCtaHref: "#portfolio-pdf",
+  },
+  whyPartner: {
+    eyebrow: "Why Partner With Us",
+    title: "A studio that designs with your space in mind",
+    subtitle:
+      "We work alongside designers and studios to create statement walls that feel intentional, site-specific, and ready for real interiors.",
+    points: [
+      {
+        title: "Custom-led practice",
+        description:
+          "Every commission can be tailored to scale, palette, and the mood of the room.",
+      },
+      {
+        title: "Trade-aware timelines",
+        description:
+          "Clear lead times and communication so your installation schedule stays on track.",
+      },
+      {
+        title: "Material & finish expertise",
+        description:
+          "Texture, relief, and canvas work finished for lasting presence in homes and commercial spaces.",
+      },
+    ],
+  },
+  benefits: {
+    eyebrow: "Benefits",
+    title: "What you get when you partner with us",
+    subtitle:
+      "Practical support for design professionals — from concept through delivery.",
+    items: [
+      {
+        title: "Trade consultation",
+        description:
+          "Share floor plans, references, and palette direction — we help refine the right artwork.",
+      },
+      {
+        title: "Project samples & visuals",
+        description:
+          "Preview finishes and scale guidance before you commit for a client.",
+      },
+      {
+        title: "Dedicated studio contact",
+        description:
+          "One point of contact for updates, packing details, and site-ready delivery notes.",
+      },
+      {
+        title: "Flexible commissioning",
+        description:
+          "Adapt signature works or develop a fully custom piece for the brief.",
+      },
+    ],
+  },
+  portfolioPdf: {
+    eyebrow: "Studio Portfolio",
+    title: "Download the designer portfolio",
+    subtitle:
+      "A curated PDF overview of signature works and studio capabilities for your next client presentation.",
+    downloadLabel: "Download Portfolio PDF",
+    url: "",
+    filename: "colors-n-joy-designer-portfolio.pdf",
+  },
+  tradeProcess: {
+    eyebrow: "Trade Process",
+    title: "How collaboration works",
+    subtitle: "A clear path from first inquiry to installation-ready artwork.",
+    steps: [
+      {
+        title: "Share the brief",
+        description:
+          "Tell us about the space, timeline, budget range, and preferred style.",
+      },
+      {
+        title: "Concept & selection",
+        description:
+          "We propose signature options or a custom direction with scale and finish notes.",
+      },
+      {
+        title: "Studio production",
+        description:
+          "Artwork is handcrafted to order with updates at key milestones.",
+      },
+      {
+        title: "Delivery & install guidance",
+        description:
+          "Packed for safe transit with hanging and care notes for your team.",
+      },
+    ],
+  },
+  inquiryForm: {
+    eyebrow: "Inquiry",
+    title: "Start a trade conversation",
+    subtitle:
+      "Share a few project details and the studio will follow up with next steps.",
+    submitLabel: "Send Trade Inquiry",
+    successMessage:
+      "Thank you — your inquiry has been sent. The studio will be in touch shortly.",
+    defaultSubject: "Interior Designer Trade Inquiry",
   },
 };
 
@@ -161,6 +273,7 @@ export function createDefaultSiteConfig(partial?: Partial<SiteConfig>): SiteConf
     },
     brand: { ...DEFAULT_BRAND_TOKENS },
     homepage: structuredClone(DEFAULT_HOMEPAGE),
+    forInteriorDesigners: structuredClone(DEFAULT_FOR_INTERIOR_DESIGNERS),
     testimonials: structuredClone(DEFAULT_TESTIMONIALS),
     features: { ...DEFAULT_FEATURE_FLAGS },
     ...partial,

@@ -74,3 +74,33 @@ export async function uploadContentImage(options: {
   const localPath = saveToLocalFilesystem(options.directory, filename, original);
   return withImageCacheVersion(localPath);
 }
+
+/** Persist a PDF (or other non-image document) for CMS-managed downloads. */
+export async function uploadContentDocument(options: {
+  directory: string;
+  filename: string;
+  buffer: Buffer;
+  contentType?: string;
+}): Promise<string> {
+  const filename = path.basename(options.filename);
+  const contentType = options.contentType || "application/pdf";
+  const original = toSafeBuffer(options.buffer);
+
+  if (isBlobStorageEnabled()) {
+    const pathname = options.directory
+      ? `${options.directory}/${filename}`
+      : filename;
+
+    const virtualPath = await saveToBlob(pathname, original, contentType);
+    return withImageCacheVersion(virtualPath);
+  }
+
+  if (process.env.VERCEL === "1") {
+    throw new Error(
+      "Vercel Blob is not configured. In the Vercel dashboard, open Storage → Create → Blob, connect it to this project, then redeploy.",
+    );
+  }
+
+  const localPath = saveToLocalFilesystem(options.directory, filename, original);
+  return withImageCacheVersion(localPath);
+}
