@@ -153,6 +153,13 @@ export interface SignatureFaqItem {
   answer: string;
 }
 
+/** Ordered blocks on the Signature Wall Art listing page (below hero + intro). */
+export type SignaturePageSectionId =
+  | "projects"
+  | "process"
+  | "faq"
+  | "inquiry";
+
 /** CMS config for the dedicated Signature Wall Art showcase page. */
 export interface SignatureWallArtPageConfig {
   hero: {
@@ -163,6 +170,8 @@ export interface SignatureWallArtPageConfig {
     title: string;
     subtitle: string;
   };
+  /** Order of main page sections after hero + intro. */
+  sectionOrder: SignaturePageSectionId[];
   projects: {
     eyebrow: string;
     title: string;

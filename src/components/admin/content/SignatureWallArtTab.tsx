@@ -16,6 +16,7 @@ import type { StudioPreviewTarget } from "./preview-targets";
 import { DEFAULT_SIGNATURE_WALL_ART_PAGE } from "@/lib/site-config/defaults";
 import type {
   SignatureFaqItem,
+  SignaturePageSectionId,
   SignatureProject,
   SignatureProjectStyle,
   SignatureWallArtPageConfig,
@@ -24,12 +25,30 @@ import type {
   TradeProcessStep,
 } from "@/types/site-config";
 
+const SECTION_LABELS: Record<SignaturePageSectionId, string> = {
+  projects: "Projects grid",
+  process: "Our process",
+  faq: "FAQ",
+  inquiry: "Inquiry form",
+};
+
 function slugify(value: string) {
   return value
     .toLowerCase()
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
+}
+
+function moveItem<T>(items: T[], index: number, direction: -1 | 1): T[] {
+  const nextIndex = index + direction;
+  if (nextIndex < 0 || nextIndex >= items.length) {
+    return items;
+  }
+  const next = [...items];
+  const [item] = next.splice(index, 1);
+  next.splice(nextIndex, 0, item);
+  return next;
 }
 
 export function SignatureWallArtTab({
@@ -72,11 +91,17 @@ export function SignatureWallArtTab({
     });
   }
 
+  function moveSection(index: number, direction: -1 | 1) {
+    updatePage({
+      sectionOrder: moveItem(page.sectionOrder, index, direction),
+    });
+  }
+
   return (
     <StudioShell>
       <StudioSection
         title="Signature Wall Art"
-        subtitle="Showcase page"
+        subtitle="Showcase page — fully editable for the artist"
         onPreview={() =>
           onRequestPreview?.({
             scope: "site",
@@ -85,6 +110,36 @@ export function SignatureWallArtTab({
           })
         }
       >
+        <StudioGroup
+          eyebrow="Page order"
+          title="Shuffle sections on the page"
+          description="Hero and intro stay at the top. Move Projects, Process, FAQ, and Inquiry up or down."
+        >
+          <div className="studio-repeater-list">
+            {page.sectionOrder.map((sectionId, index) => (
+              <StudioRepeaterItem
+                key={sectionId}
+                index={index}
+                title={SECTION_LABELS[sectionId]}
+                showRemove={false}
+                onMoveUp={
+                  index > 0 ? () => moveSection(index, -1) : undefined
+                }
+                onMoveDown={
+                  index < page.sectionOrder.length - 1
+                    ? () => moveSection(index, 1)
+                    : undefined
+                }
+              >
+                <p className="studio-field-hint">
+                  Use the arrows to change where this block appears on the live
+                  Signature Wall Art page.
+                </p>
+              </StudioRepeaterItem>
+            ))}
+          </div>
+        </StudioGroup>
+
         <StudioGroup
           eyebrow="Hero Banner"
           title="Page hero image"
@@ -203,6 +258,28 @@ export function SignatureWallArtTab({
                 index={index}
                 title={project.title || `Project ${index + 1}`}
                 removeLabel="Remove project"
+                onMoveUp={
+                  index > 0
+                    ? () =>
+                        updatePage({
+                          projects: {
+                            ...page.projects,
+                            items: moveItem(page.projects.items, index, -1),
+                          },
+                        })
+                    : undefined
+                }
+                onMoveDown={
+                  index < page.projects.items.length - 1
+                    ? () =>
+                        updatePage({
+                          projects: {
+                            ...page.projects,
+                            items: moveItem(page.projects.items, index, 1),
+                          },
+                        })
+                    : undefined
+                }
                 onRemove={() =>
                   updatePage({
                     projects: {
@@ -273,6 +350,30 @@ export function SignatureWallArtTab({
                       index={styleIndex}
                       title={style.title || `Style ${styleIndex + 1}`}
                       removeLabel="Remove style"
+                      onMoveUp={
+                        styleIndex > 0
+                          ? () =>
+                              updateProject(index, {
+                                designStyles: moveItem(
+                                  project.designStyles,
+                                  styleIndex,
+                                  -1,
+                                ),
+                              })
+                          : undefined
+                      }
+                      onMoveDown={
+                        styleIndex < project.designStyles.length - 1
+                          ? () =>
+                              updateProject(index, {
+                                designStyles: moveItem(
+                                  project.designStyles,
+                                  styleIndex,
+                                  1,
+                                ),
+                              })
+                          : undefined
+                      }
                       onRemove={() =>
                         updateProject(index, {
                           designStyles: project.designStyles.filter(
@@ -323,23 +424,72 @@ export function SignatureWallArtTab({
                   ))}
                 </div>
 
-                <StudioField
-                  label="Gallery images (one path per line)"
-                  hint="Shown as 3–4 images in a row at the end of the project page."
-                >
-                  <StudioTextarea
-                    rows={3}
-                    value={project.galleryImages.join("\n")}
-                    onChange={(event) =>
-                      updateProject(index, {
-                        galleryImages: event.target.value
-                          .split("\n")
-                          .map((line) => line.trim())
-                          .filter(Boolean),
-                      })
-                    }
-                  />
-                </StudioField>
+                <StudioRepeaterHeader
+                  title="Gallery images"
+                  addLabel="Add gallery image"
+                  onAdd={() =>
+                    updateProject(index, {
+                      galleryImages: [...project.galleryImages, ""],
+                    })
+                  }
+                />
+                <p className="studio-field-hint">
+                  Shown as a row of images at the end of the project page. Use
+                  arrows to shuffle order.
+                </p>
+                <div className="studio-repeater-list">
+                  {project.galleryImages.map((imageUrl, imageIndex) => (
+                    <StudioRepeaterItem
+                      key={`gallery-${index}-${imageIndex}`}
+                      index={imageIndex}
+                      title={`Gallery image ${imageIndex + 1}`}
+                      removeLabel="Remove gallery image"
+                      onMoveUp={
+                        imageIndex > 0
+                          ? () =>
+                              updateProject(index, {
+                                galleryImages: moveItem(
+                                  project.galleryImages,
+                                  imageIndex,
+                                  -1,
+                                ),
+                              })
+                          : undefined
+                      }
+                      onMoveDown={
+                        imageIndex < project.galleryImages.length - 1
+                          ? () =>
+                              updateProject(index, {
+                                galleryImages: moveItem(
+                                  project.galleryImages,
+                                  imageIndex,
+                                  1,
+                                ),
+                              })
+                          : undefined
+                      }
+                      onRemove={() =>
+                        updateProject(index, {
+                          galleryImages: project.galleryImages.filter(
+                            (_, i) => i !== imageIndex,
+                          ),
+                        })
+                      }
+                    >
+                      <ImageUploadField
+                        label="Image"
+                        path={imageUrl}
+                        slug={`signature-gallery-${project.slug || index}-${imageIndex}`}
+                        kind="page"
+                        onUploaded={(path) => {
+                          const galleryImages = [...project.galleryImages];
+                          galleryImages[imageIndex] = path;
+                          updateProject(index, { galleryImages });
+                        }}
+                      />
+                    </StudioRepeaterItem>
+                  ))}
+                </div>
 
                 <StudioRepeaterHeader
                   title="Project testimonials"
@@ -359,6 +509,30 @@ export function SignatureWallArtTab({
                       index={itemIndex}
                       title={item.name || `Testimonial ${itemIndex + 1}`}
                       removeLabel="Remove testimonial"
+                      onMoveUp={
+                        itemIndex > 0
+                          ? () =>
+                              updateProject(index, {
+                                testimonials: moveItem(
+                                  project.testimonials,
+                                  itemIndex,
+                                  -1,
+                                ),
+                              })
+                          : undefined
+                      }
+                      onMoveDown={
+                        itemIndex < project.testimonials.length - 1
+                          ? () =>
+                              updateProject(index, {
+                                testimonials: moveItem(
+                                  project.testimonials,
+                                  itemIndex,
+                                  1,
+                                ),
+                              })
+                          : undefined
+                      }
                       onRemove={() =>
                         updateProject(index, {
                           testimonials: project.testimonials.filter(
@@ -469,6 +643,28 @@ export function SignatureWallArtTab({
                 index={index}
                 title={step.title || `Step ${index + 1}`}
                 removeLabel="Remove step"
+                onMoveUp={
+                  index > 0
+                    ? () =>
+                        updatePage({
+                          process: {
+                            ...page.process,
+                            steps: moveItem(page.process.steps, index, -1),
+                          },
+                        })
+                    : undefined
+                }
+                onMoveDown={
+                  index < page.process.steps.length - 1
+                    ? () =>
+                        updatePage({
+                          process: {
+                            ...page.process,
+                            steps: moveItem(page.process.steps, index, 1),
+                          },
+                        })
+                    : undefined
+                }
                 onRemove={() =>
                   updatePage({
                     process: {
@@ -552,6 +748,28 @@ export function SignatureWallArtTab({
                 index={index}
                 title={item.question || `Question ${index + 1}`}
                 removeLabel="Remove question"
+                onMoveUp={
+                  index > 0
+                    ? () =>
+                        updatePage({
+                          faq: {
+                            ...page.faq,
+                            items: moveItem(page.faq.items, index, -1),
+                          },
+                        })
+                    : undefined
+                }
+                onMoveDown={
+                  index < page.faq.items.length - 1
+                    ? () =>
+                        updatePage({
+                          faq: {
+                            ...page.faq,
+                            items: moveItem(page.faq.items, index, 1),
+                          },
+                        })
+                    : undefined
+                }
                 onRemove={() =>
                   updatePage({
                     faq: {

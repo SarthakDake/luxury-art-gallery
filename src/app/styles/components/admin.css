@@ -827,6 +827,13 @@
     border-bottom: 1px solid var(--border);
   }
 
+  .studio-repeater-item-actions {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
   .studio-repeater-item-label {
     display: flex;
     align-items: center;
@@ -876,9 +883,14 @@
       background-color 300ms ease;
   }
 
-  .studio-icon-btn:hover {
+  .studio-icon-btn:hover:not(:disabled) {
     border-color: var(--foreground);
     background: var(--surface);
+  }
+
+  .studio-icon-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
   }
 
   .studio-toggle {

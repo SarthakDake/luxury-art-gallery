@@ -305,6 +305,12 @@
       "title": "Signature Wall Art",
       "subtitle": "Five statement projects crafted for elevated interiors — explore the story, finishes, and design language behind each wall."
     },
+    "sectionOrder": [
+      "projects",
+      "process",
+      "faq",
+      "inquiry"
+    ],
     "projects": {
       "eyebrow": "Featured Projects",
       "title": "Five statement walls",

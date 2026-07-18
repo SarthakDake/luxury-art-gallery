@@ -249,6 +249,9 @@ export const DEFAULT_TESTIMONIALS: SiteTestimonial[] = [
   },
 ];
 
+export const DEFAULT_SIGNATURE_PAGE_SECTION_ORDER: SignatureWallArtPageConfig["sectionOrder"] =
+  ["projects", "process", "faq", "inquiry"];
+
 export const DEFAULT_SIGNATURE_WALL_ART_PAGE: SignatureWallArtPageConfig = {
   hero: {
     imageUrl: "/site/signature-page-hero.jpg",
@@ -259,6 +262,7 @@ export const DEFAULT_SIGNATURE_WALL_ART_PAGE: SignatureWallArtPageConfig = {
     subtitle:
       "Five statement projects crafted for elevated interiors — explore the story, finishes, and design language behind each wall.",
   },
+  sectionOrder: [...DEFAULT_SIGNATURE_PAGE_SECTION_ORDER],
   projects: {
     eyebrow: "Featured Projects",
     title: "Five statement walls",

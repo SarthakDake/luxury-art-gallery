@@ -4,6 +4,7 @@ import {
   DEFAULT_FOR_INTERIOR_DESIGNERS,
   DEFAULT_HOMEPAGE,
   DEFAULT_HOMEPAGE_SECTION_ORDER,
+  DEFAULT_SIGNATURE_PAGE_SECTION_ORDER,
   DEFAULT_SIGNATURE_WALL_ART_PAGE,
   DEFAULT_TESTIMONIALS,
 } from "@/lib/site-config/defaults";
@@ -11,6 +12,7 @@ import type {
   ForInteriorDesignersConfig,
   HomepageSectionConfig,
   HomepageSectionId,
+  SignaturePageSectionId,
   SignatureProject,
   SignatureWallArtPageConfig,
   SiteBrandTokens,
@@ -414,6 +416,39 @@ function mergeSignatureProjects(
     .filter((project) => project.title && project.slug);
 }
 
+function mergeSignatureSectionOrder(raw: unknown): SignaturePageSectionId[] {
+  const allowed = new Set<SignaturePageSectionId>(
+    DEFAULT_SIGNATURE_PAGE_SECTION_ORDER,
+  );
+
+  if (!Array.isArray(raw) || raw.length === 0) {
+    return [...DEFAULT_SIGNATURE_PAGE_SECTION_ORDER];
+  }
+
+  const seen = new Set<SignaturePageSectionId>();
+  const ordered: SignaturePageSectionId[] = [];
+
+  for (const entry of raw) {
+    if (typeof entry !== "string" || !allowed.has(entry as SignaturePageSectionId)) {
+      continue;
+    }
+    const id = entry as SignaturePageSectionId;
+    if (seen.has(id)) {
+      continue;
+    }
+    seen.add(id);
+    ordered.push(id);
+  }
+
+  for (const id of DEFAULT_SIGNATURE_PAGE_SECTION_ORDER) {
+    if (!seen.has(id)) {
+      ordered.push(id);
+    }
+  }
+
+  return ordered;
+}
+
 function mergeSignatureWallArtPage(raw: unknown): SignatureWallArtPageConfig {
   const source = isRecord(raw) ? raw : {};
   const hero = isRecord(source.hero) ? source.hero : {};
@@ -433,6 +468,7 @@ function mergeSignatureWallArtPage(raw: unknown): SignatureWallArtPageConfig {
       title: asString(intro.title, defaults.intro.title),
       subtitle: asString(intro.subtitle, defaults.intro.subtitle),
     },
+    sectionOrder: mergeSignatureSectionOrder(source.sectionOrder),
     projects: {
       eyebrow: asString(projects.eyebrow, defaults.projects.eyebrow),
       title: asString(projects.title, defaults.projects.title),
