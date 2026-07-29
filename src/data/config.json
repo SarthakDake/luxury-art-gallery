@@ -245,31 +245,36 @@
         },
         {
           "slug": "desert-texture",
-          "title": "Desert Texture",
+          "title": "Lippan Art",
           "summary": "Warm clay and ochre reliefs that bring grounded warmth to a contemporary lounge.",
-          "coverImageUrl": "/site/signature-project-desert-texture.jpg?v=1785323506772",
+          "coverImageUrl": "/site/signature-project-desert-texture.jpg?v=1785324286168",
           "designStyles": [
             {
-              "imageUrl": "/site/signature-style-desert-texture-0.jpg?v=1785323197165",
+              "imageUrl": "/site/signature-style-desert-texture-0.jpg?v=1785324376811",
               "title": "Dune Contour",
               "description": "Sculpted ridges echo desert topography — calm from afar, rich up close."
             },
             {
-              "imageUrl": "/site/signature-style-desert-texture-1.jpg?v=1785322856758",
+              "imageUrl": "/site/signature-style-desert-texture-1.jpg?v=1785324404330",
               "title": "Sun-baked Finish",
               "description": "Matte mineral pigments hold warmth through the day without glare on evening lighting."
             },
             {
-              "imageUrl": "",
+              "imageUrl": "/site/signature-style-desert-texture-2.heic?v=1785324444924",
+              "title": "New style",
+              "description": ""
+            },
+            {
+              "imageUrl": "/site/signature-style-desert-texture-3.jpg?v=1785324477398",
               "title": "New style",
               "description": ""
             }
           ],
           "galleryImages": [
-            "/site/signature-gallery-desert-texture-0.jpg?v=1785322913693",
-            "/artworks/sample4.jpg",
-            "/site/signature-gallery-desert-texture-2.jpg?v=1785322938858",
-            "/site/signature-gallery-desert-texture-3.jpg?v=1785322957970"
+            "/site/signature-gallery-desert-texture-0.jpg?v=1785324491552",
+            "/site/signature-gallery-desert-texture-1.jpg?v=1785324508404",
+            "/site/signature-gallery-desert-texture-2.heic?v=1785324524833",
+            "/site/signature-gallery-desert-texture-3.jpg?v=1785324528489"
           ],
           "testimonials": [
             {
