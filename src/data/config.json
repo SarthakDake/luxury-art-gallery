@@ -2,20 +2,20 @@
   "siteName": "Colors N Joy | Texture Art Studio",
   "contactEmail": "colorsnjoybyaish@gmail.com",
   "adminEmail": "sarthaksdake@gmail.com, colorsnjoybyaish@gmail.com",
-  "whatsappNumber": "+919423690682",
+  "whatsappNumber": "919423690682",
   "studioAddress": "Via Navi Mumbai",
-  "heroTitle": "Turn Blank Walls into the Highlight of Your Space",
-  "heroSubtitle": "Thoughtfully designed custom wall art, texture art & relief wall art for luxury homes and commercial spaces.",
+  "heroTitle": "Walls that WOW",
+  "heroSubtitle": "Custom wall texture art & relief mural for luxury homes, commercial spaces & Interior Designers.",
   "announcements": [
-    "Custom-Made Art for Every space",
-    "Interior Designer Collaborations Welcome",
+    "Free Design Consultation",
+    "Interior Designer & Architect Collaborations Welcome",
     "Serving Mumbai | Pune | Pan India"
   ],
   "trustBadges": [
-    "Designed & Handcrafted",
-    "Premium Finish",
-    "Chosen By Interior Designers",
-    "47+ Social Media Community"
+    "200+ Custom Projects",
+    "50K+ Social Media Community",
+    "Chosen by Interior Designers",
+    "100 % Handmade"
   ],
   "defaultDispatchNote": "Made to Order | Dispatches in 14–21 Days",
   "defaultCareGuide": "Handle artwork with clean, dry hands. Avoid direct sunlight and damp environments. Dust gently with a soft, dry microfiber cloth. Ensure secure hanging hardware for wall-mounted pieces.",
@@ -81,7 +81,7 @@
     "darkForeground": "#e5e5e5",
     "darkMuted": "#9ca3af",
     "darkSurface": "#1a1a1a",
-    "darkBorder": "#4b5563",
+    "darkBorder": "#000000",
     "radiusSm": "0.25rem",
     "radiusMd": "0.5rem",
     "radiusLg": "0.75rem"
@@ -185,130 +185,6 @@
       "eyebrow": "Collector Notes",
       "title": "What Clients Say"
     }
-  },
-  "forInteriorDesigners": {
-    "hero": {
-      "eyebrow": "For Interior Designers",
-      "title": "Art Partnerships for Elevated Interiors",
-      "subtitle": "Collaborate with Colors N Joy for custom texture art, signature wall pieces, and a trade process built around your project timeline.",
-      "imageUrl": "/site/trade-hero.jpg",
-      "primaryCtaLabel": "Start a Trade Inquiry",
-      "primaryCtaHref": "#inquiry",
-      "secondaryCtaLabel": "Download Portfolio PDF",
-      "secondaryCtaHref": "#portfolio-pdf"
-    },
-    "whyPartner": {
-      "eyebrow": "Why Partner With Us",
-      "title": "A studio that designs with your space in mind",
-      "subtitle": "We work alongside designers and studios to create statement walls that feel intentional, site-specific, and ready for real interiors.",
-      "points": [
-        {
-          "title": "Custom-led practice",
-          "description": "Every commission can be tailored to scale, palette, and the mood of the room."
-        },
-        {
-          "title": "Trade-aware timelines",
-          "description": "Clear lead times and communication so your installation schedule stays on track."
-        },
-        {
-          "title": "Material & finish expertise",
-          "description": "Texture, relief, and canvas work finished for lasting presence in homes and commercial spaces."
-        }
-      ]
-    },
-    "benefits": {
-      "eyebrow": "Benefits",
-      "title": "What you get when you partner with us",
-      "subtitle": "Practical support for design professionals — from concept through delivery.",
-      "items": [
-        {
-          "title": "Trade consultation",
-          "description": "Share floor plans, references, and palette direction — we help refine the right artwork."
-        },
-        {
-          "title": "Project samples & visuals",
-          "description": "Preview finishes and scale guidance before you commit for a client."
-        },
-        {
-          "title": "Dedicated studio contact",
-          "description": "One point of contact for updates, packing details, and site-ready delivery notes."
-        },
-        {
-          "title": "Flexible commissioning",
-          "description": "Adapt signature works or develop a fully custom piece for the brief."
-        }
-      ]
-    },
-    "portfolioPdf": {
-      "eyebrow": "Studio Portfolio",
-      "title": "Download the designer portfolio",
-      "subtitle": "A curated PDF overview of signature works and studio capabilities for your next client presentation.",
-      "downloadLabel": "Download Portfolio PDF",
-      "url": "/documents/designer-portfolio.pdf?v=1784371385829",
-      "filename": "designer-portfolio.pdf"
-    },
-    "tradeProcess": {
-      "eyebrow": "Trade Process",
-      "title": "How collaboration works",
-      "subtitle": "A clear path from first inquiry to installation-ready artwork.",
-      "steps": [
-        {
-          "title": "Share the brief",
-          "description": "Tell us about the space, timeline, budget range, and preferred style."
-        },
-        {
-          "title": "Concept & selection",
-          "description": "We propose signature options or a custom direction with scale and finish notes."
-        },
-        {
-          "title": "Studio production",
-          "description": "Artwork is handcrafted to order with updates at key milestones."
-        },
-        {
-          "title": "Delivery & install guidance",
-          "description": "Packed for safe transit with hanging and care notes for your team."
-        }
-      ]
-    },
-    "homepageImages": [
-      {
-        "imageUrl": "/site/trade-teaser-1.jpg",
-        "caption": "Art placed for real living spaces"
-      },
-      {
-        "imageUrl": "/site/trade-teaser-2.jpg",
-        "caption": "Studio collaboration & material direction"
-      },
-      {
-        "imageUrl": "/site/trade-teaser-3.jpg",
-        "caption": "Hospitality & commercial installations"
-      }
-    ],
-    "inquiryForm": {
-      "eyebrow": "Inquiry",
-      "title": "Start a trade conversation",
-      "subtitle": "Share a few project details and the studio will follow up with next steps.",
-      "submitLabel": "Send Trade Inquiry",
-      "successMessage": "Thank you — your inquiry has been sent. The studio will be in touch shortly.",
-      "defaultSubject": "Interior Designer Trade Inquiry"
-    }
-  },
-  "testimonials": [
-    {
-      "quote": "The texture work transformed our living room — it feels custom, calm, and completely ours.",
-      "name": "Priya M.",
-      "role": "Homeowner, Mumbai"
-    },
-    {
-      "quote": "Aishwarya understood the space instantly. The relief piece is the highlight of the lobby.",
-      "name": "Rahul S.",
-      "role": "Interior Designer, Pune"
-    }
-  ],
-  "features": {
-    "homepageOffers": false,
-    "homepageFeatures": true,
-    "homepageTestimonials": true
   },
   "signatureWallArtPage": {
     "hero": {
@@ -557,5 +433,129 @@
       "successMessage": "Thank you — your inquiry has been sent. The studio will be in touch shortly.",
       "defaultSubject": "Signature Wall Art Inquiry"
     }
+  },
+  "forInteriorDesigners": {
+    "hero": {
+      "eyebrow": "For Interior Designers",
+      "title": "Art Partnerships for Elevated Interiors",
+      "subtitle": "Collaborate with Colors N Joy for custom texture art, signature wall pieces, and a trade process built around your project timeline.",
+      "imageUrl": "/site/trade-hero.jpg",
+      "primaryCtaLabel": "Start a Trade Inquiry",
+      "primaryCtaHref": "#inquiry",
+      "secondaryCtaLabel": "Download Portfolio PDF",
+      "secondaryCtaHref": "#portfolio-pdf"
+    },
+    "whyPartner": {
+      "eyebrow": "Why Partner With Us",
+      "title": "A studio that designs with your space in mind",
+      "subtitle": "We work alongside designers and studios to create statement walls that feel intentional, site-specific, and ready for real interiors.",
+      "points": [
+        {
+          "title": "Custom-led practice",
+          "description": "Every commission can be tailored to scale, palette, and the mood of the room."
+        },
+        {
+          "title": "Trade-aware timelines",
+          "description": "Clear lead times and communication so your installation schedule stays on track."
+        },
+        {
+          "title": "Material & finish expertise",
+          "description": "Texture, relief, and canvas work finished for lasting presence in homes and commercial spaces."
+        }
+      ]
+    },
+    "benefits": {
+      "eyebrow": "Benefits",
+      "title": "What you get when you partner with us",
+      "subtitle": "Practical support for design professionals — from concept through delivery.",
+      "items": [
+        {
+          "title": "Trade consultation",
+          "description": "Share floor plans, references, and palette direction — we help refine the right artwork."
+        },
+        {
+          "title": "Project samples & visuals",
+          "description": "Preview finishes and scale guidance before you commit for a client."
+        },
+        {
+          "title": "Dedicated studio contact",
+          "description": "One point of contact for updates, packing details, and site-ready delivery notes."
+        },
+        {
+          "title": "Flexible commissioning",
+          "description": "Adapt signature works or develop a fully custom piece for the brief."
+        }
+      ]
+    },
+    "portfolioPdf": {
+      "eyebrow": "Studio Portfolio",
+      "title": "Download the designer portfolio",
+      "subtitle": "A curated PDF overview of signature works and studio capabilities for your next client presentation.",
+      "downloadLabel": "Download Portfolio PDF",
+      "url": "/documents/designer-portfolio.pdf?v=1784371385829",
+      "filename": "designer-portfolio.pdf"
+    },
+    "tradeProcess": {
+      "eyebrow": "Trade Process",
+      "title": "How collaboration works",
+      "subtitle": "A clear path from first inquiry to installation-ready artwork.",
+      "steps": [
+        {
+          "title": "Share the brief",
+          "description": "Tell us about the space, timeline, budget range, and preferred style."
+        },
+        {
+          "title": "Concept & selection",
+          "description": "We propose signature options or a custom direction with scale and finish notes."
+        },
+        {
+          "title": "Studio production",
+          "description": "Artwork is handcrafted to order with updates at key milestones."
+        },
+        {
+          "title": "Delivery & install guidance",
+          "description": "Packed for safe transit with hanging and care notes for your team."
+        }
+      ]
+    },
+    "homepageImages": [
+      {
+        "imageUrl": "/site/trade-teaser-1.jpg",
+        "caption": "Art placed for real living spaces"
+      },
+      {
+        "imageUrl": "/site/trade-teaser-2.jpg",
+        "caption": "Studio collaboration & material direction"
+      },
+      {
+        "imageUrl": "/site/trade-teaser-3.jpg",
+        "caption": "Hospitality & commercial installations"
+      }
+    ],
+    "inquiryForm": {
+      "eyebrow": "Inquiry",
+      "title": "Start a trade conversation",
+      "subtitle": "Share a few project details and the studio will follow up with next steps.",
+      "submitLabel": "Send Trade Inquiry",
+      "successMessage": "Thank you — your inquiry has been sent. The studio will be in touch shortly.",
+      "defaultSubject": "Interior Designer Trade Inquiry"
+    }
+  },
+  "testimonials": [
+    {
+      "quote": "The texture work transformed our living room — it feels custom, calm, and completely ours.",
+      "name": "Priya M.",
+      "role": "Homeowner, Mumbai"
+    },
+    {
+      "quote": "Aishwarya understood the space instantly. The relief piece is the highlight of the lobby.",
+      "name": "Rahul S.",
+      "role": "Interior Designer, Pune"
+    }
+  ],
+  "features": {
+    "homepageOffers": false,
+    "homepageFeatures": true,
+    "homepageTestimonials": true
   }
 }
