@@ -247,23 +247,29 @@
           "slug": "desert-texture",
           "title": "Desert Texture",
           "summary": "Warm clay and ochre reliefs that bring grounded warmth to a contemporary lounge.",
-          "coverImageUrl": "/site/signature-project-desert-texture.jpg?v=1785314766601",
+          "coverImageUrl": "/site/signature-project-desert-texture.png?v=1785323036534",
           "designStyles": [
             {
-              "imageUrl": "/artworks/sample2.jpg",
+              "imageUrl": "/site/signature-style-desert-texture-0.jpg?v=1785323197165",
               "title": "Dune Contour",
               "description": "Sculpted ridges echo desert topography — calm from afar, rich up close."
             },
             {
-              "imageUrl": "/artworks/sample4.jpg",
+              "imageUrl": "/site/signature-style-desert-texture-1.jpg?v=1785322856758",
               "title": "Sun-baked Finish",
               "description": "Matte mineral pigments hold warmth through the day without glare on evening lighting."
+            },
+            {
+              "imageUrl": "",
+              "title": "New style",
+              "description": ""
             }
           ],
           "galleryImages": [
-            "/artworks/sample2.jpg",
+            "/site/signature-gallery-desert-texture-0.jpg?v=1785322913693",
             "/artworks/sample4.jpg",
-            "/artworks/sample5.jpg"
+            "/site/signature-gallery-desert-texture-2.jpg?v=1785322938858",
+            "/site/signature-gallery-desert-texture-3.jpg?v=1785322957970"
           ],
           "testimonials": [
             {
