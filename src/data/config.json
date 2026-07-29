@@ -189,7 +189,7 @@
   },
   "signatureWallArtPage": {
     "hero": {
-      "imageUrl": "/site/signature-page-hero.jpg"
+      "imageUrl": "/site/signature-page-hero.jpg?v=1785325105302"
     },
     "intro": {
       "eyebrow": "Signature Collection",
@@ -286,7 +286,7 @@
         },
         {
           "slug": "forest-relief",
-          "title": "Forest Relief",
+          "title": "Royal Peacock",
           "summary": "Botanical depth and layered greens for a dining space that feels immersive and alive.",
           "coverImageUrl": "/artworks/green_leaf_1.jpg",
           "designStyles": [
@@ -322,7 +322,7 @@
         },
         {
           "slug": "urban-neutral",
-          "title": "Urban Neutral",
+          "title": "Botanical Harmony",
           "summary": "Architectural texture in charcoal and bone for a city apartment that wants calm structure.",
           "coverImageUrl": "/artworks/sample3.jpg",
           "designStyles": [
@@ -353,12 +353,12 @@
         },
         {
           "slug": "luminous-veil",
-          "title": "Luminous Veil",
+          "title": "Moon Wall",
           "summary": "Translucent layers and soft luminosity for a bedroom wall that feels private and serene.",
-          "coverImageUrl": "/artworks/sample4.jpg",
+          "coverImageUrl": "/site/signature-project-luminous-veil.png?v=1785325358374",
           "designStyles": [
             {
-              "imageUrl": "/artworks/sample4.jpg",
+              "imageUrl": "/site/signature-style-luminous-veil-0.jpg?v=1785325373458",
               "title": "Veil Layers",
               "description": "Sheer pigment washes over subtle relief create a soft glow beside the bed."
             },
@@ -368,15 +368,15 @@
               "description": "Pale ivory and mist tones keep the room calm from first light to evening lamps."
             },
             {
-              "imageUrl": "/artworks/sample2.jpg",
+              "imageUrl": "/site/signature-style-luminous-veil-2.jpg?v=1785325459601",
               "title": "Quiet Focal Point",
               "description": "Scaled for intimacy — present enough to center the room, never restless."
             }
           ],
           "galleryImages": [
-            "/artworks/sample4.jpg",
-            "/artworks/sample1.jpg",
-            "/artworks/sample2.jpg"
+            "/site/signature-gallery-luminous-veil-0.jpg?v=1785325480556",
+            "/site/signature-gallery-luminous-veil-1.jpg?v=1785325490724",
+            "/site/signature-gallery-luminous-veil-2.jpg?v=1785325497106"
           ],
           "testimonials": [
             {
