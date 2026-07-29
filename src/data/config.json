@@ -288,29 +288,39 @@
           "slug": "forest-relief",
           "title": "Royal Peacock",
           "summary": "Botanical depth and layered greens for a dining space that feels immersive and alive.",
-          "coverImageUrl": "/artworks/green_leaf_1.jpg",
+          "coverImageUrl": "/site/signature-project-forest-relief.heic?v=1785327283281",
           "designStyles": [
             {
-              "imageUrl": "/artworks/green_leaf_1.jpg",
+              "imageUrl": "/site/signature-style-forest-relief-0.heic?v=1785327122138",
               "title": "Canopy Layers",
               "description": "Overlapping leaf forms create soft shadow play across the dining wall."
             },
             {
-              "imageUrl": "/artworks/sample3.jpg",
+              "imageUrl": "/site/signature-style-forest-relief-1.jpg?v=1785327439588",
               "title": "Moss & Stone",
               "description": "Deep greens against cool mineral bases keep the palette grounded and timeless."
             },
             {
-              "imageUrl": "/artworks/sample5.jpg",
+              "imageUrl": "/site/signature-style-forest-relief-2.heic?v=1785327408195",
               "title": "Evening Glow",
               "description": "Under accent lighting, the relief reads sculptural without overpowering the table setting."
+            },
+            {
+              "imageUrl": "/site/signature-style-forest-relief-3.heic?v=1785327416079",
+              "title": "New style",
+              "description": ""
+            },
+            {
+              "imageUrl": "/site/signature-style-forest-relief-4.heic?v=1785327351454",
+              "title": "New style",
+              "description": ""
             }
           ],
           "galleryImages": [
-            "/artworks/green_leaf_1.jpg",
-            "/artworks/sample3.jpg",
-            "/artworks/sample5.jpg",
-            "/artworks/sample1.jpg"
+            "/site/signature-gallery-forest-relief-0.heic?v=1785327226166",
+            "/site/signature-gallery-forest-relief-1.heic?v=1785327236772",
+            "/site/signature-gallery-forest-relief-2.heic?v=1785327253421",
+            "/site/signature-gallery-forest-relief-3.heic?v=1785327262848"
           ],
           "testimonials": [
             {
