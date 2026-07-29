@@ -189,7 +189,7 @@
   },
   "signatureWallArtPage": {
     "hero": {
-      "imageUrl": "/site/signature-page-hero.jpg?v=1785325105302"
+      "imageUrl": "/site/signature-page-hero.png?v=1785334903382"
     },
     "intro": {
       "eyebrow": "Signature Collection",
@@ -211,7 +211,7 @@
           "slug": "coastal-ca",
           "title": "Relief Lotus",
           "summary": "Soft mineral textures and layered neutrals for a seaside living room that feels open and restful.",
-          "coverImageUrl": "/site/signature-project-coastal-ca.jpg?v=1785323382229",
+          "coverImageUrl": "/site/signature-project-coastal-ca.png?v=1785334863446",
           "designStyles": [
             {
               "imageUrl": "/site/signature-style-coastal-ca-0.jpg?v=1785323398077",
