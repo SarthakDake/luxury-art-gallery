@@ -288,7 +288,7 @@
           "slug": "forest-relief",
           "title": "Royal Peacock",
           "summary": "Botanical depth and layered greens for a dining space that feels immersive and alive.",
-          "coverImageUrl": "/site/signature-project-forest-relief.heic?v=1785327645561",
+          "coverImageUrl": "/site/signature-project-forest-relief.png?v=1785334381750",
           "designStyles": [
             {
               "imageUrl": "/site/signature-style-forest-relief-0.heic?v=1785327122138",
@@ -314,13 +314,19 @@
               "imageUrl": "/site/signature-style-forest-relief-4.heic?v=1785327351454",
               "title": "New style",
               "description": ""
+            },
+            {
+              "imageUrl": "/site/signature-style-forest-relief-5.png?v=1785334458963",
+              "title": "New style",
+              "description": ""
             }
           ],
           "galleryImages": [
             "/site/signature-gallery-forest-relief-0.heic?v=1785327226166",
             "/site/signature-gallery-forest-relief-1.heic?v=1785327236772",
             "/site/signature-gallery-forest-relief-2.heic?v=1785327253421",
-            "/site/signature-gallery-forest-relief-3.heic?v=1785327262848"
+            "/site/signature-gallery-forest-relief-3.heic?v=1785327262848",
+            "/site/signature-gallery-forest-relief-4.png?v=1785334486703"
           ],
           "testimonials": [
             {
