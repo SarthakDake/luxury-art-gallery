@@ -197,8 +197,8 @@
       "subtitle": "Five statement projects crafted for elevated interiors — explore the story, finishes, and design language behind each wall."
     },
     "sectionOrder": [
-      "projects",
       "process",
+      "projects",
       "faq",
       "inquiry"
     ],
@@ -208,32 +208,32 @@
       "subtitle": "Each project is a showcase of texture, scale, and atmosphere. Open a project to see design styles, process imagery, and client notes.",
       "items": [
         {
-          "slug": "coastal-calm",
-          "title": "Coastal Calm",
+          "slug": "coastal-ca",
+          "title": "Relief Lotus",
           "summary": "Soft mineral textures and layered neutrals for a seaside living room that feels open and restful.",
-          "coverImageUrl": "/artworks/sample1.jpg",
+          "coverImageUrl": "/site/signature-project-coastal-ca.jpg?v=1785314721068",
           "designStyles": [
             {
-              "imageUrl": "/artworks/sample1.jpg",
-              "title": "Tide Line Relief",
+              "imageUrl": "/site/signature-style-coastal-ca-0.jpg?v=1785314816620",
+              "title": "3D Relief",
               "description": "A low-relief wave rhythm in sand and chalk tones, designed to catch soft morning light across a long sofa wall."
             },
             {
-              "imageUrl": "/artworks/sample2.jpg",
+              "imageUrl": "/site/signature-style-coastal-ca-1.jpg?v=1785314836223",
               "title": "Salt Mist Palette",
               "description": "Muted greys and warm whites keep the composition quiet, so furniture and drapery stay the supporting cast."
             },
             {
-              "imageUrl": "/artworks/green_leaf_1.jpg",
+              "imageUrl": "/site/signature-style-coastal-ca-2.jpg?v=1785314849440",
               "title": "Organic Edge Detail",
               "description": "Hand-finished edges and subtle pigment washes add depth without competing with ocean views."
             }
           ],
           "galleryImages": [
-            "/artworks/sample1.jpg",
-            "/artworks/sample2.jpg",
-            "/artworks/sample3.jpg",
-            "/artworks/green_leaf_1.jpg"
+            "/site/signature-gallery-coastal-ca-0.jpg?v=1785314909060",
+            "/site/signature-gallery-coastal-ca-1.jpg?v=1785314916710",
+            "/site/signature-gallery-coastal-ca-2.jpg?v=1785314924872",
+            "/site/signature-gallery-coastal-ca-3.jpg?v=1785314932280"
           ],
           "testimonials": [
             {
@@ -247,7 +247,7 @@
           "slug": "desert-texture",
           "title": "Desert Texture",
           "summary": "Warm clay and ochre reliefs that bring grounded warmth to a contemporary lounge.",
-          "coverImageUrl": "/artworks/sample2.jpg",
+          "coverImageUrl": "/site/signature-project-desert-texture.jpg?v=1785314766601",
           "designStyles": [
             {
               "imageUrl": "/artworks/sample2.jpg",
