@@ -353,7 +353,7 @@
               "description": "Cool greys and soft plaster tones pair with black metal and oak furniture."
             },
             {
-              "imageUrl": "/site/signature-style-urban-neutral-2.heic?v=1785338690742",
+              "imageUrl": "/site/signature-style-urban-neutral-2.jpg?v=1786158630082",
               "title": "New style",
               "description": ""
             },
@@ -394,15 +394,21 @@
               "description": "Pale ivory and mist tones keep the room calm from first light to evening lamps."
             },
             {
-              "imageUrl": "/site/signature-style-luminous-veil-2.jpg?v=1785325459601",
+              "imageUrl": "/site/signature-style-luminous-veil-2.jpg?v=1786158741252",
               "title": "Quiet Focal Point",
               "description": "Scaled for intimacy — present enough to center the room, never restless."
+            },
+            {
+              "imageUrl": "/site/signature-style-luminous-veil-3.jpg?v=1786158732213",
+              "title": "New style",
+              "description": ""
             }
           ],
           "galleryImages": [
             "/site/signature-gallery-luminous-veil-0.jpg?v=1785325480556",
             "/site/signature-gallery-luminous-veil-1.jpg?v=1785325490724",
-            "/site/signature-gallery-luminous-veil-2.jpg?v=1785325497106"
+            "/site/signature-gallery-luminous-veil-2.jpg?v=1786158771200",
+            "/site/signature-gallery-luminous-veil-3.jpg?v=1786158782458"
           ],
           "testimonials": [
             {
