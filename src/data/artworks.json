@@ -152,6 +152,13 @@
         "price": 2500
       }
     ],
-    "defaultSelectedSizeIndex": 0
+    "defaultSelectedSizeIndex": 0,
+    "videos": [
+      {
+        "url": "https://www.instagram.com/reel/DbvbweEsPJG/?igsh=eDJnN3d6bzE0ZGQ4",
+        "poster": "/artworks/wave-video-poster-1.png?v=1786172606455",
+        "type": "instagram"
+      }
+    ]
   }
 ]
