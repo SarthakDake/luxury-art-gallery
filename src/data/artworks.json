@@ -142,9 +142,13 @@
     "id": "art-006",
     "title": "Wave",
     "slug": "wave",
-    "imageUrl": "/artworks/wave-cover.png?v=1786162988598",
+    "imageUrl": "/artworks/wave-cover.png?v=1786181570246",
+    "galleryImages": [
+      "/artworks/wave-1.heic?v=1786181466794",
+      "/artworks/wave-2.heic?v=1786181479609"
+    ],
     "category": "Texture Canvas",
-    "subcategory": "",
+    "subcategory": "Waves",
     "material": "",
     "inStock": true,
     "showcaseOnly": false,
