@@ -8,10 +8,10 @@
       "/artworks/silent-column-1-1.heic?v=1786162789683",
       "/artworks/silent-column-1-2.heic?v=1786162873553"
     ],
-    "category": "Canvas",
+    "category": "Custom Canvas",
     "subcategory": "Bronze Sculpture",
     "material": "Cast bronze",
-    "inStock": false,
+    "inStock": true,
     "showcaseOnly": false,
     "description": "An upright bronze form with a hand-polished surface that catches ambient light from every angle.",
     "sizes": [
