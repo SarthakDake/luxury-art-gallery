@@ -214,26 +214,31 @@
           "coverImageUrl": "/site/signature-project-coastal-ca.jpg?v=1785339830068",
           "designStyles": [
             {
-              "imageUrl": "/site/signature-style-coastal-ca-0.jpg?v=1785323398077",
+              "imageUrl": "/site/signature-style-coastal-ca-0.jpg?v=1786157819484",
               "title": "Lotus 3D Relief",
               "description": "A low-relief wave rhythm in sand and chalk tones, designed to catch soft morning light across a long sofa wall."
             },
             {
-              "imageUrl": "/site/signature-style-coastal-ca-1.jpg?v=1785314836223",
+              "imageUrl": "/site/signature-style-coastal-ca-1.jpg?v=1786157837300",
               "title": "Salt Mist Palette",
               "description": "Muted greys and warm whites keep the composition quiet, so furniture and drapery stay the supporting cast."
             },
             {
-              "imageUrl": "/site/signature-style-coastal-ca-2.jpg?v=1785323424921",
+              "imageUrl": "/site/signature-style-coastal-ca-2.jpg?v=1786157915359",
               "title": "Organic Edge Detail",
               "description": "Hand-finished edges and subtle pigment washes add depth without competing with ocean views."
+            },
+            {
+              "imageUrl": "/site/signature-style-coastal-ca-3.jpg?v=1786157941589",
+              "title": "New style",
+              "description": ""
             }
           ],
           "galleryImages": [
-            "/site/signature-gallery-coastal-ca-0.png?v=1785318196126",
+            "/site/signature-gallery-coastal-ca-0.jpg?v=1786157959014",
             "/site/signature-gallery-coastal-ca-1.jpg?v=1785323445078",
-            "/site/signature-gallery-coastal-ca-2.jpg?v=1785314924872",
-            "/site/signature-gallery-coastal-ca-3.jpg?v=1785314932280"
+            "/site/signature-gallery-coastal-ca-2.jpg?v=1786157983247",
+            "/site/signature-gallery-coastal-ca-3.png?v=1786158007161"
           ],
           "testimonials": [
             {
