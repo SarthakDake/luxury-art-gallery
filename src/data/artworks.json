@@ -183,5 +183,28 @@
       }
     ],
     "defaultSelectedSizeIndex": 0
+  },
+  {
+    "id": "art-008",
+    "title": "Art Clock | Purple",
+    "slug": "art-clock-purple",
+    "imageUrl": "/artworks/art-008-cover.heic?v=1786175949197",
+    "galleryImages": [
+      "/artworks/art-008-1.heic?v=1786176073744",
+      "/artworks/art-008-2.heic?v=1786176151630"
+    ],
+    "category": "Art Clock",
+    "subcategory": "",
+    "material": "",
+    "inStock": true,
+    "showcaseOnly": false,
+    "description": "",
+    "sizes": [
+      {
+        "size": "24x36 inches",
+        "price": 2500
+      }
+    ],
+    "defaultSelectedSizeIndex": 0
   }
 ]
