@@ -131,5 +131,24 @@
         "type": "instagram"
       }
     ]
+  },
+  {
+    "id": "art-006",
+    "title": "Wave",
+    "slug": "wave",
+    "imageUrl": "/artworks/wave-cover.png?v=1786162988598",
+    "category": "",
+    "subcategory": "",
+    "material": "",
+    "inStock": true,
+    "showcaseOnly": false,
+    "description": "",
+    "sizes": [
+      {
+        "size": "24x36 inches",
+        "price": 2500
+      }
+    ],
+    "defaultSelectedSizeIndex": 0
   }
 ]
