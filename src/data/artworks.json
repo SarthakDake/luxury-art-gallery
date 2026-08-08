@@ -254,5 +254,28 @@
       }
     ],
     "defaultSelectedSizeIndex": 0
+  },
+  {
+    "id": "art-011",
+    "title": "Art Clock | Green",
+    "slug": "art-clock-green",
+    "imageUrl": "/artworks/art-011-cover.heic?v=1786180432279",
+    "galleryImages": [
+      "/artworks/art-011-1.heic?v=1786180459197",
+      "/artworks/art-011-2.heic?v=1786180478753"
+    ],
+    "category": "Art Clock",
+    "subcategory": "",
+    "material": "",
+    "inStock": true,
+    "showcaseOnly": false,
+    "description": "",
+    "sizes": [
+      {
+        "size": "24x36 inches",
+        "price": 2500
+      }
+    ],
+    "defaultSelectedSizeIndex": 0
   }
 ]
