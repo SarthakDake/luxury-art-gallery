@@ -211,9 +211,11 @@
     "id": "art-009",
     "title": "Art Clock | Yellow",
     "slug": "art-clock-yellow",
-    "imageUrl": "/artworks/art-clock-yellow-cover.heic?v=1786178177157",
+    "imageUrl": "/artworks/art-clock-yellow-cover.jpg?v=1786179957560",
     "galleryImages": [
-      "/artworks/art-clock-yellow-1.heic?v=1786178202973"
+      "/artworks/art-clock-yellow-1.jpg?v=1786179517221",
+      "/artworks/art-clock-yellow-2.jpg?v=1786179975405",
+      "/artworks/art-clock-yellow-3.jpg?v=1786180008305"
     ],
     "category": "Art Clock",
     "subcategory": "",
