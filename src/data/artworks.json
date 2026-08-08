@@ -76,7 +76,10 @@
     "id": "art-004",
     "title": "brown",
     "slug": "brown",
-    "imageUrl": "/artworks/brown_3.heic",
+    "imageUrl": "/artworks/brown-cover.png?v=1786169849494",
+    "galleryImages": [
+      "/artworks/brown-1.jpg?v=1786169884521"
+    ],
     "category": "Ready to hang Arts",
     "subcategory": "Works on Paper",
     "material": "Graphite and gesso on paper",
