@@ -286,5 +286,29 @@
       }
     ],
     "defaultSelectedSizeIndex": 0
+  },
+  {
+    "id": "art-012",
+    "title": "Brown Palm Arches",
+    "slug": "brown-palm-arches",
+    "imageUrl": "/artworks/art-012-cover.jpg?v=1786182560237",
+    "galleryImages": [
+      "/artworks/art-012-1.heic?v=1786182598853",
+      "/artworks/art-012-2.heic?v=1786182698018",
+      "/artworks/art-012-3.heic?v=1786182719516"
+    ],
+    "category": "Texture Canvas",
+    "subcategory": "Arches",
+    "material": "",
+    "inStock": true,
+    "showcaseOnly": false,
+    "description": "",
+    "sizes": [
+      {
+        "size": "24x36 inches",
+        "price": 2500
+      }
+    ],
+    "defaultSelectedSizeIndex": 0
   }
 ]
