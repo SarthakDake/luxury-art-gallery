@@ -206,5 +206,27 @@
       }
     ],
     "defaultSelectedSizeIndex": 0
+  },
+  {
+    "id": "art-009",
+    "title": "Art Clock | Yellow",
+    "slug": "art-clock-yellow",
+    "imageUrl": "/artworks/art-009-cover.heic?v=1786177257948",
+    "galleryImages": [
+      "/artworks/art-clock-yellow-2.heic?v=1786177410061"
+    ],
+    "category": "Art Clock",
+    "subcategory": "",
+    "material": "",
+    "inStock": true,
+    "showcaseOnly": false,
+    "description": "",
+    "sizes": [
+      {
+        "size": "24x36 inches",
+        "price": 2500
+      }
+    ],
+    "defaultSelectedSizeIndex": 0
   }
 ]
