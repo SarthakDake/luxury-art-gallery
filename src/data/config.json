@@ -197,10 +197,10 @@
       "subtitle": "Statement projects crafted for elevated interiors — explore the story, finishes, and design language behind each wall."
     },
     "sectionOrder": [
-      "process",
+      "inquiry",
       "projects",
-      "faq",
-      "inquiry"
+      "process",
+      "faq"
     ],
     "projects": {
       "eyebrow": "Featured Projects",
