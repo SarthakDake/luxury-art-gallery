@@ -7,11 +7,14 @@ datasource db {
   provider = "postgresql"
 }
 
+/// Access level for an authenticated user; ADMIN unlocks the CMS/admin dashboard.
 enum UserRole {
   CUSTOMER
   ADMIN
 }
 
+/// Lifecycle of an order: PENDING -> PAID/CONFIRMED -> PROCESSING -> SHIPPED -> DELIVERED,
+/// with CANCELLED as a terminal state reachable from any earlier step.
 enum OrderStatus {
   PENDING
   PAID
@@ -22,6 +25,7 @@ enum OrderStatus {
   CANCELLED
 }
 
+/// An authenticated shopper or admin; also the NextAuth Adapter's user record.
 model User {
   id            String    @id @default(cuid())
   email         String    @unique
@@ -37,6 +41,7 @@ model User {
   orders   Order[]
 }
 
+/// NextAuth Adapter model: one linked external identity (e.g. OAuth provider) per User.
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -57,6 +62,7 @@ model Account {
   @@index([userId])
 }
 
+/// NextAuth Adapter model: an active login session token for a User.
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
@@ -68,6 +74,7 @@ model Session {
   @@index([userId])
 }
 
+/// NextAuth Adapter model: single-use token for email/magic-link verification flows.
 model VerificationToken {
   identifier String
   token      String   @unique
@@ -76,11 +83,16 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+/// Which payment gateway fulfilled (or is expected to fulfill) an Order.
 enum PaymentProvider {
   RAZORPAY
   PHONEPE
 }
 
+/// A customer purchase. Both Razorpay and PhonePe identifier fields exist side by side
+/// because either gateway can fulfill an order; only the fields for the active
+/// paymentProvider are populated, which is why razorpayOrderId and
+/// phonePeMerchantOrderId are both nullable+unique rather than required.
 model Order {
   id                     String           @id @default(cuid())
   userId                 String
@@ -102,6 +114,8 @@ model Order {
   @@index([createdAt])
 }
 
+/// A single artwork/size line within an Order; price is snapshotted at purchase time
+/// so later catalog price changes don't retroactively alter past orders.
 model OrderItem {
   id        String  @id @default(cuid())
   orderId   String
@@ -115,12 +129,15 @@ model OrderItem {
   @@index([orderId])
 }
 
+/// Simple key-value counter store, e.g. a "visitors" key tracking total site visits.
 model SiteMetric {
   key       String   @id
   value     Int      @default(0)
   updatedAt DateTime @updatedAt
 }
 
+/// Generic JSON-keyed CMS storage; key is one of "artworks" / "config" / "profile",
+/// letting the admin CMS persist differently-shaped content blobs without new tables.
 model SiteContent {
   key       String   @id
   data      Json

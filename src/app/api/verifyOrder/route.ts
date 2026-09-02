@@ -1,3 +1,9 @@
+// Server-side confirmation that a Razorpay payment actually succeeded.
+// SECURITY CRITICAL: the client (browser) reports razorpay_order_id/
+// payment_id/signature after checkout, but a client can lie about payment
+// status. The HMAC signature below is the only proof that these values were
+// genuinely produced by Razorpay for this order+payment pair, using a secret
+// key only Razorpay and our server know — never mark an order PAID without it.
 import { authOptions } from "@/lib/auth";
 import { sendNewOrderConfirmedEmail } from "@/lib/mailer";
 import { prisma } from "@/lib/prisma";
@@ -14,6 +20,11 @@ interface VerifyOrderBody {
   razorpay_signature?: string;
 }
 
+// Razorpay signs `order_id|payment_id` with our key secret and returns that
+// signature to the client; recomputing it here and comparing proves the
+// payment_id is genuinely tied to this order and wasn't fabricated or
+// swapped in by the client. timingSafeEqual prevents leaking how much of
+// the signature matched via response-time differences.
 function verifyRazorpaySignature(
   orderId: string,
   paymentId: string,
@@ -117,6 +128,8 @@ export async function POST(request: Request) {
     );
   }
 
+  // Guards against a signature that's valid for some *other* Razorpay order
+  // being replayed against this order record.
   if (order.razorpayOrderId && order.razorpayOrderId !== razorpayOrderId) {
     return NextResponse.json(
       { error: "Payment order mismatch." },
@@ -135,6 +148,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid payment signature." }, { status: 400 });
   }
 
+  // Idempotency/race guard: the conditional `status: "PENDING"` means only
+  // one concurrent verification request (e.g. duplicate client retries) can
+  // actually transition the order, so we never double-charge side effects
+  // like the confirmation email below.
   const updateResult = await prisma.order.updateMany({
     where: {
       id: order.id,

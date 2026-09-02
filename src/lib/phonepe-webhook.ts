@@ -1,3 +1,8 @@
+// Handles inbound PhonePe webhook calls that notify us of payment outcomes.
+// SECURITY CRITICAL: anyone can POST to this endpoint, so the X-VERIFY
+// checksum below is the only thing standing between a legitimate PhonePe
+// notification and a forged request that would mark an unpaid order as PAID.
+// Never trust the payload's reported success/code without verifying it first.
 import { createHash, timingSafeEqual } from "node:crypto";
 import { sendNewOrderConfirmedEmail } from "@/lib/mailer";
 import { verifyPhonePePayment } from "@/lib/payments/phonepe";
@@ -12,6 +17,13 @@ interface PhonePeWebhookPayload {
   };
 }
 
+// Recomputes the expected checksum from the raw request body + our salt key
+// and compares it to the X-VERIFY header PhonePe sent. Only PhonePe (which
+// knows the salt key) can produce a matching checksum for a given body, so
+// this proves the webhook wasn't forged or tampered with in transit.
+// timingSafeEqual avoids leaking checksum bytes via response-time side
+// channels; the salt index (identifying which rotated salt was used) must
+// also match what we've configured.
 export function verifyPhonePeWebhookChecksum(
   responseBody: string,
   xVerify: string | null,
@@ -40,6 +52,8 @@ export function verifyPhonePeWebhookChecksum(
   }
 }
 
+// PhonePe wraps the actual event data as a base64 string under `response`
+// (legacy format); newer payloads may send plain JSON directly. Support both.
 function decodeWebhookPayload(rawBody: string): PhonePeWebhookPayload | null {
   try {
     const json = JSON.parse(rawBody) as { response?: string };
@@ -55,6 +69,10 @@ function decodeWebhookPayload(rawBody: string): PhonePeWebhookPayload | null {
   }
 }
 
+// Idempotency guard: webhooks can be retried/duplicated by PhonePe, and this
+// can also be reached via the status-check fallback in processPhonePeWebhook.
+// The conditional updateMany (status: "PENDING") ensures only the first
+// caller to win the race actually flips the order and sends the email.
 async function markOrderPaid(orderId: string, transactionId: string | null) {
   const order = await prisma.order.findUnique({
     where: { id: orderId },
@@ -112,6 +130,8 @@ export async function processPhonePeWebhook(request: Request) {
   const rawBody = await request.text();
   const xVerify = request.headers.get("X-VERIFY");
 
+  // Fail closed: if we can't verify signatures at all, refuse rather than
+  // silently accepting unverified payment claims.
   if (!process.env.PHONEPE_SALT_KEY) {
     return {
       status: 401 as const,
@@ -119,6 +139,8 @@ export async function processPhonePeWebhook(request: Request) {
     };
   }
 
+  // Reject anything that doesn't carry a valid PhonePe-signed checksum
+  // before touching the payload or the database at all.
   if (!verifyPhonePeWebhookChecksum(rawBody, xVerify)) {
     return { status: 401 as const, body: { error: "Invalid webhook signature." } };
   }
@@ -157,6 +179,9 @@ export async function processPhonePeWebhook(request: Request) {
     return { status: 200 as const, body: { received: true, paid: true } };
   }
 
+  // The webhook's own payload didn't report success, but rather than trust
+  // that as final, double-check directly against PhonePe's status API —
+  // guards against payloads that don't carry a definitive outcome.
   try {
     const verification = await verifyPhonePePayment(merchantOrderId);
 

@@ -14,6 +14,10 @@ interface MemoryEntry {
   resetAt: number;
 }
 
+// Fallback store used only when Upstash isn't configured. NOTE: this Map is
+// per-process, in-memory state — it does NOT work correctly across multiple
+// serverless instances/regions (e.g. on Vercel), since each instance gets its
+// own copy and limits are never shared. Reliable only for local/single-process use.
 const memoryStore = new Map<string, MemoryEntry>();
 
 const limiterCache = new Map<RateLimitBucket, Ratelimit>();
@@ -31,6 +35,8 @@ const BUCKET_CONFIG: Record<
 };
 
 function getUpstashLimiter(bucket: RateLimitBucket): Ratelimit | null {
+  // Returning null here is the signal that triggers the in-memory fallback path
+  // below in enforceRateLimit — Upstash env vars are required for distributed limiting.
   if (
     !process.env.UPSTASH_REDIS_REST_URL ||
     !process.env.UPSTASH_REDIS_REST_TOKEN
@@ -64,6 +70,9 @@ export function getClientIp(request: Request): string {
   return request.headers.get("x-real-ip") ?? "unknown";
 }
 
+// In-memory sliding-window-ish counter (fixed window, resets on expiry).
+// See the memoryStore comment above: this is not safe across multiple instances,
+// so it should only ever be reached in local dev or single-instance deployments.
 function checkMemoryRateLimit(
   key: string,
   maxRequests: number,
@@ -114,6 +123,8 @@ export async function enforceRateLimit(
     return null;
   }
 
+  // Upstash not configured (e.g. local dev without env vars set) — fall back to
+  // the per-process memory store; do not rely on this fallback in a multi-instance deploy.
   const config = BUCKET_CONFIG[bucket];
   const allowed = checkMemoryRateLimit(
     identifier,

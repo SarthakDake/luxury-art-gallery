@@ -1,3 +1,8 @@
+// Fans out every Content Studio save to whichever mirrors are configured:
+// the local JSON files (dev only — Vercel's production filesystem is
+// read-only), Vercel Blob (durable off-DB backup), and optionally a GitHub
+// repo (so content changes show up as commits). Each mirror is independent
+// and best-effort: a failure in one does not block the others or the save.
 import "server-only";
 
 import { put } from "@vercel/blob";
@@ -42,6 +47,9 @@ function isTruthyEnv(value: string | undefined): boolean {
 }
 
 function mirrorContentToFiles(key: SiteContentKey, data: unknown): void {
+  // Vercel's serverless deployments run on a read-only filesystem (aside from
+  // /tmp), so attempting to write src/data/*.json there would throw. Skipping
+  // it in production is intentional, not a missed case.
   if (process.env.VERCEL === "1") {
     return;
   }
@@ -85,6 +93,11 @@ async function mirrorContentJsonToBlob(
   }
 }
 
+// GitHub sync is opt-in and requires an explicit token, but the repo/branch
+// can usually be inferred from the Vercel deployment itself so a project
+// deployed via the Vercel GitHub integration doesn't need to duplicate config:
+//   repo:   GITHUB_REPO -> GITHUB_REPOSITORY -> VERCEL_GIT_REPO_OWNER/SLUG
+//   branch: GITHUB_BRANCH -> VERCEL_GIT_COMMIT_REF -> "main"
 function getGitHubConfig():
   | { owner: string; repo: string; branch: string; token: string }
   | null {
@@ -113,6 +126,8 @@ function getGitHubConfig():
   return {
     owner,
     repo,
+    // Prefer an explicit branch override; otherwise ride whatever branch
+    // Vercel is currently deploying so previews sync to their own branch.
     branch:
       process.env.GITHUB_BRANCH?.trim() ||
       process.env.VERCEL_GIT_COMMIT_REF?.trim() ||
@@ -136,6 +151,9 @@ export function getContentMirrorStatus() {
   };
 }
 
+// GitHub's Contents API requires the current file's blob SHA to update it
+// (omitting it would create a conflicting new file instead of overwriting).
+// A 404 just means the file doesn't exist yet, which is a valid first-sync state.
 async function getGitHubFileSha(
   config: { owner: string; repo: string; branch: string; token: string },
   filePath: string,
@@ -230,6 +248,10 @@ async function mirrorContentJsonToGitHub(
   }
 }
 
+// Runs every configured mirror independently and collects a result per
+// target rather than throwing on the first failure — a broken GitHub token,
+// say, should never prevent the blob/filesystem mirrors (or the DB save that
+// triggered this) from succeeding.
 export async function mirrorContentSnapshot(
   key: SiteContentKey,
   data: unknown,

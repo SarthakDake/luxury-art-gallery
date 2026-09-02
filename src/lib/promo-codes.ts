@@ -12,12 +12,18 @@ export interface PromoRule {
   maxDiscount?: number;
 }
 
+// Hard-coded discount rules keyed by code; the CMS-editable `offers` list only
+// supplies display copy (headline/detail) and which of these codes are advertised —
+// it cannot itself change the actual discount math.
 const PROMO_RULES: Record<string, Omit<PromoRule, "code" | "headline" | "detail">> = {
   CNJ5: { type: "percent", value: 5, minSubtotal: 4000 },
   SAVE500: { type: "fixed", value: 500, minSubtotal: 8000 },
   FESTIVE10: { type: "percent", value: 10, minSubtotal: 12000, maxDiscount: 2000 },
 };
 
+// Intersects the CMS-configured offers with the known PROMO_RULES, so an offer
+// entered in the CMS with an unrecognized code is silently dropped rather than
+// producing a broken/undiscounted promo.
 export function getPromoOffers(config: PromoConfig): PromoRule[] {
   return config.offers
     .map((offer) => {
@@ -77,15 +83,19 @@ export function applyPromoCode(
     };
   }
 
+  // Percent discounts are rounded to whole currency units before being capped.
   let discount =
     offer.type === "percent"
       ? Math.round((subtotal * offer.value) / 100)
       : offer.value;
 
+  // maxDiscount caps percent-based offers (e.g. "10% off, up to ₹2000").
   if (offer.maxDiscount !== undefined) {
     discount = Math.min(discount, offer.maxDiscount);
   }
 
+  // Guards against a fixed-amount discount (e.g. SAVE500) exceeding the subtotal,
+  // which would otherwise push finalTotal negative.
   discount = Math.min(discount, subtotal);
   const finalTotal = Math.max(subtotal - discount, 0);
 

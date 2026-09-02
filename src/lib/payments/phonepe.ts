@@ -1,3 +1,8 @@
+// PhonePe payment integration. Supports two parallel integration modes that
+// are selected purely by which env vars are present (see isPhonePeConfigured
+// in gateway.ts): the newer OAuth-style SDK (PHONEPE_CLIENT_ID/SECRET) and
+// the legacy checksum/salt REST API (PHONEPE_MERCHANT_ID/SALT_KEY). Whichever
+// mode initiated a payment must also be used to verify it later.
 import { createHash } from "node:crypto";
 import { getAppBaseUrl } from "@/lib/payments/gateway";
 
@@ -6,12 +11,19 @@ interface PhonePePayResult {
   merchantOrderId: string;
 }
 
+// PhonePe uses separate hostnames for sandbox and production; PHONEPE_ENV
+// must be flipped to "production" deliberately before going live.
 function getPhonePeBaseUrl() {
   return process.env.PHONEPE_ENV === "production"
     ? "https://api.phonepe.com/apis/hermes"
     : "https://api-preprod.phonepe.com/apis/pg-sandbox";
 }
 
+// Legacy PhonePe API auth: proves the request came from us (not a tampered
+// client) by hashing the payload + API path with a shared secret salt key
+// that only we and PhonePe know. The salt index tells PhonePe which of
+// their salt keys (they can be rotated) was used, so it must be appended
+// verbatim after the hash.
 function createLegacyChecksum(payloadBase64: string, apiPath: string) {
   const saltKey = process.env.PHONEPE_SALT_KEY;
   const saltIndex = process.env.PHONEPE_SALT_INDEX ?? "1";
@@ -27,6 +39,9 @@ function createLegacyChecksum(payloadBase64: string, apiPath: string) {
   return `${digest}###${saltIndex}`;
 }
 
+// Initiates a payment via PhonePe's legacy checksum-based /pg/v1/pay API:
+// build the payload, base64-encode it, sign it with the salt key, and let
+// PhonePe host the actual payment page (we only get a redirect URL back).
 async function createLegacyPhonePePayment({
   merchantOrderId,
   amountInPaise,
@@ -103,6 +118,9 @@ async function createLegacyPhonePePayment({
   };
 }
 
+// Initiates a payment via the newer PhonePe SDK, which handles its own
+// OAuth-style client token exchange and request signing internally — no
+// manual checksum computation needed here, unlike the legacy path below.
 async function createSdkPhonePePayment({
   merchantOrderId,
   amountInPaise,
@@ -158,8 +176,12 @@ export async function createPhonePePayment(input: {
   amountInPaise: number;
   userId: string;
 }): Promise<PhonePePayResult> {
+  // Suffixed with Date.now() so retried checkout attempts for the same
+  // order get a fresh merchantOrderId rather than colliding with a
+  // previous (possibly still-pending) PhonePe transaction.
   const merchantOrderId = `cnj_${input.orderId.slice(-12)}_${Date.now()}`;
 
+  // SDK credentials, if present, take priority over legacy salt-based auth.
   if (process.env.PHONEPE_CLIENT_ID && process.env.PHONEPE_CLIENT_SECRET) {
     return createSdkPhonePePayment({
       merchantOrderId,
@@ -176,6 +198,9 @@ export async function createPhonePePayment(input: {
   });
 }
 
+// Server-side status check against PhonePe (not client-reported) — used as
+// the source of truth for whether an order actually got paid. Must use the
+// same integration mode (SDK vs legacy) that initiated the payment.
 export async function verifyPhonePePayment(merchantOrderId: string) {
   if (process.env.PHONEPE_CLIENT_ID && process.env.PHONEPE_CLIENT_SECRET) {
     const { Env, StandardCheckoutClient } = await import("@phonepe-pg/pg-sdk-node");
@@ -203,6 +228,8 @@ export async function verifyPhonePePayment(merchantOrderId: string) {
     throw new Error("PhonePe verification credentials are not configured.");
   }
 
+  // Same salt-signing scheme as createLegacyChecksum, but status checks have
+  // no request body to sign — only the API path is hashed with the salt key.
   const apiPath = `/pg/v1/status/${merchantId}/${merchantOrderId}`;
   const digest = createHash("sha256")
     .update(`${apiPath}${saltKey}`)

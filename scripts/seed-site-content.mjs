@@ -1,3 +1,8 @@
+// Seeds the CMS `SiteContent` table from the JSON files bundled in the repo
+// (src/data/*.json). Runs on every production build (see vercel-build.mjs)
+// but is intentionally insert-only: it never overwrites a row that already
+// exists, so content edited live via the admin Content Studio always wins
+// over what's checked into git.
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
@@ -18,6 +23,7 @@ export async function seedSiteContent() {
       );
 
       if (existing.rowCount > 0) {
+        // Never overwrite: production content is authoritative once it exists.
         console.log(`[seed] Site content already exists: ${seed.key}`);
         continue;
       }

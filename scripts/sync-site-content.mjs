@@ -1,3 +1,9 @@
+// Pulls the current CMS content (artworks/config/profile) back down from a
+// remote source into the local src/data/*.json files, so a developer's local
+// `npm run dev` reflects whatever an admin has published in production.
+// Two sources are supported because production content lives in whichever
+// store is actually configured there — Postgres always, Blob only if
+// BLOB_READ_WRITE_TOKEN is set (see content-json-mirror.ts for the write side).
 import { writeFileSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
@@ -27,6 +33,8 @@ export async function syncSiteContentFromDatabase() {
       );
 
       if (result.rowCount === 0) {
+        // Not every key is guaranteed to have been seeded/edited yet — skip
+        // rather than fail so a partial sync still updates what's available.
         console.warn(`[sync] No database row for ${entry.key}, skipping.`);
         continue;
       }
@@ -66,6 +74,9 @@ export async function syncSiteContentFromBlob() {
       mirrored.push(entry.file);
       console.log(`[sync] Wrote ${entry.file} from blob`);
     } catch (error) {
+      // @vercel/blob throws rather than returning null for a missing blob;
+      // treat "not found" as "not published yet" (skip), anything else as
+      // a real failure (network, auth, etc.) that should abort the sync.
       if (error instanceof Error && /not found/i.test(error.message)) {
         console.warn(`[sync] No blob for ${entry.key}, skipping.`);
         continue;

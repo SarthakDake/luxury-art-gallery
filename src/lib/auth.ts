@@ -1,3 +1,8 @@
+/**
+ * NextAuth configuration: Google OAuth + email magic-link sign-in, JWT
+ * sessions backed by the Prisma adapter, and auto-promotion of configured
+ * admin emails to the ADMIN role on every sign-in.
+ */
 import { prisma } from "@/lib/prisma";
 import { ensureAuthEnv, getAuthBaseUrl } from "@/lib/auth-url";
 import { isAdminEmail } from "@/lib/admin-email";
@@ -8,10 +13,14 @@ import type { JWT } from "next-auth/jwt";
 import EmailProvider from "next-auth/providers/email";
 import GoogleProvider from "next-auth/providers/google";
 
+// Must run before NextAuth reads NEXTAUTH_URL/AUTH_TRUST_HOST so redirects
+// and OAuth callback URLs resolve to the correct host on Vercel/local.
 ensureAuthEnv();
 
 const providers: NextAuthOptions["providers"] = [];
 
+// Providers are added conditionally so the app still boots (e.g. in local
+// dev or CI) when a given provider's credentials aren't configured.
 if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
   providers.push(
     GoogleProvider({
@@ -48,6 +57,10 @@ export const authOptions: NextAuthOptions = {
 
       const userEmail = user.email?.trim().toLowerCase();
 
+      // Runs on every sign-in (not just account creation), so adding an
+      // address to ADMIN_EMAIL retroactively promotes an existing user.
+      // Note: removing it later does NOT auto-demote — role is only ever
+      // upgraded here, never revoked.
       if (user.id && (await isAdminEmail(userEmail))) {
         try {
           await prisma.user.update({
@@ -68,6 +81,9 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
+      // `user` is only populated on the initial sign-in request; the ADMIN_EMAIL
+      // check is re-evaluated here (not just in the signIn event) so the very
+      // first token issued already carries the correct role.
       if (user) {
         token.sub = user.id;
         const userEmail = user.email?.trim().toLowerCase();
@@ -79,6 +95,9 @@ export const authOptions: NextAuthOptions = {
         }
       }
 
+      // Fallback for tokens issued before `role` existed on the JWT (or any
+      // other path where it ended up missing) — backfill from the DB once
+      // instead of leaving the session permanently roleless.
       if (token.sub && !token.role) {
         try {
           const dbUser = await prisma.user.findUnique({
@@ -103,6 +122,10 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     redirect({ url }) {
+      // Only relative URLs or URLs matching the canonical site origin are
+      // honored; anything else (malformed or a different host) collapses to
+      // the canonical base. This blocks open-redirect attempts via the
+      // NextAuth callbackUrl parameter.
       const canonicalBase = getAuthBaseUrl();
 
       if (url.startsWith("/")) {

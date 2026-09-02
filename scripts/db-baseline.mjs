@@ -1,3 +1,15 @@
+// Self-healing wrapper around `prisma migrate deploy`, built to handle three
+// real-world failure modes we've hit against production databases that were
+// not created purely through Prisma migrations:
+//   - P3005: the database already has tables (e.g. it was set up with
+//     `prisma db push`, or pre-dates migrations) — Prisma refuses to run
+//     migrations against a "non-empty" schema until it's baselined.
+//   - P3009 / P3018: a migration is recorded as failed, or fails to (re)apply
+//     because the objects it creates already exist. This happens when a
+//     previous deploy partially succeeded (e.g. deploy was interrupted).
+// Rather than requiring a human to SSH in and run `prisma migrate resolve`
+// by hand on every affected environment, this script detects these error
+// codes from Prisma's CLI output and resolves them automatically.
 import { execSync } from "node:child_process";
 import { readdirSync } from "node:fs";
 import path from "node:path";
@@ -5,6 +17,9 @@ import { pathToFileURL } from "node:url";
 import { withPgClient } from "./db-pg.mjs";
 
 const INIT_MIGRATION = "20250620120000_init";
+// This migration is only safe to mark "applied without running" if the table
+// it creates is actually present — otherwise we'd hide a real missing-table
+// bug behind a false "migration succeeded" state. See canMarkMigrationApplied.
 const SITE_CONTENT_MIGRATION = "20250622120000_add_site_content";
 
 function run(command, { inherit = true } = {}) {
@@ -61,6 +76,9 @@ function isDuplicateObjectError(output) {
   );
 }
 
+// Guard against blindly marking a migration "applied" when it wouldn't
+// actually have created its table — that would leave the DB permanently
+// missing SiteContent while Prisma believes the schema is up to date.
 async function canMarkMigrationApplied(migration) {
   if (migration !== SITE_CONTENT_MIGRATION) {
     return true;
@@ -79,6 +97,11 @@ async function canMarkMigrationApplied(migration) {
   }
 }
 
+// Marks the `init` migration as already applied (it corresponds to the
+// schema `db push` would have already created), then retries. If Prisma
+// still reports P3005 after that — meaning later migrations also collide
+// with existing objects — we widen the baseline to every migration so the
+// history matches reality, then retry once more.
 function baselineExistingDatabase() {
   console.log(
     "[db] Existing database detected (P3005). Baselining migration history…",
@@ -112,6 +135,12 @@ function baselineExistingDatabase() {
   throw result.error ?? new Error("prisma migrate deploy failed after baseline");
 }
 
+// P3009 means a migration is already flagged failed in the _prisma_migrations
+// table; P3018 means the migration failed to apply. We only auto-resolve
+// P3018 when the underlying error is "object already exists" — i.e. the
+// migration's effect is already in place and only Prisma's bookkeeping is
+// out of sync. Any other P3018 cause is a real failure and must not be
+// silently marked as applied.
 async function recoverFailedMigrations(output) {
   const migrations = extractFailedMigrations(output);
 
@@ -145,6 +174,11 @@ async function recoverFailedMigrations(output) {
   return recovered;
 }
 
+// Entry point used by scripts/vercel-build.mjs on every production deploy.
+// Bounded retry loop: each iteration can resolve at most the failed
+// migrations it finds, so in the worst case (every migration individually
+// failed) we need up to one attempt per migration, plus a few for the
+// initial attempt/baseline/final-verify passes.
 export async function deployMigrations() {
   const maxAttempts = listMigrations().length + 3;
 

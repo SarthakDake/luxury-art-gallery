@@ -1,3 +1,7 @@
+// Stores Content Studio uploads (artwork images, documents). Serverless
+// functions on Vercel can't write into public/, so production uploads go to
+// Vercel Blob whenever it's configured; local dev falls back to writing
+// straight into public/ so files are servable without any external service.
 import { put } from "@vercel/blob";
 import fs from "fs";
 import path from "path";
@@ -65,6 +69,8 @@ export async function uploadContentImage(options: {
     return withImageCacheVersion(virtualPath);
   }
 
+  // On Vercel there is no writable public/ to fall back to, so a missing
+  // Blob config is a hard error rather than a silent local-disk write.
   if (process.env.VERCEL === "1") {
     throw new Error(
       "Vercel Blob is not configured. In the Vercel dashboard, open Storage → Create → Blob, connect it to this project, then redeploy.",
@@ -95,6 +101,8 @@ export async function uploadContentDocument(options: {
     return withImageCacheVersion(virtualPath);
   }
 
+  // On Vercel there is no writable public/ to fall back to, so a missing
+  // Blob config is a hard error rather than a silent local-disk write.
   if (process.env.VERCEL === "1") {
     throw new Error(
       "Vercel Blob is not configured. In the Vercel dashboard, open Storage → Create → Blob, connect it to this project, then redeploy.",
