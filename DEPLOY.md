@@ -149,11 +149,93 @@ npm run build:local
 
 ## After deploy — smoke test
 
+Run from your laptop (read-only, no login):
+
+```bash
+BASE_URL=https://www.your-domain.com npm run smoke:production
+```
+
+Manual checklist:
+
 - [ ] Home, shop, product pages load (images not broken — `curl -I https://www.your-domain.com/api/artwork-image/site/trade-teaser-1.jpg` should be **200**)
+- [ ] Open **one HEIC product** (if any) or a recently edited artwork — cover image visible
 - [ ] Google sign-in → `/profile` works
 - [ ] Admin user sees dashboard icon → `/admin/orders`
 - [ ] Cart, promo code, WhatsApp checkout
 - [ ] Contact form (if SMTP configured)
+
+## Keeping production healthy (client ops)
+
+You should **not** need to log into Content Studio to know the site is up. Set up checks once, then only act when something alerts you.
+
+### One-time server setup (Vercel)
+
+Confirm in **Project → Settings**:
+
+| Item | Why it matters |
+|------|----------------|
+| **Domains** — `www.colorsnjoy.com` (and apex redirect) | Wrong host breaks OAuth and image fallbacks |
+| **Environment variables (Production)** — `DATABASE_URL`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, `NEXT_PUBLIC_APP_URL` (all use the **same** `https://www.…` URL visitors use) | Mismatch causes login loops and broken `/api/artwork-image` fallbacks |
+| **Storage → Blob** connected; `BLOB_READ_WRITE_TOKEN` on Production | Without Blob, CMS uploads cannot persist on Vercel |
+| **Deployments** — Production tracks `main`; failed builds email you from Vercel | A green deploy after merge is required for code fixes to go live |
+
+Do **not** delete Blob objects or “reset” Postgres to fix images — that removes client uploads.
+
+### External monitoring (free, recommended)
+
+Use any uptime service (e.g. [UptimeRobot](https://uptimerobot.com/) free tier) with **5‑minute checks** on:
+
+1. `https://www.your-domain.com/` — homepage up  
+2. `https://www.your-domain.com/api/site/config` — database + app OK  
+3. `https://www.your-domain.com/api/artwork-image/site/trade-teaser-1.jpg` — image pipeline OK  
+4. `https://www.your-domain.com/shop` — storefront OK  
+
+Optional: add one **product URL** you change often (e.g. a flagship clock) as a fifth check.
+
+Alert **email/SMS** when any check fails 2× in a row. That catches outages before clients do.
+
+### After every deploy (2 minutes)
+
+1. Vercel dashboard → latest Production deployment → **Ready** (not Error).  
+2. `BASE_URL=https://www.your-domain.com npm run smoke:production`  
+3. Quick visual: homepage hero + shop grid thumbnails.
+
+### Monthly (or after bulk CMS edits)
+
+1. **Blob audit** (read-only; lists missing files, deletes nothing):
+
+   ```bash
+   DATABASE_URL="…" BLOB_READ_WRITE_TOKEN="…" npm run blob:audit-images
+   ```
+
+   If paths are missing → re-upload those artworks in Content Studio and **Save**.
+
+2. Vercel **Usage** tab — stay within Hobby/Blob/Postgres free limits (bandwidth, function invocations, Blob storage).
+
+3. Skim **Vercel → Logs** for repeated `[artwork-image]` or `[upload]` errors.
+
+### Content Studio habits (prevent image regressions)
+
+- Always wait for **“Successfully uploaded …”** before **Save**.  
+- After uploading HEIC/iPhone photos on production, confirm the product page shows the cover (HEIC now also stores a WebP delivery copy in Blob).  
+- Prefer editing content on **production** with Blob connected, or sync JSON **and** ensure images exist in Blob — JSON alone does not copy binary files.  
+- Use **Preview** on Signature / Trade sections before publishing large homepage changes.
+
+### When something breaks — order of checks
+
+1. Run `npm run smoke:production` — which layer failed (HTML vs API vs images)?  
+2. Vercel deployment status — did the last deploy fail?  
+3. If only some product images: `npm run blob:audit-images` → re-upload missing covers (DB is usually fine).  
+4. If login broke: `NEXTAUTH_URL` / Google OAuth URLs vs actual domain.  
+5. Only then sign into Content Studio or admin.
+
+### What “normal usage” should not break
+
+- Browsing, cart, WhatsApp checkout — no admin login required.  
+- Public traffic and rate limits — optional Upstash; app fails open if Redis is absent.  
+- Analytics — only loads after cookie consent.
+
+Paying services (Razorpay, PhonePe, SMTP, Sentry, Upstash) are **optional** — omit env vars to disable them and avoid charges.
 
 ## Troubleshooting
 
