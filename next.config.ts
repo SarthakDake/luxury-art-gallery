@@ -35,6 +35,8 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Allow local IP + hostname for Turbopack HMR / client hydration in cloud VMs.
+  allowedDevOrigins: ["127.0.0.1", "localhost"],
   serverExternalPackages: ["@phonepe-pg/pg-sdk-node", "heic-decode", "libheif-js", "sharp"],
   async redirects() {
     return [
