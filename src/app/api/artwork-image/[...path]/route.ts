@@ -114,32 +114,22 @@ function getImageCacheControl(request: Request): string {
   return "private, no-cache, no-store, must-revalidate";
 }
 
-async function streamFromBlob(
-  relativePath: string,
-  cacheControl: string,
-): Promise<Response | null> {
+function webpSiblingPath(relativePath: string): string | null {
+  return relativePath.replace(/\.(heic|heif|tiff|tif|bmp)$/i, ".webp");
+}
+
+async function loadBlobBuffer(relativePath: string): Promise<Buffer | null> {
   if (!isBlobStorageEnabled()) {
     return null;
   }
 
+  const access = getBlobAccess();
+
   try {
-    const result = await get(relativePath, { access: getBlobAccess() });
+    const result = await get(relativePath, { access });
 
     if (!result || result.statusCode !== 200 || !result.stream) {
       return null;
-    }
-
-    const extension = path.extname(relativePath).toLowerCase();
-
-    // Browser-native formats can stream as-is (Next/Image still resizes).
-    if (!needsBrowserRasterization(`file${extension}`)) {
-      return new Response(result.stream, {
-        headers: {
-          "Content-Type":
-            result.blob.contentType ?? getImageContentType(extension),
-          "Cache-Control": cacheControl,
-        },
-      });
     }
 
     const reader = result.stream.getReader();
@@ -155,9 +145,54 @@ async function streamFromBlob(
       }
     }
 
-    const input = Buffer.concat(chunks.map((chunk) => Buffer.from(chunk)));
+    return Buffer.concat(chunks.map((chunk) => Buffer.from(chunk)));
+  } catch (error) {
+    console.error("[artwork-image] blob get failed:", relativePath, error);
+    return null;
+  }
+}
+
+async function streamFromBlob(
+  relativePath: string,
+  cacheControl: string,
+): Promise<Response | null> {
+  if (!isBlobStorageEnabled()) {
+    return null;
+  }
+
+  try {
+    let blobBytes = await loadBlobBuffer(relativePath);
+
+    if (!blobBytes) {
+      const webpPath = webpSiblingPath(relativePath);
+      if (webpPath && webpPath !== relativePath) {
+        blobBytes = await loadBlobBuffer(webpPath);
+        if (blobBytes) {
+          return new Response(new Uint8Array(blobBytes), {
+            headers: {
+              "Content-Type": "image/webp",
+              "Cache-Control": cacheControl,
+            },
+          });
+        }
+      }
+
+      return null;
+    }
+
+    const extension = path.extname(relativePath).toLowerCase();
+
+    if (!needsBrowserRasterization(`file${extension}`)) {
+      return new Response(new Uint8Array(blobBytes), {
+        headers: {
+          "Content-Type": getImageContentType(extension),
+          "Cache-Control": cacheControl,
+        },
+      });
+    }
+
     const { rasterizeForBrowserDisplay } = await import("@/lib/image-processing");
-    const output = await rasterizeForBrowserDisplay(input, extension);
+    const output = await rasterizeForBrowserDisplay(blobBytes, extension);
 
     return new Response(new Uint8Array(output), {
       headers: {

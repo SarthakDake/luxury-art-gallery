@@ -12,6 +12,7 @@ import {
   Upload,
 } from "lucide-react";
 import { useState, type ReactNode, type SelectHTMLAttributes } from "react";
+import { needsBrowserRasterization } from "@/lib/artwork-image";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import { toColorInputValue } from "@/lib/color-input";
 import {
@@ -535,6 +536,21 @@ export function ImageUploadField({
       multipart: useMultipart,
       contentType,
     });
+
+    if (needsBrowserRasterization(`file${extension}`)) {
+      const deriveResponse = await fetch("/api/admin/content/upload/derive-delivery", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pathname }),
+      });
+
+      if (deriveResponse.ok) {
+        const payload = (await deriveResponse.json()) as { path?: string };
+        if (payload.path) {
+          return payload.path;
+        }
+      }
+    }
 
     // Store virtual path (not the signed blob URL) so the site proxy can serve it.
     return `/${pathname}?v=${Date.now()}`;

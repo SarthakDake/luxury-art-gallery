@@ -164,6 +164,7 @@ npm run build:local
 | Google OAuth **redirect_uri_mismatch** | Set `NEXTAUTH_URL` + `NEXT_PUBLIC_APP_URL` to your **custom domain** (not `*.vercel.app`). Add the exact callback from `/api/oauth-config` in Google Console. Wait 1–2 min after saving Google settings. |
 | Google OAuth redirect error (other) | Check JavaScript origins + redirect URIs match `https` and your domain exactly |
 | Storefront images missing / `/_next/image` **400** | Redeploy latest `main`. `/api/artwork-image` needs Node.js runtime, Vercel Blob for CMS uploads, and `NEXT_PUBLIC_APP_URL=https://www.your-domain.com` so static fallbacks resolve. DB holds JSON only — images live in **Blob** (+ git `public/` for bundled assets). **Never delete Blob objects to “fix” the DB.** |
+| HEIC product images 404 (`/api/artwork-image/...heic`) | The DB path exists but the **Blob object was never stored** (common if uploads happened off-production). Re-upload cover + gallery in Content Studio, then **Save**. Run `npm run blob:audit-images` with production env to list missing paths. JPG/PNG uploads that return 200 confirm Blob is wired correctly. |
 | Rate limits feel inconsistent | Add Upstash Redis env vars |
 | `migrate deploy` fails on existing DB | Run `npm run db:baseline` once against production |
 
