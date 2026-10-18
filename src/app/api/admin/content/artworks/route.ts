@@ -40,12 +40,15 @@ function normalizeArtwork(raw: Artwork, existing: Artwork[]): Artwork {
   );
 
   const imageUrl = raw.imageUrl.trim() || galleryImages[0] || "";
+  const coverOrientation =
+    raw.coverOrientation === "landscape" ? "landscape" : "portrait";
 
   return {
     id,
     title,
     slug,
     imageUrl,
+    coverOrientation,
     ...(galleryImages.length > 0 ? { galleryImages } : {}),
     category: raw.category.trim(),
     subcategory: raw.subcategory.trim(),

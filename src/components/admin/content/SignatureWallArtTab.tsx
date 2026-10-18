@@ -260,7 +260,7 @@ export function SignatureWallArtTab({
                   title: "New project",
                   summary: "",
                   coverImageUrl: "",
-                  coverOrientation: "landscape",
+                  coverOrientation: "portrait",
                   designStyles: [],
                   galleryImages: [],
                   testimonials: [],
@@ -352,22 +352,22 @@ export function SignatureWallArtTab({
                 />
                 <StudioField
                   label="Cover shape on site"
-                  hint="Choose Landscape for wide photos (most common) or Portrait for tall photos. This sets the frame on Signature Wall Art and the homepage showcase."
+                  hint="Choose Vertical for tall photos (most common) or Horizontal for wide photos. This sets the frame on Signature Wall Art and the homepage showcase."
                   fullWidth
                 >
                   <StudioSelect
-                    value={project.coverOrientation ?? "landscape"}
+                    value={project.coverOrientation ?? "portrait"}
                     onChange={(event) =>
                       updateProject(index, {
                         coverOrientation:
-                          event.target.value === "portrait"
-                            ? "portrait"
-                            : "landscape",
+                          event.target.value === "landscape"
+                            ? "landscape"
+                            : "portrait",
                       })
                     }
                   >
-                    <option value="landscape">Landscape (wide frame)</option>
-                    <option value="portrait">Portrait (tall frame)</option>
+                    <option value="portrait">Vertical (tall frame)</option>
+                    <option value="landscape">Horizontal (wide frame)</option>
                   </StudioSelect>
                 </StudioField>
 

@@ -1,6 +1,7 @@
 import { Reveal } from "@/components/motion/Reveal";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { selectCuratedArtworks } from "@/lib/curated-artworks";
+import { productGridSectionProps } from "@/lib/product-grid-layout";
 import type { Artwork } from "@/types/artwork";
 import type { CuratedWorksCopy } from "@/types/site-config";
 import Link from "next/link";
@@ -45,7 +46,7 @@ export function CuratedWorksSection({
         ) : null}
       </div>
 
-      <div className="product-grid" data-reveal-stagger>
+      <div {...productGridSectionProps(curated.length)} data-reveal-stagger>
         {curated.map((artwork) => (
           <ProductCard key={artwork.id} artwork={artwork} reveal />
         ))}

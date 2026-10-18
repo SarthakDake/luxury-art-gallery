@@ -52,6 +52,7 @@ function createEmptyArtwork(existing: Artwork[]): Artwork {
     sizes: [{ size: "24x36 inches", price: 2500 }],
     defaultSelectedSizeIndex: 0,
     videos: [],
+    coverOrientation: "portrait",
   };
 }
 
@@ -406,6 +407,26 @@ export function ArtworksTab({
                 onChange(updateArtwork(artworks, artworkIndex, { imageUrl: path }))
               }
             />
+            <StudioField
+              label="Cover shape on site"
+              hint="Vertical fits most paintings; choose Horizontal for wide photos. This sets the frame in the shop grid and on the product page."
+              fullWidth
+            >
+              <StudioSelect
+                value={artwork.coverOrientation ?? "portrait"}
+                onChange={(event) =>
+                  onChange(
+                    updateArtwork(artworks, artworkIndex, {
+                      coverOrientation:
+                        event.target.value === "landscape" ? "landscape" : "portrait",
+                    }),
+                  )
+                }
+              >
+                <option value="portrait">Vertical (tall frame)</option>
+                <option value="landscape">Horizontal (wide frame)</option>
+              </StudioSelect>
+            </StudioField>
           </StudioGroup>
 
           <StudioGroup eyebrow="Photos" title="Additional photos" description="Optional extra angles for the product carousel.">

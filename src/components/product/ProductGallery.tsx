@@ -2,6 +2,7 @@
 
 import { useIsClient } from "@/hooks/use-is-client";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
+import type { ArtworkCoverOrientation } from "@/types/artwork";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -10,9 +11,18 @@ import { createPortal } from "react-dom";
 interface ProductGalleryProps {
   images: string[];
   title: string;
+  coverOrientation?: ArtworkCoverOrientation;
 }
 
-export function ProductGallery({ images, title }: ProductGalleryProps) {
+export function ProductGallery({
+  images,
+  title,
+  coverOrientation = "portrait",
+}: ProductGalleryProps) {
+  const stageOrientationClass =
+    coverOrientation === "landscape"
+      ? "product-gallery-stage--landscape"
+      : "product-gallery-stage--portrait";
   const isClient = useIsClient();
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -173,7 +183,7 @@ export function ProductGallery({ images, title }: ProductGalleryProps) {
         <button
           ref={stageRef}
           type="button"
-          className={`product-gallery-stage ${isZooming ? "product-gallery-stage--zooming" : ""}`}
+          className={`product-gallery-stage ${stageOrientationClass} ${isZooming ? "product-gallery-stage--zooming" : ""}`}
           onClick={openLightbox}
           onMouseEnter={() => setIsZooming(true)}
           onMouseLeave={() => setIsZooming(false)}

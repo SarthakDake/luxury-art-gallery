@@ -1122,6 +1122,14 @@
     aspect-ratio: 4 / 5;
   }
 
+  .art-image-frame--portrait {
+    aspect-ratio: 4 / 5;
+  }
+
+  .art-image-frame--landscape {
+    aspect-ratio: 16 / 10;
+  }
+
   .art-image-frame-sm {
     position: relative;
     overflow: hidden;
@@ -1161,6 +1169,13 @@
   @media (min-width: 1280px) {
     .product-grid {
       grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  /* Homepage curated rows: keep one full line on tablet (3 cols) when showing 4 items */
+  @media (min-width: 1024px) and (max-width: 1279px) {
+    .product-grid--balanced[data-item-count="4"] > :nth-child(n + 4) {
+      display: none;
     }
   }
 

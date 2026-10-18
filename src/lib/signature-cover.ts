@@ -3,5 +3,5 @@ import type { SignatureCoverOrientation, SignatureProject } from "@/types/site-c
 export function resolveSignatureCoverOrientation(
   project: Pick<SignatureProject, "coverOrientation">,
 ): SignatureCoverOrientation {
-  return project.coverOrientation === "portrait" ? "portrait" : "landscape";
+  return project.coverOrientation === "landscape" ? "landscape" : "portrait";
 }

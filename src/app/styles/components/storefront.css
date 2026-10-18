@@ -1292,6 +1292,14 @@
     transition: border-color 300ms ease;
   }
 
+  .product-gallery-stage--portrait {
+    aspect-ratio: 4 / 5;
+  }
+
+  .product-gallery-stage--landscape {
+    aspect-ratio: 16 / 10;
+  }
+
   .product-gallery-stage:hover {
     border-color: color-mix(in srgb, var(--foreground) 25%, var(--border));
   }
