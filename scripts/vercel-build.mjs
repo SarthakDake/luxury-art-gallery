@@ -44,7 +44,9 @@ async function main() {
     }
   }
 
-  run("npx next build");
+  // Webpack avoids Turbopack production failures with next/font/google on Vercel
+  // (e.g. Can't resolve '@vercel/turbopack-next/internal/font/google/font').
+  run("npx next build --webpack");
 }
 
 main().catch((error) => {

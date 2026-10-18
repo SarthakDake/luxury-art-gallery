@@ -259,6 +259,7 @@ Paying services (Razorpay, PhonePe, SMTP, Sentry, Upstash) are **optional** — 
 | HEIC product images 404 (`/api/artwork-image/...heic`) | The DB path exists but the **Blob object was never stored** (common if uploads happened off-production). Re-upload cover + gallery in Content Studio, then **Save**. Run `npm run blob:audit-images` with production env to list missing paths. JPG/PNG uploads that return 200 confirm Blob is wired correctly. |
 | Rate limits feel inconsistent | Add Upstash Redis env vars |
 | `migrate deploy` fails on existing DB | Run `npm run db:baseline` once against production |
+| Turbopack build fails on `next/font/google` (`@vercel/turbopack-next/internal/font/google/font`) | Production builds use **`next build --webpack`** (see `scripts/vercel-build.mjs`). Dev can stay on Turbopack (`next dev`). |
 
 ## Content Studio (artist CMS)
 
