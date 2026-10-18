@@ -1,3 +1,4 @@
+import { artworkCoverFrameClass } from "@/lib/artwork-cover";
 import { formatPriceFrom, isShowcaseOnly, type Artwork } from "@/types/artwork";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import Link from "next/link";
@@ -18,7 +19,7 @@ export function ProductCard({ artwork, reveal = false }: ProductCardProps) {
       {...(reveal ? { "data-reveal": "scale-in" } : {})}
     >
       <article className="space-y-4">
-        <div className="art-image-frame">
+        <div className={artworkCoverFrameClass(artwork)}>
           <ArtworkImage
             src={artwork.imageUrl}
             alt={artwork.title}

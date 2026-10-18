@@ -1,3 +1,6 @@
+/** How the cover photo is framed in shop grids and on the product page. */
+export type ArtworkCoverOrientation = "landscape" | "portrait";
+
 export interface ArtworkSize {
   size: string;
   price: number;
@@ -16,6 +19,8 @@ export interface Artwork {
   slug: string;
   /** Public path under /artworks — original upload (jpg/png/webp/avif/gif/heic/heif/tiff/bmp) */
   imageUrl: string;
+  /** Vertical (portrait) by default; set horizontal for wide cover photos. */
+  coverOrientation?: ArtworkCoverOrientation;
   galleryImages?: string[];
   category: string;
   subcategory: string;

@@ -1,5 +1,6 @@
 import { Reveal } from "@/components/motion/Reveal";
 import { ProductCard } from "@/components/shop/ProductCard";
+import { productGridSectionProps } from "@/lib/product-grid-layout";
 import type { Artwork } from "@/types/artwork";
 import type { SiteConfig } from "@/types/site-config";
 import Link from "next/link";
@@ -35,7 +36,7 @@ export function FeaturedWorksSection({
         ) : null}
       </div>
 
-      <div className="product-grid" data-reveal-stagger>
+      <div {...productGridSectionProps(featuredArtworks.length)} data-reveal-stagger>
         {featuredArtworks.map((artwork) => (
           <ProductCard key={artwork.id} artwork={artwork} reveal />
         ))}
