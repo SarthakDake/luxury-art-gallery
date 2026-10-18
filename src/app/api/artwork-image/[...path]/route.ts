@@ -11,6 +11,8 @@ import { getImageContentType } from "@/lib/image-format";
 import { rasterizeForBrowserDisplay } from "@/lib/image-processing";
 import { enforceRateLimit } from "@/lib/rate-limit";
 
+export const runtime = "nodejs";
+
 const PUBLIC_DIR = path.join(
   /* turbopackIgnore: true */ process.cwd(),
   "public",

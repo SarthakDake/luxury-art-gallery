@@ -128,7 +128,7 @@ npm run build:local
 
 ## After deploy — smoke test
 
-- [ ] Home, shop, product pages load
+- [ ] Home, shop, product pages load (images not broken — `curl -I https://www.your-domain.com/api/artwork-image/site/trade-teaser-1.jpg` should be **200**)
 - [ ] Google sign-in → `/profile` works
 - [ ] Admin user sees dashboard icon → `/admin/orders`
 - [ ] Cart, promo code, WhatsApp checkout
@@ -142,6 +142,7 @@ npm run build:local
 | Build fails with **P3005** (schema not empty) | Database was created with `db push`. Redeploy — the build auto-baselines. Or run manually: `DATABASE_URL="…" npm run db:baseline` |
 | Google OAuth **redirect_uri_mismatch** | Set `NEXTAUTH_URL` + `NEXT_PUBLIC_APP_URL` to your **custom domain** (not `*.vercel.app`). Add the exact callback from `/api/oauth-config` in Google Console. Wait 1–2 min after saving Google settings. |
 | Google OAuth redirect error (other) | Check JavaScript origins + redirect URIs match `https` and your domain exactly |
+| Storefront images missing / `/_next/image` **400** | `/api/artwork-image` must use **Node.js** runtime (`export const runtime = "nodejs"` in that route). Redeploy after pulling latest `main`. |
 | Rate limits feel inconsistent | Add Upstash Redis env vars |
 | `migrate deploy` fails on existing DB | Run `npm run db:baseline` once against production |
 
