@@ -62,8 +62,8 @@ export const DEFAULT_HOMEPAGE: SiteHomepageConfig = {
     imageUrl: "/hero-banner.jpg",
     primaryCtaLabel: "Signature Wall Art",
     primaryCtaHref: "/signature-wall-art",
-    secondaryCtaLabel: "Shop",
-    secondaryCtaHref: "/shop",
+    secondaryCtaLabel: "Let's create your Signature Wall",
+    secondaryCtaHref: "/signature-wall-art#inquiry",
   },
   collections: {
     eyebrow: "Browse by Medium",
@@ -274,12 +274,12 @@ export const DEFAULT_SIGNATURE_WALL_ART_PAGE: SignatureWallArtPageConfig = {
     eyebrow: "Signature Collection",
     title: "Signature Wall Art",
     subtitle:
-      "Five statement projects crafted for elevated interiors — explore the story, finishes, and design language behind each wall.",
+      "Statement showcase projects crafted for elevated interiors — explore the story, finishes, and design language behind each wall.",
   },
   sectionOrder: [...DEFAULT_SIGNATURE_PAGE_SECTION_ORDER],
   projects: {
     eyebrow: "Featured Projects",
-    title: "Five statement walls",
+    title: "Signature showcase walls",
     subtitle:
       "Each project is a showcase of texture, scale, and atmosphere. Open a project to see design styles, process imagery, and client notes.",
     items: [

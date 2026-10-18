@@ -1121,6 +1121,39 @@
     }
   }
 
+  .studio-artworks-editor--solo {
+    padding: 0;
+  }
+
+  .studio-signature-mode-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0 0 1.25rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0;
+  }
+
+  .studio-signature-mode-btn {
+    border: 1px solid var(--border);
+    background: var(--background);
+    color: var(--foreground);
+    padding: 0.55rem 1rem;
+    font-size: 0.875rem;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: border-color 200ms ease, background-color 200ms ease;
+  }
+
+  .studio-signature-mode-btn--active {
+    border-color: color-mix(in srgb, var(--foreground) 35%, var(--border));
+    background: var(--surface);
+  }
+
+  .studio-step-nav--compact .studio-step-nav-item {
+    min-width: 7rem;
+  }
+
   .studio-artworks-sidebar {
     display: flex;
     flex-direction: column;

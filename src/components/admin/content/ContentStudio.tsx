@@ -28,7 +28,7 @@ const TABS = [
     id: "signatureWallArt",
     label: "Signature Wall Art",
     description:
-      "Configure the Signature Wall Art showcase page: hero, projects, process, FAQ, and inquiry.",
+      "Pick a showcase project and follow the steps — same flow as Artworks. Add unlimited walls, then tune page settings.",
   },
   {
     id: "portfolio",

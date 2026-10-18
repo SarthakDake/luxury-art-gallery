@@ -286,12 +286,20 @@ function mergeHomepage(raw: unknown): SiteHomepageConfig {
   const primaryCtaHref = legacyHeroCta
     ? DEFAULT_HOMEPAGE.hero.primaryCtaHref
     : rawPrimaryHref;
+  const normalizedSecondaryHref = rawSecondaryHref.replace(/\/$/, "") || "/";
+  const legacyShopSecondary =
+    rawSecondaryLabel.trim() === "Shop" &&
+    (normalizedSecondaryHref === "/shop" || rawSecondaryHref === "/shop/");
   const secondaryCtaLabel = legacyHeroCta
     ? DEFAULT_HOMEPAGE.hero.secondaryCtaLabel
-    : rawSecondaryLabel;
+    : legacyShopSecondary
+      ? DEFAULT_HOMEPAGE.hero.secondaryCtaLabel
+      : rawSecondaryLabel;
   const secondaryCtaHref = legacyHeroCta
     ? DEFAULT_HOMEPAGE.hero.secondaryCtaHref
-    : rawSecondaryHref;
+    : legacyShopSecondary
+      ? DEFAULT_HOMEPAGE.hero.secondaryCtaHref
+      : rawSecondaryHref;
 
   return {
     sections: mergeHomepageSections(source.sections),
