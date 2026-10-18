@@ -99,6 +99,27 @@ Use **Sign in with Google** on your live domain. Both admin emails must sign in 
 
 Without Upstash, rate limits use in-memory storage and are **not reliable** on Vercel/serverless.
 
+### Email (SMTP) vs admin login
+
+- **`ADMIN_EMAIL`** / Site Settings **Admin emails** — who gets **Google admin sign-in** and the admin role. This does **not** send mail by itself.
+- **`SMTP_USER` / `SMTP_PASS` / `SMTP_HOST`** — when set, the app sends **contact**, **trade inquiry**, and **paid order** notifications. The **From** address is `SMTP_FROM` if set, otherwise the **contact** mailbox (`CONTACT_EMAIL` / Site Settings contact email), **not** your admin Gmail unless you put it in `SMTP_USER` or `SMTP_FROM`.
+- **`EMAIL_SERVER` + `EMAIL_FROM`** — optional NextAuth **magic-link** sign-in. Remove these env vars if you only use Google OAuth and do not want magic-link emails.
+- To stop outbound mail entirely: remove `SMTP_*` (and `EMAIL_*`) from Vercel Production — forms/checkout will log errors instead of sending.
+
+### Staying on free tiers (typical stack)
+
+| Service | Required? | Free-tier note |
+|---------|-----------|----------------|
+| **Vercel** (hosting) | Yes | Hobby tier; watch bandwidth and serverless invocations |
+| **Postgres** (Neon / Supabase / Vercel Postgres) | Yes | Use provider free tier; store **content JSON** only |
+| **Vercel Blob** | Yes for CMS uploads on Vercel | Free allowance; images stay in Blob — do not “clean” Blob to fix DB |
+| **Google OAuth** | For admin sign-in | Free |
+| **Upstash Redis** | Optional | Omit env vars to skip (rate limits fail open) |
+| **Sentry** | Optional | Omit `SENTRY_DSN` / `NEXT_PUBLIC_SENTRY_DSN` to disable |
+| **Vercel Analytics / Speed Insights** | Optional | Loaded only after cookie consent; remove component if unwanted |
+| **Razorpay / PhonePe** | Optional | Pay per transaction; omit keys to disable card checkout |
+| **SMTP (Gmail)** | Optional | Uses your Gmail **App Password** quota when configured |
+
 ## Vercel
 
 1. Import the repo → framework preset **Next.js**.
@@ -142,7 +163,7 @@ npm run build:local
 | Build fails with **P3005** (schema not empty) | Database was created with `db push`. Redeploy — the build auto-baselines. Or run manually: `DATABASE_URL="…" npm run db:baseline` |
 | Google OAuth **redirect_uri_mismatch** | Set `NEXTAUTH_URL` + `NEXT_PUBLIC_APP_URL` to your **custom domain** (not `*.vercel.app`). Add the exact callback from `/api/oauth-config` in Google Console. Wait 1–2 min after saving Google settings. |
 | Google OAuth redirect error (other) | Check JavaScript origins + redirect URIs match `https` and your domain exactly |
-| Storefront images missing / `/_next/image` **400** | `/api/artwork-image` must use **Node.js** runtime (`export const runtime = "nodejs"` in that route). Redeploy after pulling latest `main`. |
+| Storefront images missing / `/_next/image` **400** | Redeploy latest `main`. `/api/artwork-image` needs Node.js runtime, Vercel Blob for CMS uploads, and `NEXT_PUBLIC_APP_URL=https://www.your-domain.com` so static fallbacks resolve. DB holds JSON only — images live in **Blob** (+ git `public/` for bundled assets). **Never delete Blob objects to “fix” the DB.** |
 | Rate limits feel inconsistent | Add Upstash Redis env vars |
 | `migrate deploy` fails on existing DB | Run `npm run db:baseline` once against production |
 

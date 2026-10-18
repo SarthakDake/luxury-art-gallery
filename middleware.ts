@@ -11,8 +11,11 @@ import type { NextRequest } from "next/server";
 function redirectBrowserApiVisitToHome(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // PDF iframe navigations often send Accept: text/html — never redirect those.
-  if (pathname.startsWith("/api/site-document/")) {
+  // PDF iframes and image optimizer/browser probes may send Accept: text/html.
+  if (
+    pathname.startsWith("/api/site-document/") ||
+    pathname.startsWith("/api/artwork-image/")
+  ) {
     return null;
   }
 
@@ -76,6 +79,8 @@ export const config = {
     "/profile/:path*",
     "/admin",
     "/admin/:path*",
-    "/api/:path*",
+    "/api/admin",
+    "/api/admin/:path*",
+    "/api/auth/:path*",
   ],
 };
