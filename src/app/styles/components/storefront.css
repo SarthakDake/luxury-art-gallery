@@ -2935,28 +2935,13 @@
     padding: 0;
     display: grid;
     gap: 1.5rem;
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 640px) {
     .home-signature-showcase {
-      grid-template-columns: repeat(12, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 1.75rem;
-    }
-
-    .home-signature-showcase-item--1 {
-      grid-column: span 7;
-    }
-
-    .home-signature-showcase-item--2 {
-      grid-column: span 5;
-    }
-
-    .home-signature-showcase-item--3 {
-      grid-column: span 5;
-    }
-
-    .home-signature-showcase-item--4 {
-      grid-column: span 7;
     }
   }
 
@@ -2970,13 +2955,16 @@
 
   .home-signature-showcase-media {
     position: relative;
-    aspect-ratio: 5 / 4;
+    aspect-ratio: 16 / 10;
     overflow: hidden;
     background: var(--surface);
   }
 
-  .home-signature-showcase-item--1 .home-signature-showcase-media,
-  .home-signature-showcase-item--4 .home-signature-showcase-media {
+  .home-signature-showcase-item--portrait .home-signature-showcase-media {
+    aspect-ratio: 4 / 5;
+  }
+
+  .home-signature-showcase-item--landscape .home-signature-showcase-media {
     aspect-ratio: 16 / 10;
   }
 
@@ -3176,34 +3164,24 @@
     scroll-margin-top: calc(var(--header-height, 5rem) + 1.5rem);
   }
 
-  .signature-project-mosaic {
+  .signature-project-grid {
     list-style: none;
     margin: 1.75rem 0 0;
     padding: 0;
     display: grid;
-    gap: 1.5rem;
+    gap: 1.75rem;
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  @media (min-width: 768px) {
-    .signature-project-mosaic {
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-      gap: 1.75rem 1.5rem;
+  @media (min-width: 640px) {
+    .signature-project-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+  }
 
-    .signature-project-tile--feature {
-      grid-column: span 12;
-    }
-
-    .signature-project-tile--tall {
-      grid-column: span 5;
-    }
-
-    .signature-project-tile--wide {
-      grid-column: span 7;
-    }
-
-    .signature-project-tile--compact {
-      grid-column: span 4;
+  @media (min-width: 1024px) {
+    .signature-project-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 
@@ -3215,31 +3193,19 @@
     height: 100%;
   }
 
-  @media (min-width: 900px) {
-    .signature-project-tile--feature .signature-project-tile-link {
-      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
-      gap: 2rem;
-      align-items: center;
-    }
-  }
-
   .signature-project-tile-media {
     position: relative;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 16 / 10;
     overflow: hidden;
     background: var(--surface);
   }
 
-  .signature-project-tile--feature .signature-project-tile-media {
+  .signature-project-tile--landscape .signature-project-tile-media {
     aspect-ratio: 16 / 10;
   }
 
-  .signature-project-tile--wide .signature-project-tile-media {
-    aspect-ratio: 5 / 4;
-  }
-
-  .signature-project-tile--compact .signature-project-tile-media {
-    aspect-ratio: 1 / 1;
+  .signature-project-tile--portrait .signature-project-tile-media {
+    aspect-ratio: 4 / 5;
   }
 
   .signature-project-tile-index {
@@ -3286,10 +3252,6 @@
   .signature-project-card-summary {
     margin-top: 0.35rem;
     color: var(--muted);
-  }
-
-  .signature-project-tile--feature .signature-project-card-summary {
-    max-width: 28rem;
   }
 
   .signature-project-card-action {
