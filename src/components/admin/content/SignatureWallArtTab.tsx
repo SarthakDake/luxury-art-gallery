@@ -9,6 +9,7 @@ import {
   StudioRepeaterHeader,
   StudioRepeaterItem,
   StudioSection,
+  StudioSelect,
   StudioShell,
 } from "./shared";
 import { RichTextEditor } from "./RichTextEditor";
@@ -259,6 +260,7 @@ export function SignatureWallArtTab({
                   title: "New project",
                   summary: "",
                   coverImageUrl: "",
+                  coverOrientation: "landscape",
                   designStyles: [],
                   galleryImages: [],
                   testimonials: [],
@@ -348,6 +350,26 @@ export function SignatureWallArtTab({
                     updateProject(index, { coverImageUrl: path })
                   }
                 />
+                <StudioField
+                  label="Cover shape on site"
+                  hint="Choose Landscape for wide photos (most common) or Portrait for tall photos. This sets the frame on Signature Wall Art and the homepage showcase."
+                  fullWidth
+                >
+                  <StudioSelect
+                    value={project.coverOrientation ?? "landscape"}
+                    onChange={(event) =>
+                      updateProject(index, {
+                        coverOrientation:
+                          event.target.value === "portrait"
+                            ? "portrait"
+                            : "landscape",
+                      })
+                    }
+                  >
+                    <option value="landscape">Landscape (wide frame)</option>
+                    <option value="portrait">Portrait (tall frame)</option>
+                  </StudioSelect>
+                </StudioField>
 
                 <StudioRepeaterHeader
                   title="Design styles"

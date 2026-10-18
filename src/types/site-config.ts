@@ -137,12 +137,17 @@ export interface SignatureProjectStyle {
   description: string;
 }
 
+/** How the project cover is framed in listing grids (Signature page + homepage). */
+export type SignatureCoverOrientation = "landscape" | "portrait";
+
 /** Showcase project on the Signature Wall Art page (not a shop product). */
 export interface SignatureProject {
   slug: string;
   title: string;
   summary: string;
   coverImageUrl: string;
+  /** Landscape (most common) uses a wide frame; portrait uses a tall frame. */
+  coverOrientation?: SignatureCoverOrientation;
   designStyles: SignatureProjectStyle[];
   galleryImages: string[];
   testimonials: SiteTestimonial[];

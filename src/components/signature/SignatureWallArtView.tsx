@@ -16,19 +16,22 @@ import type {
   SignatureWallArtPageConfig,
   SiteConfig,
 } from "@/types/site-config";
+import { resolveSignatureCoverOrientation } from "@/lib/signature-cover";
 import Link from "next/link";
 
 function ProjectCard({
   project,
   index,
-  variant,
 }: {
   project: SignatureProject;
   index: number;
-  variant: "feature" | "tall" | "wide" | "compact";
 }) {
+  const orientation = resolveSignatureCoverOrientation(project);
+
   return (
-    <li className={`signature-project-tile signature-project-tile--${variant}`}>
+    <li
+      className={`signature-project-tile signature-project-tile--${orientation}`}
+    >
       <Link
         href={`/signature-wall-art/${project.slug}`}
         className="signature-project-tile-link"
@@ -39,12 +42,8 @@ function ProjectCard({
               src={getArtworkImageSrc(project.coverImageUrl)}
               alt=""
               fill
-              sizes={
-                variant === "feature"
-                  ? "(max-width: 768px) 100vw, 70vw"
-                  : "(max-width: 768px) 100vw, 40vw"
-              }
-              className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className="object-cover object-center"
             />
           ) : (
             <div className="signature-project-card-placeholder" aria-hidden />
@@ -66,14 +65,6 @@ function ProjectCard({
       </Link>
     </li>
   );
-}
-
-function projectVariant(index: number, total: number): "feature" | "tall" | "wide" | "compact" {
-  if (index === 0 && total > 1) return "feature";
-  if (index % 5 === 1) return "tall";
-  if (index % 5 === 2) return "wide";
-  if (index % 5 === 3) return "tall";
-  return "compact";
 }
 
 function ProjectsSection({
@@ -100,14 +91,9 @@ function ProjectsSection({
         ) : null}
       </div>
 
-      <ul className="signature-project-mosaic" data-reveal-stagger>
+      <ul className="signature-project-grid" data-reveal-stagger>
         {items.map((project, index) => (
-          <ProjectCard
-            key={project.slug}
-            project={project}
-            index={index}
-            variant={projectVariant(index, items.length)}
-          />
+          <ProjectCard key={project.slug} project={project} index={index} />
         ))}
       </ul>
     </Reveal>

@@ -14,6 +14,7 @@ import type {
   HomepageSectionConfig,
   HomepageSectionId,
   SignaturePageSectionId,
+  SignatureCoverOrientation,
   SignatureProject,
   SignatureWallArtPageConfig,
   SiteBrandTokens,
@@ -405,6 +406,8 @@ function mergeSignatureProjects(
         asString(entry.slug).trim() ||
         fallbackProject?.slug ||
         `project-${index + 1}`;
+      const coverOrientation: SignatureCoverOrientation =
+        entry.coverOrientation === "portrait" ? "portrait" : "landscape";
 
       return {
         slug,
@@ -414,6 +417,7 @@ function mergeSignatureProjects(
           entry.coverImageUrl,
           fallbackProject?.coverImageUrl ?? "",
         ),
+        coverOrientation,
         designStyles: mergeSignatureProjectStyles(
           entry.designStyles,
           fallbackProject?.designStyles ?? [],
