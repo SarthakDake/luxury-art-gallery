@@ -2,7 +2,7 @@
  * Read-only audit: list artwork image paths in Postgres/JSON that are missing
  * from Vercel Blob. Does not delete or modify any data.
  *
- * Usage:
+ * Usage (monthly; hits Blob/Postgres APIs only — not your Vercel HTTP routes):
  *   DATABASE_URL="..." BLOB_READ_WRITE_TOKEN="..." node scripts/audit-blob-images.mjs
  */
 import { readFileSync } from "node:fs";

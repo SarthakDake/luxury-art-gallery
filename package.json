@@ -19,6 +19,7 @@
     "db:sync-content:blob": "node scripts/sync-site-content.mjs --from-blob",
     "blob:audit-images": "node scripts/audit-blob-images.mjs",
     "smoke:production": "node scripts/smoke-production.mjs",
+    "smoke:production:full": "SMOKE_FULL=1 node scripts/smoke-production.mjs",
     "db:promote-admin": "node scripts/promote-admin.mjs",
     "db:studio": "prisma studio"
   },

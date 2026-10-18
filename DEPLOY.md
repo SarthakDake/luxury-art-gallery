@@ -149,11 +149,19 @@ npm run build:local
 
 ## After deploy — smoke test
 
-Run from your laptop (read-only, no login):
+Run from your laptop after a deploy (read-only, no login). **Default is lite mode** — one homepage request plus static CDN files, not repeated API/image lambdas:
 
 ```bash
 BASE_URL=https://www.your-domain.com npm run smoke:production
 ```
+
+Optional deeper check (more Vercel invocations — use only when debugging, not on a cron):
+
+```bash
+BASE_URL=https://www.your-domain.com npm run smoke:production:full
+```
+
+**Do not** run smoke tests on a Vercel Cron or every few minutes from an external monitor hitting `/api/*` — that burns serverless quota.
 
 Manual checklist:
 
@@ -181,18 +189,20 @@ Confirm in **Project → Settings**:
 
 Do **not** delete Blob objects or “reset” Postgres to fix images — that removes client uploads.
 
-### External monitoring (free, recommended)
+### External monitoring (free, low Vercel cost)
 
-Use any uptime service (e.g. [UptimeRobot](https://uptimerobot.com/) free tier) with **5‑minute checks** on:
+Use any uptime service (e.g. [UptimeRobot](https://uptimerobot.com/) free tier) with **10–15 minute** intervals (not 1–5 min — each check is a serverless invocation on HTML routes).
 
-1. `https://www.your-domain.com/` — homepage up  
-2. `https://www.your-domain.com/api/site/config` — database + app OK  
-3. `https://www.your-domain.com/api/artwork-image/site/trade-teaser-1.jpg` — image pipeline OK  
-4. `https://www.your-domain.com/shop` — storefront OK  
+**Monitor these only (2 URLs):**
 
-Optional: add one **product URL** you change often (e.g. a flagship clock) as a fifth check.
+1. `https://www.your-domain.com/` — homepage (SSR; also exercises DB via layout)  
+2. `https://www.your-domain.com/site/trade-teaser-1.jpg` — **static CDN** file (cheap; confirms deploy assets exist)
 
-Alert **email/SMS** when any check fails 2× in a row. That catches outages before clients do.
+Avoid pointing uptime bots at `/api/*` or `/api/artwork-image/*` on a schedule — they run Node/Blob work every ping and add cost.
+
+After deploy, run **`npm run smoke:production`** once from your machine. Use **`smoke:production:full`** only when investigating image/API issues.
+
+Alert **email** when a check fails 2× in a row.
 
 ### After every deploy (2 minutes)
 
@@ -202,7 +212,7 @@ Alert **email/SMS** when any check fails 2× in a row. That catches outages befo
 
 ### Monthly (or after bulk CMS edits)
 
-1. **Blob audit** (read-only; lists missing files, deletes nothing):
+1. **Blob audit** (read-only; lists missing files, deletes nothing). Runs against **Postgres + Blob API from your laptop** — it does **not** call your Vercel site, so it does not add serverless invocations. Use **monthly**, not daily:
 
    ```bash
    DATABASE_URL="…" BLOB_READ_WRITE_TOKEN="…" npm run blob:audit-images
