@@ -105,9 +105,10 @@ export async function sendNewOrderConfirmedEmail(
     getSiteConfig(),
   ]);
   const primaryContactEmail = contactEmails[0] ?? config.contactEmail;
+  // FROM should be the studio mailbox (SMTP_FROM / contact), not the admin login email.
   const from =
     process.env.SMTP_FROM ??
-    `${config.siteName} <${process.env.SMTP_USER ?? primaryContactEmail}>`;
+    `${config.siteName} <${primaryContactEmail}>`;
   const textLines = await Promise.all(
     payload.items.map(async (item) => {
       const title = await getArtworkTitle(item.artworkId);
@@ -147,9 +148,10 @@ export async function sendContactFormEmail(
     getSiteConfig(),
   ]);
   const primaryContactEmail = contactEmails[0] ?? config.contactEmail;
+  // FROM should be the studio mailbox (SMTP_FROM / contact), not the admin login email.
   const from =
     process.env.SMTP_FROM ??
-    `${config.siteName} <${process.env.SMTP_USER ?? primaryContactEmail}>`;
+    `${config.siteName} <${primaryContactEmail}>`;
   const safeName = escapeHtml(payload.name);
   const safeEmail = escapeHtml(payload.email);
   const safeSubject = escapeHtml(payload.subject);
@@ -199,9 +201,10 @@ export async function sendTradeInquiryEmail(
     getSiteConfig(),
   ]);
   const primaryContactEmail = contactEmails[0] ?? config.contactEmail;
+  // FROM should be the studio mailbox (SMTP_FROM / contact), not the admin login email.
   const from =
     process.env.SMTP_FROM ??
-    `${config.siteName} <${process.env.SMTP_USER ?? primaryContactEmail}>`;
+    `${config.siteName} <${primaryContactEmail}>`;
   const safeName = escapeHtml(payload.name);
   const safeEmail = escapeHtml(payload.email);
   const safeCompany = escapeHtml(payload.company ?? "");

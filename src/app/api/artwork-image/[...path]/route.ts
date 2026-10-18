@@ -8,7 +8,6 @@ import {
 } from "@/lib/artwork-image";
 import { getBlobAccess, isBlobStorageEnabled } from "@/lib/blob-storage";
 import { getImageContentType } from "@/lib/image-format";
-import { rasterizeForBrowserDisplay } from "@/lib/image-processing";
 import { enforceRateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
@@ -60,6 +59,49 @@ function isAllowedImagePath(relativePath: string): boolean {
   return ALLOWED_IMAGE_ROOTS.some(
     (root) => normalized === root.slice(0, -1) || normalized.startsWith(root),
   );
+}
+
+function getDeploymentOrigin(): string | null {
+  const configured = process.env.NEXT_PUBLIC_APP_URL?.trim().replace(/\/$/, "");
+  if (configured) {
+    return configured;
+  }
+
+  const vercelHost = process.env.VERCEL_URL?.trim();
+  if (vercelHost) {
+    return `https://${vercelHost}`;
+  }
+
+  return null;
+}
+
+/** Vercel serves `public/` on the CDN; lambdas often cannot read those bytes from disk. */
+async function readFromDeploymentStaticAsset(
+  relativePath: string,
+): Promise<Buffer | null> {
+  if (process.env.VERCEL !== "1") {
+    return null;
+  }
+
+  const origin = getDeploymentOrigin();
+  if (!origin) {
+    return null;
+  }
+
+  try {
+    const response = await fetch(`${origin}/${relativePath}`, {
+      cache: "force-cache",
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    return Buffer.from(await response.arrayBuffer());
+  } catch (error) {
+    console.error("[artwork-image] static asset fetch failed:", error);
+    return null;
+  }
 }
 
 function getImageCacheControl(request: Request): string {
@@ -114,6 +156,7 @@ async function streamFromBlob(
     }
 
     const input = Buffer.concat(chunks.map((chunk) => Buffer.from(chunk)));
+    const { rasterizeForBrowserDisplay } = await import("@/lib/image-processing");
     const output = await rasterizeForBrowserDisplay(input, extension);
 
     return new Response(new Uint8Array(output), {
@@ -128,39 +171,11 @@ async function streamFromBlob(
   }
 }
 
-export async function GET(
-  request: Request,
-  context: { params: Promise<{ path: string[] }> },
-) {
-  const rateLimitResponse = await enforceRateLimit(request, "artwork-image");
-
-  if (rateLimitResponse) {
-    return rateLimitResponse;
-  }
-
-  const cacheControl = getImageCacheControl(request);
-  const { path: segments } = await context.params;
-  const relativePath = path.posix.join(...segments);
-
-  if (!relativePath || relativePath.includes("..") || !isAllowedImagePath(relativePath)) {
-    return new Response("Not found", { status: 404 });
-  }
-
-  const blobResponse = await streamFromBlob(relativePath, cacheControl);
-
-  if (blobResponse) {
-    return blobResponse;
-  }
-
-  const filePath = resolvePublicFile(relativePath);
-
-  if (!filePath) {
-    return new Response("Not found", { status: 404 });
-  }
-
-  const extension = path.extname(filePath).toLowerCase();
-  const input = await readFile(filePath);
-
+async function serveImageBytes(
+  input: Buffer,
+  extension: string,
+  cacheControl: string,
+): Promise<Response> {
   if (!needsBrowserRasterization(`file${extension}`)) {
     return new Response(new Uint8Array(input), {
       headers: {
@@ -171,6 +186,7 @@ export async function GET(
   }
 
   try {
+    const { rasterizeForBrowserDisplay } = await import("@/lib/image-processing");
     const output = await rasterizeForBrowserDisplay(input, extension);
     return new Response(new Uint8Array(output), {
       headers: {
@@ -181,5 +197,50 @@ export async function GET(
   } catch (error) {
     console.error("[artwork-image] rasterization failed:", error);
     return new Response("Failed to convert image for display", { status: 500 });
+  }
+}
+
+export async function GET(
+  request: Request,
+  context: { params: Promise<{ path: string[] }> },
+) {
+  try {
+    const rateLimitResponse = await enforceRateLimit(request, "artwork-image");
+
+    if (rateLimitResponse) {
+      return rateLimitResponse;
+    }
+
+    const cacheControl = getImageCacheControl(request);
+    const { path: segments } = await context.params;
+    const relativePath = segments.map((segment) => decodeURIComponent(segment)).join("/");
+
+    if (!relativePath || relativePath.includes("..") || !isAllowedImagePath(relativePath)) {
+      return new Response("Not found", { status: 404 });
+    }
+
+    const blobResponse = await streamFromBlob(relativePath, cacheControl);
+
+    if (blobResponse) {
+      return blobResponse;
+    }
+
+    const filePath = resolvePublicFile(relativePath);
+    if (filePath) {
+      const extension = path.extname(filePath).toLowerCase();
+      const input = await readFile(filePath);
+      return serveImageBytes(input, extension, cacheControl);
+    }
+
+    const staticBytes = await readFromDeploymentStaticAsset(relativePath);
+    if (staticBytes) {
+      const extension = path.extname(relativePath).toLowerCase();
+      return serveImageBytes(staticBytes, extension, cacheControl);
+    }
+
+    return new Response("Not found", { status: 404 });
+  } catch (error) {
+    console.error("[artwork-image] unhandled error:", error);
+    return new Response("Image unavailable", { status: 500 });
   }
 }
