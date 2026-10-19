@@ -5,7 +5,7 @@ import { useIsClient } from "@/hooks/use-is-client";
 import { buildWhatsAppHref } from "@/lib/whatsapp";
 import { createPortal } from "react-dom";
 
-const whatsappMessage = "Hello, I am inquiring about your artwork.";
+const whatsappMessage = "Hello, I am enquiring about your artwork.";
 
 function WhatsAppIcon() {
   return (

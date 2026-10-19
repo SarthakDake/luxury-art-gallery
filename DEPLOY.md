@@ -172,6 +172,12 @@ Manual checklist:
 - [ ] Cart, promo code, WhatsApp checkout
 - [ ] Contact form (if SMTP configured)
 
+If production CMS JSON still contains legacy **inquiry** keys or copy from before the enquiry rename, run once against Production Postgres (with `DATABASE_URL` set):
+
+`npm run db:migrate-enquiry-spelling`
+
+This rewrites `SiteContent.config` to the normalized **enquiry** shape. It is safe to run more than once.
+
 ## Keeping production healthy (client ops)
 
 You should **not** need to log into Content Studio to know the site is up. Set up checks once, then only act when something alerts you.

@@ -6,6 +6,7 @@ import { useEffect } from "react";
 export function SignatureHashScroll() {
   useEffect(() => {
     let hash = window.location.hash.replace(/^#/, "");
+    // Legacy bookmark URLs still use #inquiry from older CMS links.
     if (hash === "inquiry") {
       hash = "enquiry";
     }
