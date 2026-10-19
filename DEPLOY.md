@@ -102,7 +102,7 @@ Without Upstash, rate limits use in-memory storage and are **not reliable** on V
 ### Email (SMTP) vs admin login
 
 - **`ADMIN_EMAIL`** / Site Settings **Admin emails** — who gets **Google admin sign-in** and the admin role. This does **not** send mail by itself.
-- **`SMTP_USER` / `SMTP_PASS` / `SMTP_HOST`** — when set, the app sends **contact**, **trade inquiry**, and **paid order** notifications. The **From** address is `SMTP_FROM` if set, otherwise the **contact** mailbox (`CONTACT_EMAIL` / Site Settings contact email), **not** your admin Gmail unless you put it in `SMTP_USER` or `SMTP_FROM`.
+- **`SMTP_USER` / `SMTP_PASS` / `SMTP_HOST`** — when set, the app sends **contact**, **trade enquiry**, and **paid order** notifications. The **From** address is `SMTP_FROM` if set, otherwise the **contact** mailbox (`CONTACT_EMAIL` / Site Settings contact email), **not** your admin Gmail unless you put it in `SMTP_USER` or `SMTP_FROM`.
 - **`EMAIL_SERVER` + `EMAIL_FROM`** — optional NextAuth **magic-link** sign-in. Remove these env vars if you only use Google OAuth and do not want magic-link emails.
 - To stop outbound mail entirely: remove `SMTP_*` (and `EMAIL_*`) from Vercel Production — forms/checkout will log errors instead of sending.
 

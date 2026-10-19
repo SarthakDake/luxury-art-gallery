@@ -6,8 +6,8 @@ type RateLimitBucket =
   | "instagram-video"
   | "artwork-image"
   | "contact"
-  | "trade-inquiry"
-  | "signature-inquiry"
+  | "trade-enquiry"
+  | "signature-enquiry"
   | "site-document";
 
 interface MemoryEntry {
@@ -31,8 +31,8 @@ const BUCKET_CONFIG: Record<
   "instagram-video": { requests: 20, window: "1 h", windowMs: 60 * 60 * 1000 },
   "artwork-image": { requests: 120, window: "10 m", windowMs: 10 * 60 * 1000 },
   contact: { requests: 5, window: "1 h", windowMs: 60 * 60 * 1000 },
-  "trade-inquiry": { requests: 5, window: "1 h", windowMs: 60 * 60 * 1000 },
-  "signature-inquiry": { requests: 5, window: "1 h", windowMs: 60 * 60 * 1000 },
+  "trade-enquiry": { requests: 5, window: "1 h", windowMs: 60 * 60 * 1000 },
+  "signature-enquiry": { requests: 5, window: "1 h", windowMs: 60 * 60 * 1000 },
   "site-document": { requests: 60, window: "10 m", windowMs: 10 * 60 * 1000 },
 };
 

@@ -194,7 +194,7 @@ const SIGNATURE_FOCUS_SELECTORS: Record<
   projects: ".signature-projects-section",
   process: ".signature-process-section",
   faq: ".signature-faq-section",
-  inquiry: ".signature-inquiry-section, #inquiry.signature-inquiry-section",
+  enquiry: ".signature-enquiry-section, #enquiry.signature-enquiry-section",
 };
 
 const TRADE_FOCUS_SELECTORS: Record<
@@ -207,7 +207,7 @@ const TRADE_FOCUS_SELECTORS: Record<
   benefits: "[aria-labelledby='benefits-heading']",
   process: "[aria-labelledby='trade-process-heading']",
   pdf: "#portfolio-pdf",
-  inquiry: "#inquiry",
+  enquiry: "#enquiry",
 };
 
 function SignaturePagePreview({

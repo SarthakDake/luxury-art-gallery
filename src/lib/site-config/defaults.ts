@@ -63,7 +63,7 @@ export const DEFAULT_HOMEPAGE: SiteHomepageConfig = {
     primaryCtaLabel: "Signature Wall Art",
     primaryCtaHref: "/signature-wall-art",
     secondaryCtaLabel: "Let's create your Signature Wall",
-    secondaryCtaHref: "/signature-wall-art#inquiry",
+    secondaryCtaHref: "/signature-wall-art#enquiry",
   },
   collections: {
     eyebrow: "Browse by Medium",
@@ -130,8 +130,8 @@ export const DEFAULT_FOR_INTERIOR_DESIGNERS: ForInteriorDesignersConfig = {
     subtitle:
       "Collaborate with Colors N Joy for custom texture art, signature wall pieces, and a trade process built around your project timeline.",
     imageUrl: "/site/trade-hero.jpg",
-    primaryCtaLabel: "Start a Trade Inquiry",
-    primaryCtaHref: "#inquiry",
+    primaryCtaLabel: "Start a Trade Enquiry",
+    primaryCtaHref: "#enquiry",
     secondaryCtaLabel: "Download Portfolio PDF",
     secondaryCtaHref: "#portfolio-pdf",
   },
@@ -198,7 +198,7 @@ export const DEFAULT_FOR_INTERIOR_DESIGNERS: ForInteriorDesignersConfig = {
   tradeProcess: {
     eyebrow: "Trade Process",
     title: "How collaboration works",
-    subtitle: "A clear path from first inquiry to installation-ready artwork.",
+    subtitle: "A clear path from first enquiry to installation-ready artwork.",
     steps: [
       {
         title: "Share the brief",
@@ -236,15 +236,15 @@ export const DEFAULT_FOR_INTERIOR_DESIGNERS: ForInteriorDesignersConfig = {
       caption: "Hospitality & commercial installations",
     },
   ],
-  inquiryForm: {
-    eyebrow: "Inquiry",
+  enquiryForm: {
+    eyebrow: "Enquiry",
     title: "Start a trade conversation",
     subtitle:
       "Share a few project details and the studio will follow up with next steps.",
-    submitLabel: "Send Trade Inquiry",
+    submitLabel: "Send Trade Enquiry",
     successMessage:
-      "Thank you — your inquiry has been sent. The studio will be in touch shortly.",
-    defaultSubject: "Interior Designer Trade Inquiry",
+      "Thank you — your enquiry has been sent. The studio will be in touch shortly.",
+    defaultSubject: "Interior Designer Trade Enquiry",
   },
 };
 
@@ -264,7 +264,7 @@ export const DEFAULT_TESTIMONIALS: SiteTestimonial[] = [
 ];
 
 export const DEFAULT_SIGNATURE_PAGE_SECTION_ORDER: SignatureWallArtPageConfig["sectionOrder"] =
-  ["projects", "process", "faq", "inquiry"];
+  ["projects", "process", "faq", "enquiry"];
 
 export const DEFAULT_SIGNATURE_WALL_ART_PAGE: SignatureWallArtPageConfig = {
   hero: {
@@ -513,7 +513,7 @@ export const DEFAULT_SIGNATURE_WALL_ART_PAGE: SignatureWallArtPageConfig = {
       {
         question: "Is Signature Wall Art available for purchase online?",
         answer:
-          "These projects are showcase commissions. They are not listed with shop sizes or checkout — enquire via WhatsApp or the inquiry form to start a custom piece for your space.",
+          "These projects are showcase commissions. They are not listed with shop sizes or checkout — enquire via WhatsApp or the enquiry form to start a custom piece for your space.",
       },
       {
         question: "Can you match an existing interior palette?",
@@ -528,22 +528,22 @@ export const DEFAULT_SIGNATURE_WALL_ART_PAGE: SignatureWallArtPageConfig = {
       {
         question: "How long does a custom project take?",
         answer:
-          "Timelines vary with scale and finish. After the concept is approved, most statement pieces are crafted within a planned studio window shared at inquiry.",
+          "Timelines vary with scale and finish. After the concept is approved, most statement pieces are crafted within a planned studio window shared at enquiry.",
       },
     ],
   },
-  inquiry: {
-    eyebrow: "Inquire",
+  enquiry: {
+    eyebrow: "Enquire",
     title: "Start your signature wall",
     subtitle:
       "Tell us about your space — or message the studio on WhatsApp for a quicker conversation.",
     formCtaLabel: "Let's create your Signature Wall",
-    formHref: "#inquiry",
+    formHref: "#enquiry",
     whatsappLabel: "Connect on WhatsApp",
-    submitLabel: "Send Inquiry",
+    submitLabel: "Send Enquiry",
     successMessage:
-      "Thank you — your inquiry has been sent. The studio will be in touch shortly.",
-    defaultSubject: "Signature Wall Art Inquiry",
+      "Thank you — your enquiry has been sent. The studio will be in touch shortly.",
+    defaultSubject: "Signature Wall Art Enquiry",
   },
 };
 

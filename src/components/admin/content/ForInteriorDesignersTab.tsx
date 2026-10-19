@@ -594,19 +594,19 @@ export function ForInteriorDesignersTab({
       </StudioSection>
 
       <StudioSection
-        title="Inquiry"
-        subtitle="Trade inquiry form"
-        onPreview={() => preview("inquiry", "For Interior Designers — inquiry")}
+        title="Enquiry"
+        subtitle="Trade enquiry form"
+        onPreview={() => preview("enquiry", "For Interior Designers — enquiry")}
       >
-        <StudioGroup eyebrow="Inquiry Form" title="Trade inquiry copy">
+        <StudioGroup eyebrow="Enquiry Form" title="Trade enquiry copy">
           <StudioFormGrid>
             <StudioField label="Eyebrow">
               <StudioInput
-                value={page.inquiryForm.eyebrow}
+                value={page.enquiryForm.eyebrow}
                 onChange={(event) =>
                   updatePage({
-                    inquiryForm: {
-                      ...page.inquiryForm,
+                    enquiryForm: {
+                      ...page.enquiryForm,
                       eyebrow: event.target.value,
                     },
                   })
@@ -615,11 +615,11 @@ export function ForInteriorDesignersTab({
             </StudioField>
             <StudioField label="Title">
               <StudioInput
-                value={page.inquiryForm.title}
+                value={page.enquiryForm.title}
                 onChange={(event) =>
                   updatePage({
-                    inquiryForm: {
-                      ...page.inquiryForm,
+                    enquiryForm: {
+                      ...page.enquiryForm,
                       title: event.target.value,
                     },
                   })
@@ -628,11 +628,11 @@ export function ForInteriorDesignersTab({
             </StudioField>
             <StudioField label="Submit button">
               <StudioInput
-                value={page.inquiryForm.submitLabel}
+                value={page.enquiryForm.submitLabel}
                 onChange={(event) =>
                   updatePage({
-                    inquiryForm: {
-                      ...page.inquiryForm,
+                    enquiryForm: {
+                      ...page.enquiryForm,
                       submitLabel: event.target.value,
                     },
                   })
@@ -641,11 +641,11 @@ export function ForInteriorDesignersTab({
             </StudioField>
             <StudioField label="Email subject">
               <StudioInput
-                value={page.inquiryForm.defaultSubject}
+                value={page.enquiryForm.defaultSubject}
                 onChange={(event) =>
                   updatePage({
-                    inquiryForm: {
-                      ...page.inquiryForm,
+                    enquiryForm: {
+                      ...page.enquiryForm,
                       defaultSubject: event.target.value,
                     },
                   })
@@ -655,11 +655,11 @@ export function ForInteriorDesignersTab({
           </StudioFormGrid>
           <StudioField label="Subtitle" fullWidth>
             <RichTextEditor
-              value={page.inquiryForm.subtitle}
+              value={page.enquiryForm.subtitle}
               onChange={(subtitle) =>
                 updatePage({
-                  inquiryForm: {
-                    ...page.inquiryForm,
+                  enquiryForm: {
+                    ...page.enquiryForm,
                     subtitle,
                   },
                 })
@@ -671,11 +671,11 @@ export function ForInteriorDesignersTab({
           </StudioField>
           <StudioField label="Success message" fullWidth>
             <RichTextEditor
-              value={page.inquiryForm.successMessage}
+              value={page.enquiryForm.successMessage}
               onChange={(successMessage) =>
                 updatePage({
-                  inquiryForm: {
-                    ...page.inquiryForm,
+                  enquiryForm: {
+                    ...page.enquiryForm,
                     successMessage,
                   },
                 })

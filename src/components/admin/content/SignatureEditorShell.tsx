@@ -45,7 +45,7 @@ export type SignaturePageSettingsStep =
   | "grid"
   | "process"
   | "faq"
-  | "inquiry"
+  | "enquiry"
   | "homepage";
 
 export const SIGNATURE_PAGE_STEPS: {
@@ -58,7 +58,7 @@ export const SIGNATURE_PAGE_STEPS: {
   { id: "grid", label: "Grid intro", hint: "Projects heading" },
   { id: "process", label: "Process", hint: "How it works" },
   { id: "faq", label: "FAQ", hint: "Questions" },
-  { id: "inquiry", label: "Inquiry", hint: "Form & WhatsApp" },
+  { id: "enquiry", label: "Enquiry", hint: "Form & WhatsApp" },
   { id: "homepage", label: "Homepage", hint: "Teaser block" },
 ];
 

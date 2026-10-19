@@ -1,7 +1,7 @@
 import { Reveal } from "@/components/motion/Reveal";
+import { SignatureEnquiryForm } from "@/components/signature/SignatureEnquiryForm";
 import { SignatureFaq } from "@/components/signature/SignatureFaq";
 import { SignatureHashScroll } from "@/components/signature/SignatureHashScroll";
-import { SignatureInquiryForm } from "@/components/signature/SignatureInquiryForm";
 import { RichText } from "@/components/ui/RichText";
 import { SoftImage } from "@/components/ui/SoftImage";
 import { getArtworkImageSrc } from "@/lib/artwork-image";
@@ -160,7 +160,7 @@ function FaqSection({ resolved }: { resolved: SignatureWallArtPageConfig }) {
   );
 }
 
-function InquirySection({
+function EnquirySection({
   resolved,
   whatsappHref,
 }: {
@@ -170,21 +170,21 @@ function InquirySection({
   return (
     <Reveal
       as="section"
-      id="inquiry"
+      id="enquiry"
       variant="slide-up"
-      className="signature-inquiry-section section-divider-top"
-      aria-labelledby="signature-inquiry-heading"
+      className="signature-enquiry-section section-divider-top"
+      aria-labelledby="signature-enquiry-heading"
     >
-      <div className="signature-inquiry-layout">
+      <div className="signature-enquiry-layout">
         <div className="section-header-copy">
-          <p className="eyebrow">{resolved.inquiry.eyebrow}</p>
-          <h2 id="signature-inquiry-heading" className="section-title">
-            {resolved.inquiry.title}
+          <p className="eyebrow">{resolved.enquiry.eyebrow}</p>
+          <h2 id="signature-enquiry-heading" className="section-title">
+            {resolved.enquiry.title}
           </h2>
-          {resolved.inquiry.subtitle ? (
-            <RichText content={resolved.inquiry.subtitle} className="body-text mt-3" />
+          {resolved.enquiry.subtitle ? (
+            <RichText content={resolved.enquiry.subtitle} className="body-text mt-3" />
           ) : null}
-          <div className="signature-inquiry-actions">
+          <div className="signature-enquiry-actions">
             {whatsappHref ? (
               <a
                 href={whatsappHref}
@@ -192,18 +192,18 @@ function InquirySection({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {resolved.inquiry.whatsappLabel}
+                {resolved.enquiry.whatsappLabel}
               </a>
             ) : null}
             <a
-              href={resolved.inquiry.formHref || "#inquiry"}
+              href={resolved.enquiry.formHref || "#enquiry"}
               className="btn-primary btn-responsive"
             >
-              {resolved.inquiry.formCtaLabel}
+              {resolved.enquiry.formCtaLabel}
             </a>
           </div>
         </div>
-        <SignatureInquiryForm copy={resolved.inquiry} />
+        <SignatureEnquiryForm copy={resolved.enquiry} />
       </div>
     </Reveal>
   );
@@ -236,9 +236,9 @@ export function SignatureWallArtView({
         return <ProcessSection key={id} resolved={resolved} />;
       case "faq":
         return <FaqSection key={id} resolved={resolved} />;
-      case "inquiry":
+      case "enquiry":
         return (
-          <InquirySection key={id} resolved={resolved} whatsappHref={whatsappHref} />
+          <EnquirySection key={id} resolved={resolved} whatsappHref={whatsappHref} />
         );
       default:
         return null;

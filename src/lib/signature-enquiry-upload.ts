@@ -4,7 +4,7 @@ import { randomBytes } from "crypto";
 
 const MAX_WALL_PHOTO_BYTES = 4 * 1024 * 1024;
 
-export async function saveSignatureInquiryWallPhoto(file: File): Promise<{
+export async function saveSignatureEnquiryWallPhoto(file: File): Promise<{
   publicPath: string;
   buffer: Buffer;
   contentType: string;
@@ -23,9 +23,9 @@ export async function saveSignatureInquiryWallPhoto(file: File): Promise<{
   }
 
   const token = randomBytes(6).toString("hex");
-  const filename = `inquiry-wall-${Date.now()}-${token}${extension}`;
+  const filename = `enquiry-wall-${Date.now()}-${token}${extension}`;
   const publicPath = await uploadContentImage({
-    directory: "site/inquiry-photos",
+    directory: "site/enquiry-photos",
     filename,
     buffer,
     extension,

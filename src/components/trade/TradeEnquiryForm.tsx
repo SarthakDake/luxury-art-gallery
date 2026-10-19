@@ -4,10 +4,10 @@ import { RichText } from "@/components/ui/RichText";
 import type { ForInteriorDesignersConfig } from "@/types/site-config";
 import { useState } from "react";
 
-export function TradeInquiryForm({
+export function TradeEnquiryForm({
   copy,
 }: {
-  copy: ForInteriorDesignersConfig["inquiryForm"];
+  copy: ForInteriorDesignersConfig["enquiryForm"];
 }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -25,7 +25,7 @@ export function TradeInquiryForm({
     setSuccess(false);
 
     try {
-      const response = await fetch("/api/trade-inquiry", {
+      const response = await fetch("/api/trade-enquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -41,7 +41,7 @@ export function TradeInquiryForm({
       const data = (await response.json()) as { success?: boolean; error?: string };
 
       if (!response.ok || !data.success) {
-        setError(data.error ?? "Unable to send your inquiry. Please try again.");
+        setError(data.error ?? "Unable to send your enquiry. Please try again.");
         return;
       }
 
@@ -52,14 +52,14 @@ export function TradeInquiryForm({
       setProjectType("");
       setMessage("");
     } catch {
-      setError("Unable to send your inquiry. Please try again.");
+      setError("Unable to send your enquiry. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   }
 
   return (
-    <form className="form-stack trade-inquiry-form" onSubmit={handleSubmit}>
+    <form className="form-stack trade-enquiry-form" onSubmit={handleSubmit}>
       <div className="form-field">
         <label htmlFor="trade-name">Name</label>
         <input

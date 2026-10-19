@@ -70,7 +70,7 @@ export function ContactPageContent() {
         <h1 className="page-title">Contact us</h1>
         <p className="body-text max-w-2xl">
           For acquisitions, commissions, or private viewings, we welcome your
-          inquiry. Our studio team responds with care and discretion.
+          enquiry. Our studio team responds with care and discretion.
         </p>
       </Reveal>
 
@@ -189,7 +189,7 @@ export function ContactPageContent() {
                 value={subject}
                 onChange={(event) => setSubject(event.target.value)}
                 className="input-field"
-                placeholder="Inquiry subject"
+                placeholder="Enquiry subject"
                 disabled={isSubmitting}
               />
             </div>

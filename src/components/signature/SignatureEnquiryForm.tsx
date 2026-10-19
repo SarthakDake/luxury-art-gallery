@@ -4,13 +4,12 @@ import { RichText } from "@/components/ui/RichText";
 import type { SignatureWallArtPageConfig } from "@/types/site-config";
 import { useRef, useState } from "react";
 
-export function SignatureInquiryForm({
+export function SignatureEnquiryForm({
   copy,
   projectTitle,
-  idPrefix = "signature-inquiry",
+  idPrefix = "signature-enquiry",
 }: {
-  copy: SignatureWallArtPageConfig["inquiry"];
-  /** When set, included in the email subject/body for project enquiries. */
+  copy: SignatureWallArtPageConfig["enquiry"];
   projectTitle?: string;
   idPrefix?: string;
 }) {
@@ -56,7 +55,7 @@ export function SignatureInquiryForm({
     formData.set("wallPhoto", wallPhoto);
 
     try {
-      const response = await fetch("/api/signature-inquiry", {
+      const response = await fetch("/api/signature-enquiry", {
         method: "POST",
         body: formData,
       });
@@ -64,7 +63,7 @@ export function SignatureInquiryForm({
       const data = (await response.json()) as { success?: boolean; error?: string };
 
       if (!response.ok || !data.success) {
-        setError(data.error ?? "Unable to send your inquiry. Please try again.");
+        setError(data.error ?? "Unable to send your enquiry. Please try again.");
         return;
       }
 
@@ -79,14 +78,14 @@ export function SignatureInquiryForm({
         wallPhotoRef.current.value = "";
       }
     } catch {
-      setError("Unable to send your inquiry. Please try again.");
+      setError("Unable to send your enquiry. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   }
 
   return (
-    <form className="form-stack signature-inquiry-form" onSubmit={handleSubmit}>
+    <form className="form-stack signature-enquiry-form" onSubmit={handleSubmit}>
       <div className="form-field">
         <label htmlFor={`${idPrefix}-name`}>Name</label>
         <input
@@ -150,7 +149,7 @@ export function SignatureInquiryForm({
           ref={wallPhotoRef}
           id={`${idPrefix}-wall-photo`}
           type="file"
-          className="input-field signature-inquiry-file"
+          className="input-field signature-enquiry-file"
           accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif"
           required
         />

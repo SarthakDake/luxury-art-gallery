@@ -423,7 +423,7 @@ function CartPageContent() {
       <div className="site-container page-shell flex min-h-[60vh] flex-col items-center justify-center text-center">
         <Reveal variant="slide-up" className="flex flex-col items-center text-center">
           <p className="eyebrow">Order Sent</p>
-          <h1 className="page-title mt-4">Your inquiry is on WhatsApp.</h1>
+          <h1 className="page-title mt-4">Your enquiry is on WhatsApp.</h1>
           <p className="body-text mt-4 max-w-md">
             We opened WhatsApp with your order details in a new tab. Your cart
             has been cleared here. Our studio will confirm your order on WhatsApp.

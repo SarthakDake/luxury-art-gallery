@@ -172,7 +172,7 @@ export async function sendContactFormEmail(
     subject: `[Contact] ${payload.subject}`,
     html: `
       <div style="font-family: Georgia, 'Times New Roman', serif; color: #171717; line-height: 1.6;">
-        <p style="font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #6b7280;">New Contact Inquiry</p>
+        <p style="font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #6b7280;">New Contact Enquiry</p>
         <h1 style="font-size: 24px; font-weight: 500; margin: 0 0 16px;">${safeSubject}</h1>
         <p style="margin: 0 0 8px;"><strong>Name:</strong> ${safeName}</p>
         <p style="margin: 0 0 24px;"><strong>Email:</strong> ${safeEmail}</p>
@@ -181,7 +181,7 @@ export async function sendContactFormEmail(
       </div>
     `,
     text: [
-      "New Contact Inquiry",
+      "New Contact Enquiry",
       `Name: ${payload.name}`,
       `Email: ${payload.email}`,
       `Subject: ${payload.subject}`,
@@ -191,7 +191,7 @@ export async function sendContactFormEmail(
   });
 }
 
-export interface TradeInquiryEmailPayload {
+export interface TradeEnquiryEmailPayload {
   name: string;
   email: string;
   company?: string;
@@ -200,8 +200,8 @@ export interface TradeInquiryEmailPayload {
   message: string;
 }
 
-export async function sendTradeInquiryEmail(
-  payload: TradeInquiryEmailPayload,
+export async function sendTradeEnquiryEmail(
+  payload: TradeEnquiryEmailPayload,
 ): Promise<void> {
   const transporter = createTransporter();
   const [contactEmails, config] = await Promise.all([
@@ -222,7 +222,7 @@ export async function sendTradeInquiryEmail(
     from,
     to: formatEmailList(contactEmails),
     replyTo: payload.email,
-    subject: `[Trade Inquiry] ${payload.subject}`,
+    subject: `[Trade Enquiry] ${payload.subject}`,
     html: `
       <div style="font-family: Georgia, 'Times New Roman', serif; color: #171717; line-height: 1.6;">
         <p style="font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #6b7280;">For Interior Designers</p>
@@ -236,7 +236,7 @@ export async function sendTradeInquiryEmail(
       </div>
     `,
     text: [
-      "For Interior Designers — Trade Inquiry",
+      "For Interior Designers — Trade Enquiry",
       `Name: ${payload.name}`,
       `Email: ${payload.email}`,
       payload.company ? `Company / Studio: ${payload.company}` : "",
@@ -250,7 +250,7 @@ export async function sendTradeInquiryEmail(
   });
 }
 
-export interface SignatureInquiryEmailPayload {
+export interface SignatureEnquiryEmailPayload {
   name: string;
   email?: string;
   mobile: string;
@@ -267,8 +267,8 @@ export interface SignatureInquiryEmailPayload {
   };
 }
 
-export async function sendSignatureInquiryEmail(
-  payload: SignatureInquiryEmailPayload,
+export async function sendSignatureEnquiryEmail(
+  payload: SignatureEnquiryEmailPayload,
 ): Promise<void> {
   const transporter = createTransporter();
   const [contactEmails, config] = await Promise.all([
@@ -311,7 +311,7 @@ export async function sendSignatureInquiryEmail(
       : undefined,
     html: `
       <div style="font-family: Georgia, 'Times New Roman', serif; color: #171717; line-height: 1.6;">
-        <p style="font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #6b7280;">Signature Wall Art Inquiry</p>
+        <p style="font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #6b7280;">Signature Wall Art Enquiry</p>
         <h1 style="font-size: 24px; font-weight: 500; margin: 0 0 16px;">${safeSubject}</h1>
         ${safeProject ? `<p style="margin: 0 0 8px;"><strong>Project:</strong> ${safeProject}</p>` : ""}
         <p style="margin: 0 0 8px;"><strong>Name:</strong> ${safeName}</p>
@@ -325,7 +325,7 @@ export async function sendSignatureInquiryEmail(
       </div>
     `,
     text: [
-      "Signature Wall Art Inquiry",
+      "Signature Wall Art Enquiry",
       payload.projectTitle ? `Project: ${payload.projectTitle}` : "",
       `Name: ${payload.name}`,
       `Email: ${emailLine || "Not provided"}`,

@@ -1,6 +1,6 @@
-import { sendSignatureInquiryEmail } from "@/lib/mailer";
+import { sendSignatureEnquiryEmail } from "@/lib/mailer";
 import { enforceRateLimit } from "@/lib/rate-limit";
-import { saveSignatureInquiryWallPhoto } from "@/lib/signature-inquiry-upload";
+import { saveSignatureEnquiryWallPhoto } from "@/lib/signature-enquiry-upload";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -35,7 +35,7 @@ function sanitizeField(value: FormDataEntryValue | null, maxLength: number, requ
 }
 
 export async function POST(request: Request) {
-  const rateLimitResponse = await enforceRateLimit(request, "signature-inquiry");
+  const rateLimitResponse = await enforceRateLimit(request, "signature-enquiry");
 
   if (rateLimitResponse) {
     return rateLimitResponse;
@@ -82,7 +82,7 @@ export async function POST(request: Request) {
     | undefined;
 
   try {
-    const saved = await saveSignatureInquiryWallPhoto(wallPhotoEntry);
+    const saved = await saveSignatureEnquiryWallPhoto(wallPhotoEntry);
     wallPhotoUrl = saved.publicPath;
     wallPhotoAttachment = {
       filename: saved.filename,
@@ -95,7 +95,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    await sendSignatureInquiryEmail({
+    await sendSignatureEnquiryEmail({
       name,
       email: email || undefined,
       mobile,
@@ -110,7 +110,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Signature inquiry submission failed:", error);
+    console.error("Signature enquiry submission failed:", error);
     return NextResponse.json(
       { error: "Unable to send your message right now. Please try again later." },
       { status: 500 },

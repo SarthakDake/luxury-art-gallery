@@ -295,11 +295,13 @@ function mergeHomepage(raw: unknown): SiteHomepageConfig {
     : legacyShopSecondary
       ? DEFAULT_HOMEPAGE.hero.secondaryCtaLabel
       : rawSecondaryLabel;
-  const secondaryCtaHref = legacyHeroCta
-    ? DEFAULT_HOMEPAGE.hero.secondaryCtaHref
-    : legacyShopSecondary
+  const secondaryCtaHref = migrateEnquiryHash(
+    legacyHeroCta
       ? DEFAULT_HOMEPAGE.hero.secondaryCtaHref
-      : rawSecondaryHref;
+      : legacyShopSecondary
+        ? DEFAULT_HOMEPAGE.hero.secondaryCtaHref
+        : rawSecondaryHref,
+  );
 
   return {
     sections: mergeHomepageSections(source.sections),
@@ -448,6 +450,10 @@ function mergeSignatureProjects(
     .filter((project) => project.title && project.slug);
 }
 
+function migrateEnquiryHash(href: string): string {
+  return href.replace(/#inquiry\b/g, "#enquiry");
+}
+
 function mergeSignatureSectionOrder(raw: unknown): SignaturePageSectionId[] {
   const allowed = new Set<SignaturePageSectionId>(
     DEFAULT_SIGNATURE_PAGE_SECTION_ORDER,
@@ -461,10 +467,14 @@ function mergeSignatureSectionOrder(raw: unknown): SignaturePageSectionId[] {
   const ordered: SignaturePageSectionId[] = [];
 
   for (const entry of raw) {
-    if (typeof entry !== "string" || !allowed.has(entry as SignaturePageSectionId)) {
+    if (typeof entry !== "string") {
       continue;
     }
-    const id = entry as SignaturePageSectionId;
+    const normalizedEntry = entry === "inquiry" ? "enquiry" : entry;
+    if (!allowed.has(normalizedEntry as SignaturePageSectionId)) {
+      continue;
+    }
+    const id = normalizedEntry as SignaturePageSectionId;
     if (seen.has(id)) {
       continue;
     }
@@ -488,7 +498,11 @@ function mergeSignatureWallArtPage(raw: unknown): SignatureWallArtPageConfig {
   const projects = isRecord(source.projects) ? source.projects : {};
   const process = isRecord(source.process) ? source.process : {};
   const faq = isRecord(source.faq) ? source.faq : {};
-  const inquiry = isRecord(source.inquiry) ? source.inquiry : {};
+  const enquiryRaw = isRecord(source.enquiry)
+    ? source.enquiry
+    : isRecord(source.inquiry)
+      ? source.inquiry
+      : {};
   const defaults = DEFAULT_SIGNATURE_WALL_ART_PAGE;
 
   return {
@@ -519,29 +533,31 @@ function mergeSignatureWallArtPage(raw: unknown): SignatureWallArtPageConfig {
       subtitle: asString(faq.subtitle, defaults.faq.subtitle),
       items: mergeSignatureFaqItems(faq.items, defaults.faq.items),
     },
-    inquiry: {
-      eyebrow: asString(inquiry.eyebrow, defaults.inquiry.eyebrow),
-      title: asString(inquiry.title, defaults.inquiry.title),
-      subtitle: asString(inquiry.subtitle, defaults.inquiry.subtitle),
+    enquiry: {
+      eyebrow: asString(enquiryRaw.eyebrow, defaults.enquiry.eyebrow),
+      title: asString(enquiryRaw.title, defaults.enquiry.title),
+      subtitle: asString(enquiryRaw.subtitle, defaults.enquiry.subtitle),
       formCtaLabel: (() => {
-        const raw = asString(inquiry.formCtaLabel, defaults.inquiry.formCtaLabel);
-        return /^fill inquiry form$/i.test(raw.trim())
-          ? defaults.inquiry.formCtaLabel
+        const raw = asString(enquiryRaw.formCtaLabel, defaults.enquiry.formCtaLabel);
+        return /^fill inquir(y|e) form$/i.test(raw.trim())
+          ? defaults.enquiry.formCtaLabel
           : raw;
       })(),
-      formHref: asString(inquiry.formHref, defaults.inquiry.formHref),
-      whatsappLabel: asString(
-        inquiry.whatsappLabel,
-        defaults.inquiry.whatsappLabel,
+      formHref: migrateEnquiryHash(
+        asString(enquiryRaw.formHref, defaults.enquiry.formHref),
       ),
-      submitLabel: asString(inquiry.submitLabel, defaults.inquiry.submitLabel),
+      whatsappLabel: asString(
+        enquiryRaw.whatsappLabel,
+        defaults.enquiry.whatsappLabel,
+      ),
+      submitLabel: asString(enquiryRaw.submitLabel, defaults.enquiry.submitLabel),
       successMessage: asString(
-        inquiry.successMessage,
-        defaults.inquiry.successMessage,
+        enquiryRaw.successMessage,
+        defaults.enquiry.successMessage,
       ),
       defaultSubject: asString(
-        inquiry.defaultSubject,
-        defaults.inquiry.defaultSubject,
+        enquiryRaw.defaultSubject,
+        defaults.enquiry.defaultSubject,
       ),
     },
   };
@@ -571,7 +587,11 @@ function mergeForInteriorDesigners(raw: unknown): ForInteriorDesignersConfig {
   const benefits = isRecord(source.benefits) ? source.benefits : {};
   const portfolioPdf = isRecord(source.portfolioPdf) ? source.portfolioPdf : {};
   const tradeProcess = isRecord(source.tradeProcess) ? source.tradeProcess : {};
-  const inquiryForm = isRecord(source.inquiryForm) ? source.inquiryForm : {};
+  const enquiryFormRaw = isRecord(source.enquiryForm)
+    ? source.enquiryForm
+    : isRecord(source.inquiryForm)
+      ? source.inquiryForm
+      : {};
   const defaults = DEFAULT_FOR_INTERIOR_DESIGNERS;
 
   return {
@@ -584,14 +604,15 @@ function mergeForInteriorDesigners(raw: unknown): ForInteriorDesignersConfig {
         hero.primaryCtaLabel,
         defaults.hero.primaryCtaLabel,
       ),
-      primaryCtaHref: asString(hero.primaryCtaHref, defaults.hero.primaryCtaHref),
+      primaryCtaHref: migrateEnquiryHash(
+        asString(hero.primaryCtaHref, defaults.hero.primaryCtaHref),
+      ),
       secondaryCtaLabel: asString(
         hero.secondaryCtaLabel,
         defaults.hero.secondaryCtaLabel,
       ),
-      secondaryCtaHref: asString(
-        hero.secondaryCtaHref,
-        defaults.hero.secondaryCtaHref,
+      secondaryCtaHref: migrateEnquiryHash(
+        asString(hero.secondaryCtaHref, defaults.hero.secondaryCtaHref),
       ),
     },
     whyPartner: {
@@ -627,21 +648,21 @@ function mergeForInteriorDesigners(raw: unknown): ForInteriorDesignersConfig {
       steps: mergeTradeSteps(tradeProcess.steps, defaults.tradeProcess.steps),
     },
     homepageImages: mergeTradeHomepageImages(source.homepageImages),
-    inquiryForm: {
-      eyebrow: asString(inquiryForm.eyebrow, defaults.inquiryForm.eyebrow),
-      title: asString(inquiryForm.title, defaults.inquiryForm.title),
-      subtitle: asString(inquiryForm.subtitle, defaults.inquiryForm.subtitle),
+    enquiryForm: {
+      eyebrow: asString(enquiryFormRaw.eyebrow, defaults.enquiryForm.eyebrow),
+      title: asString(enquiryFormRaw.title, defaults.enquiryForm.title),
+      subtitle: asString(enquiryFormRaw.subtitle, defaults.enquiryForm.subtitle),
       submitLabel: asString(
-        inquiryForm.submitLabel,
-        defaults.inquiryForm.submitLabel,
+        enquiryFormRaw.submitLabel,
+        defaults.enquiryForm.submitLabel,
       ),
       successMessage: asString(
-        inquiryForm.successMessage,
-        defaults.inquiryForm.successMessage,
+        enquiryFormRaw.successMessage,
+        defaults.enquiryForm.successMessage,
       ),
       defaultSubject: asString(
-        inquiryForm.defaultSubject,
-        defaults.inquiryForm.defaultSubject,
+        enquiryFormRaw.defaultSubject,
+        defaults.enquiryForm.defaultSubject,
       ),
     },
   };

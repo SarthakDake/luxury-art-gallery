@@ -15,17 +15,17 @@ export function SignatureProjectView({
   project: SignatureProject;
   siteConfig: SiteConfig;
 }) {
-  const inquiry = siteConfig.signatureWallArtPage?.inquiry ??
-    DEFAULT_SIGNATURE_WALL_ART_PAGE.inquiry;
+  const enquiry = siteConfig.signatureWallArtPage?.enquiry ??
+    DEFAULT_SIGNATURE_WALL_ART_PAGE.enquiry;
   const studio = siteConfig.siteName.split("|")[0]?.trim() || "Colors N Joy";
   const whatsappHref = buildWhatsAppHref(
     siteConfig.whatsappNumber,
     `Hi ${studio}, I'd like to enquire about the Signature Wall Art project "${project.title}".`,
   );
   const formHref =
-    inquiry.formHref?.startsWith("#")
-      ? `/signature-wall-art${inquiry.formHref}`
-      : inquiry.formHref || "/signature-wall-art#inquiry";
+    enquiry.formHref?.startsWith("#")
+      ? `/signature-wall-art${enquiry.formHref}`
+      : enquiry.formHref || "/signature-wall-art#enquiry";
 
   return (
     <div className="site-container page-shell page-section-end">
@@ -53,11 +53,11 @@ export function SignatureProjectView({
               target="_blank"
               rel="noopener noreferrer"
             >
-              {inquiry.whatsappLabel}
+              {enquiry.whatsappLabel}
             </a>
           ) : null}
           <Link href={formHref} className="btn-secondary btn-responsive">
-            {inquiry.formCtaLabel}
+            {enquiry.formCtaLabel}
           </Link>
         </div>
       </Reveal>
@@ -184,11 +184,11 @@ export function SignatureProjectView({
               target="_blank"
               rel="noopener noreferrer"
             >
-              {inquiry.whatsappLabel}
+              {enquiry.whatsappLabel}
             </a>
           ) : null}
           <Link href={formHref} className="btn-secondary btn-responsive">
-            {inquiry.formCtaLabel}
+            {enquiry.formCtaLabel}
           </Link>
           <Link href="/signature-wall-art" className="btn-secondary btn-responsive">
             Back to all projects

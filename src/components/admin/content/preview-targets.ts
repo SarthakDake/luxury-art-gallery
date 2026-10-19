@@ -26,7 +26,7 @@ export type StudioPreviewTarget =
     }
   | {
       scope: "signature";
-      region: "page" | "projects" | "process" | "faq" | "inquiry" | "homepage";
+      region: "page" | "projects" | "process" | "faq" | "enquiry" | "homepage";
       label: string;
     }
   | {
@@ -38,7 +38,7 @@ export type StudioPreviewTarget =
         | "benefits"
         | "process"
         | "pdf"
-        | "inquiry"
+        | "enquiry"
         | "homepage";
       label: string;
     };
