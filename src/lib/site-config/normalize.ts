@@ -415,7 +415,7 @@ function mergeSignatureProjects(
         fallbackProject?.slug ||
         `project-${index + 1}`;
       const coverOrientation: SignatureCoverOrientation =
-        entry.coverOrientation === "portrait" ? "portrait" : "landscape";
+        entry.coverOrientation === "landscape" ? "landscape" : "portrait";
 
       return {
         slug,

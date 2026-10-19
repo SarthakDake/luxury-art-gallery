@@ -146,7 +146,7 @@ export interface SignatureProject {
   title: string;
   summary: string;
   coverImageUrl: string;
-  /** Landscape (most common) uses a wide frame; portrait uses a tall frame. */
+  /** Portrait (vertical) by default; landscape uses a wide frame. */
   coverOrientation?: SignatureCoverOrientation;
   designStyles: SignatureProjectStyle[];
   galleryImages: string[];
