@@ -11,6 +11,7 @@ export function TradeEnquiryForm({
 }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [mobile, setMobile] = useState("");
   const [company, setCompany] = useState("");
   const [projectType, setProjectType] = useState("");
   const [message, setMessage] = useState("");
@@ -31,6 +32,7 @@ export function TradeEnquiryForm({
         body: JSON.stringify({
           name,
           email,
+          mobile,
           company,
           projectType,
           subject: copy.defaultSubject,
@@ -48,6 +50,7 @@ export function TradeEnquiryForm({
       setSuccess(true);
       setName("");
       setEmail("");
+      setMobile("");
       setCompany("");
       setProjectType("");
       setMessage("");
@@ -81,6 +84,19 @@ export function TradeEnquiryForm({
           onChange={(event) => setEmail(event.target.value)}
           required
           autoComplete="email"
+        />
+      </div>
+      <div className="form-field">
+        <label htmlFor="trade-mobile">Mobile number</label>
+        <input
+          id="trade-mobile"
+          type="tel"
+          className="input-field"
+          value={mobile}
+          onChange={(event) => setMobile(event.target.value)}
+          required
+          autoComplete="tel"
+          placeholder="+91 …"
         />
       </div>
       <div className="form-field">
