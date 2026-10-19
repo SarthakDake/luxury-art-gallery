@@ -47,6 +47,14 @@ function createEmptyProject(items: SignatureProject[]): SignatureProject {
   };
 }
 
+const PROJECT_STEP_ORDER: SignatureProjectEditorStep[] = [
+  "details",
+  "cover",
+  "styles",
+  "gallery",
+  "testimonials",
+];
+
 const PROJECT_STEP_TITLES: Record<
   SignatureProjectEditorStep,
   { title: string; lead: string; previewRegion: "projects" | "page" }
@@ -182,7 +190,7 @@ export function SignatureWallArtTab({
           className={`studio-signature-mode-btn${studioMode === "projects" ? " studio-signature-mode-btn--active" : ""}`}
           onClick={() => setStudioMode("projects")}
         >
-          Showcase projects
+          Edit projects
         </button>
         <button
           type="button"
@@ -191,7 +199,7 @@ export function SignatureWallArtTab({
           className={`studio-signature-mode-btn${studioMode === "page" ? " studio-signature-mode-btn--active" : ""}`}
           onClick={() => setStudioMode("page")}
         >
-          Page settings
+          Page & inquiry
         </button>
       </div>
 
@@ -225,9 +233,10 @@ export function SignatureWallArtTab({
 
                   <SignatureProjectStepNav activeStep={projectStep} onChange={setProjectStep} />
 
-                  {(Object.keys(PROJECT_STEP_TITLES) as SignatureProjectEditorStep[]).map(
-                    (step) => {
+                  {PROJECT_STEP_ORDER.map((step, stepIndex) => {
                       const meta = PROJECT_STEP_TITLES[step];
+                      const prevStep = PROJECT_STEP_ORDER[stepIndex - 1];
+                      const nextStep = PROJECT_STEP_ORDER[stepIndex + 1];
                       return (
                         <SignatureStepPanel
                           key={step}
@@ -245,18 +254,37 @@ export function SignatureWallArtTab({
                             index={projectIndex}
                             updateProject={updateProject}
                           />
-                          {step === "details" ? (
-                            <StudioStepFooter
-                              primary={{
-                                label: "Continue to cover",
-                                onClick: () => setProjectStep("cover"),
-                              }}
-                            />
-                          ) : null}
+                          <StudioStepFooter
+                            back={
+                              prevStep
+                                ? {
+                                    label: "Back",
+                                    onClick: () => setProjectStep(prevStep),
+                                  }
+                                : undefined
+                            }
+                            primary={
+                              nextStep
+                                ? {
+                                    label:
+                                      nextStep === "cover"
+                                        ? "Continue to cover"
+                                        : nextStep === "styles"
+                                          ? "Continue to styles"
+                                          : nextStep === "gallery"
+                                            ? "Continue to gallery"
+                                            : "Continue to quotes",
+                                    onClick: () => setProjectStep(nextStep),
+                                  }
+                                : {
+                                    label: "Finish editing",
+                                    onClick: () => setProjectStep("details"),
+                                  }
+                            }
+                          />
                         </SignatureStepPanel>
                       );
-                    },
-                  )}
+                    })}
                 </>
               ) : null}
             </div>

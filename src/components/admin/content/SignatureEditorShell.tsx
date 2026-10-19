@@ -77,16 +77,16 @@ export function SignatureProjectSidebar({
     <aside className="studio-artworks-sidebar">
       <div className="studio-sidebar-top">
         <div>
-          <p className="eyebrow studio-sidebar-eyebrow">Showcase projects</p>
-          <p className="studio-field-hint studio-sidebar-count">
-            {projects.length} {projects.length === 1 ? "project" : "projects"} — add as many as you like
+          <p className="eyebrow studio-sidebar-eyebrow">Your showcase</p>
+          <p className="studio-sidebar-count">
+            {projects.length} {projects.length === 1 ? "project" : "projects"}
           </p>
         </div>
       </div>
 
       <button type="button" className="btn-secondary studio-sidebar-add" onClick={onAdd}>
         <Plus className="h-4 w-4" strokeWidth={1.5} />
-        Add project
+        Add new project
       </button>
 
       <ul className="studio-artwork-list">
