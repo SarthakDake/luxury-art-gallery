@@ -48,9 +48,12 @@ export function SignatureInquiryForm({
     }
 
     const wallPhoto = wallPhotoRef.current?.files?.[0];
-    if (wallPhoto && wallPhoto.size > 0) {
-      formData.set("wallPhoto", wallPhoto);
+    if (!wallPhoto || wallPhoto.size <= 0) {
+      setError("Please upload a wall photo.");
+      setIsSubmitting(false);
+      return;
     }
+    formData.set("wallPhoto", wallPhoto);
 
     try {
       const response = await fetch("/api/signature-inquiry", {
@@ -96,14 +99,13 @@ export function SignatureInquiryForm({
         />
       </div>
       <div className="form-field">
-        <label htmlFor={`${idPrefix}-email`}>Email</label>
+        <label htmlFor={`${idPrefix}-email`}>Email (optional)</label>
         <input
           id={`${idPrefix}-email`}
           type="email"
           className="input-field"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          required
           autoComplete="email"
         />
       </div>
@@ -115,6 +117,7 @@ export function SignatureInquiryForm({
           className="input-field"
           value={mobile}
           onChange={(event) => setMobile(event.target.value)}
+          required
           autoComplete="tel"
           placeholder="+91 …"
         />
@@ -126,6 +129,7 @@ export function SignatureInquiryForm({
           className="input-field"
           value={location}
           onChange={(event) => setLocation(event.target.value)}
+          required
           placeholder="City, area, or project site"
         />
       </div>
@@ -136,17 +140,19 @@ export function SignatureInquiryForm({
           className="input-field"
           value={spaceType}
           onChange={(event) => setSpaceType(event.target.value)}
+          required
           placeholder="Living room, bedroom, lobby…"
         />
       </div>
       <div className="form-field">
-        <label htmlFor={`${idPrefix}-wall-photo`}>Wall photo (optional)</label>
+        <label htmlFor={`${idPrefix}-wall-photo`}>Wall photo</label>
         <input
           ref={wallPhotoRef}
           id={`${idPrefix}-wall-photo`}
           type="file"
           className="input-field signature-inquiry-file"
           accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif"
+          required
         />
         <p className="studio-field-hint">Share a phone photo of the wall — JPG, PNG, WebP, or HEIC up to 4 MB.</p>
       </div>

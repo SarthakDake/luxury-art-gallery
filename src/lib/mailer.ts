@@ -252,10 +252,10 @@ export async function sendTradeInquiryEmail(
 
 export interface SignatureInquiryEmailPayload {
   name: string;
-  email: string;
-  mobile?: string;
-  location?: string;
-  spaceType?: string;
+  email?: string;
+  mobile: string;
+  location: string;
+  spaceType: string;
   subject: string;
   message: string;
   projectTitle?: string;
@@ -282,10 +282,11 @@ export async function sendSignatureInquiryEmail(
     .replace(/\/$/, "");
 
   const safeName = escapeHtml(payload.name);
-  const safeEmail = escapeHtml(payload.email);
-  const safeMobile = escapeHtml(payload.mobile ?? "");
-  const safeLocation = escapeHtml(payload.location ?? "");
-  const safeSpaceType = escapeHtml(payload.spaceType ?? "");
+  const emailLine = payload.email?.trim() ?? "";
+  const safeEmail = emailLine ? escapeHtml(emailLine) : "Not provided";
+  const safeMobile = escapeHtml(payload.mobile);
+  const safeLocation = escapeHtml(payload.location);
+  const safeSpaceType = escapeHtml(payload.spaceType);
   const safeSubject = escapeHtml(payload.subject);
   const safeMessage = escapeHtml(payload.message);
   const safeProject = escapeHtml(payload.projectTitle ?? "");
@@ -297,7 +298,7 @@ export async function sendSignatureInquiryEmail(
   await transporter.sendMail({
     from,
     to: formatEmailList(contactEmails),
-    replyTo: payload.email,
+    ...(emailLine ? { replyTo: emailLine } : {}),
     subject: `[Signature Wall] ${payload.subject}`,
     attachments: payload.wallPhotoAttachment
       ? [
@@ -315,9 +316,9 @@ export async function sendSignatureInquiryEmail(
         ${safeProject ? `<p style="margin: 0 0 8px;"><strong>Project:</strong> ${safeProject}</p>` : ""}
         <p style="margin: 0 0 8px;"><strong>Name:</strong> ${safeName}</p>
         <p style="margin: 0 0 8px;"><strong>Email:</strong> ${safeEmail}</p>
-        ${safeMobile ? `<p style="margin: 0 0 8px;"><strong>Mobile:</strong> ${safeMobile}</p>` : ""}
-        ${safeLocation ? `<p style="margin: 0 0 8px;"><strong>Location:</strong> ${safeLocation}</p>` : ""}
-        ${safeSpaceType ? `<p style="margin: 0 0 8px;"><strong>Space / project type:</strong> ${safeSpaceType}</p>` : ""}
+        <p style="margin: 0 0 8px;"><strong>Mobile:</strong> ${safeMobile}</p>
+        <p style="margin: 0 0 8px;"><strong>Location:</strong> ${safeLocation}</p>
+        <p style="margin: 0 0 8px;"><strong>Space / project type:</strong> ${safeSpaceType}</p>
         ${photoLink ? `<p style="margin: 0 0 24px;"><strong>Wall photo:</strong> <a href="${escapeHtml(photoLink)}">${escapeHtml(photoLink)}</a></p>` : `<p style="margin: 0 0 24px;"></p>`}
         <p style="margin: 0 0 8px; color: #6b7280; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;">Message</p>
         <p style="margin: 0; white-space: pre-wrap;">${safeMessage}</p>
@@ -327,10 +328,10 @@ export async function sendSignatureInquiryEmail(
       "Signature Wall Art Inquiry",
       payload.projectTitle ? `Project: ${payload.projectTitle}` : "",
       `Name: ${payload.name}`,
-      `Email: ${payload.email}`,
-      payload.mobile ? `Mobile: ${payload.mobile}` : "",
-      payload.location ? `Location: ${payload.location}` : "",
-      payload.spaceType ? `Space / project type: ${payload.spaceType}` : "",
+      `Email: ${emailLine || "Not provided"}`,
+      `Mobile: ${payload.mobile}`,
+      `Location: ${payload.location}`,
+      `Space / project type: ${payload.spaceType}`,
       photoLink ? `Wall photo: ${photoLink}` : "",
       `Subject: ${payload.subject}`,
       "",
