@@ -6,20 +6,23 @@ import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { ContactEmailLinks } from "@/components/ui/ContactEmailLinks";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 import { MapPin, MessageCircle } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
-const whatsappMessage = "Hello, I am inquiring about your artwork.";
+const whatsappMessage = "Hello, I am enquiring about your artwork.";
 
 export function ContactPageContent() {
   const config = useSiteConfig();
   const whatsappHref = `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [subject, setSubject] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [location, setLocation] = useState("");
+  const [spaceType, setSpaceType] = useState("");
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const wallPhotoRef = useRef<HTMLInputElement>(null);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -28,13 +31,26 @@ export function ContactPageContent() {
     setError(null);
     setSuccess(false);
 
+    const formData = new FormData();
+    formData.set("name", name);
+    formData.set("email", email);
+    formData.set("mobile", mobile);
+    formData.set("location", location);
+    formData.set("spaceType", spaceType);
+    formData.set("message", message);
+
+    const wallPhoto = wallPhotoRef.current?.files?.[0];
+    if (!wallPhoto || wallPhoto.size <= 0) {
+      setError("Please upload a wall photo.");
+      setIsSubmitting(false);
+      return;
+    }
+    formData.set("wallPhoto", wallPhoto);
+
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, email, subject, message }),
+        body: formData,
       });
 
       const data = (await response.json()) as { success?: boolean; error?: string };
@@ -47,8 +63,13 @@ export function ContactPageContent() {
       setSuccess(true);
       setName("");
       setEmail("");
-      setSubject("");
+      setMobile("");
+      setLocation("");
+      setSpaceType("");
       setMessage("");
+      if (wallPhotoRef.current) {
+        wallPhotoRef.current.value = "";
+      }
     } catch {
       setError("Unable to send your message. Please try again.");
     } finally {
@@ -141,11 +162,11 @@ export function ContactPageContent() {
 
           <form onSubmit={handleSubmit} className="form-stack">
             <div className="form-field">
-              <label htmlFor="name" className="field-label">
+              <label htmlFor="contact-name" className="field-label">
                 Name
               </label>
               <input
-                id="name"
+                id="contact-name"
                 type="text"
                 name="name"
                 autoComplete="name"
@@ -159,15 +180,14 @@ export function ContactPageContent() {
             </div>
 
             <div className="form-field">
-              <label htmlFor="email" className="field-label">
-                Email
+              <label htmlFor="contact-email" className="field-label">
+                Email (optional)
               </label>
               <input
-                id="email"
+                id="contact-email"
                 type="email"
                 name="email"
                 autoComplete="email"
-                required
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 className="input-field"
@@ -177,29 +197,84 @@ export function ContactPageContent() {
             </div>
 
             <div className="form-field">
-              <label htmlFor="subject" className="field-label">
-                Subject
+              <label htmlFor="contact-mobile" className="field-label">
+                Mobile number
               </label>
               <input
-                id="subject"
-                type="text"
-                name="subject"
-                autoComplete="off"
+                id="contact-mobile"
+                type="tel"
+                name="mobile"
+                autoComplete="tel"
                 required
-                value={subject}
-                onChange={(event) => setSubject(event.target.value)}
+                value={mobile}
+                onChange={(event) => setMobile(event.target.value)}
                 className="input-field"
-                placeholder="Enquiry subject"
+                placeholder="+91 …"
                 disabled={isSubmitting}
               />
             </div>
 
             <div className="form-field">
-              <label htmlFor="message" className="field-label">
+              <label htmlFor="contact-location" className="field-label">
+                Location
+              </label>
+              <input
+                id="contact-location"
+                type="text"
+                name="location"
+                autoComplete="off"
+                required
+                value={location}
+                onChange={(event) => setLocation(event.target.value)}
+                className="input-field"
+                placeholder="City, area, or project site"
+                disabled={isSubmitting}
+              />
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="contact-space" className="field-label">
+                Space / project type
+              </label>
+              <input
+                id="contact-space"
+                type="text"
+                name="spaceType"
+                autoComplete="off"
+                required
+                value={spaceType}
+                onChange={(event) => setSpaceType(event.target.value)}
+                className="input-field"
+                placeholder="Living room, bedroom, lobby…"
+                disabled={isSubmitting}
+              />
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="contact-wall-photo" className="field-label">
+                Wall photo
+              </label>
+              <input
+                ref={wallPhotoRef}
+                id="contact-wall-photo"
+                type="file"
+                name="wallPhoto"
+                className="input-field signature-enquiry-file"
+                accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif"
+                required
+                disabled={isSubmitting}
+              />
+              <p className="studio-field-hint">
+                Share a phone photo of the wall — JPG, PNG, WebP, or HEIC up to 4 MB.
+              </p>
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="contact-message" className="field-label">
                 Message
               </label>
               <textarea
-                id="message"
+                id="contact-message"
                 name="message"
                 autoComplete="off"
                 required

@@ -7,6 +7,7 @@ export const dynamic = "force-dynamic";
 interface TradeEnquiryBody {
   name?: string;
   email?: string;
+  mobile?: string;
   company?: string;
   projectType?: string;
   subject?: string;
@@ -15,6 +16,7 @@ interface TradeEnquiryBody {
 
 const MAX_NAME_LENGTH = 120;
 const MAX_EMAIL_LENGTH = 254;
+const MAX_MOBILE_LENGTH = 24;
 const MAX_COMPANY_LENGTH = 160;
 const MAX_PROJECT_TYPE_LENGTH = 120;
 const MAX_SUBJECT_LENGTH = 160;
@@ -55,13 +57,14 @@ export async function POST(request: Request) {
 
   const name = sanitizeField(body.name, MAX_NAME_LENGTH);
   const email = sanitizeField(body.email, MAX_EMAIL_LENGTH);
+  const mobile = sanitizeField(body.mobile, MAX_MOBILE_LENGTH);
   const company = sanitizeField(body.company, MAX_COMPANY_LENGTH, false) ?? "";
   const projectType =
     sanitizeField(body.projectType, MAX_PROJECT_TYPE_LENGTH, false) ?? "";
   const subject = sanitizeField(body.subject, MAX_SUBJECT_LENGTH);
   const message = sanitizeField(body.message, MAX_MESSAGE_LENGTH);
 
-  if (!name || !email || !subject || !message) {
+  if (!name || !email || !mobile || !subject || !message) {
     return NextResponse.json(
       { error: "Please complete all required fields with valid values." },
       { status: 400 },
@@ -76,6 +79,7 @@ export async function POST(request: Request) {
     await sendTradeEnquiryEmail({
       name,
       email,
+      mobile,
       company: company || undefined,
       projectType: projectType || undefined,
       subject,
