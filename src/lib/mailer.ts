@@ -30,13 +30,18 @@ export interface NewOrderEmailPayload {
 }
 
 function createTransporter() {
+  const emailServer = process.env.EMAIL_SERVER?.trim();
+  if (emailServer) {
+    return nodemailer.createTransport(emailServer);
+  }
+
   const host = process.env.SMTP_HOST;
   const user = process.env.SMTP_USER;
   const pass = process.env.SMTP_PASS;
 
   if (!host || !user || !pass) {
     throw new Error(
-      "SMTP is not configured. Set SMTP_HOST, SMTP_USER, and SMTP_PASS.",
+      "Email is not configured. Set EMAIL_SERVER (NextAuth) or SMTP_HOST, SMTP_USER, and SMTP_PASS.",
     );
   }
 
@@ -49,6 +54,14 @@ function createTransporter() {
     secure,
     auth: { user, pass },
   });
+}
+
+function resolveMailFrom(siteName: string, primaryContactEmail: string): string {
+  return (
+    process.env.SMTP_FROM?.trim() ||
+    process.env.EMAIL_FROM?.trim() ||
+    `${siteName} <${primaryContactEmail}>`
+  );
 }
 
 async function buildOrderEmailHtml(payload: NewOrderEmailPayload) {
@@ -105,10 +118,7 @@ export async function sendNewOrderConfirmedEmail(
     getSiteConfig(),
   ]);
   const primaryContactEmail = contactEmails[0] ?? config.contactEmail;
-  // FROM should be the studio mailbox (SMTP_FROM / contact), not the admin login email.
-  const from =
-    process.env.SMTP_FROM ??
-    `${config.siteName} <${primaryContactEmail}>`;
+  const from = resolveMailFrom(config.siteName, primaryContactEmail);
   const textLines = await Promise.all(
     payload.items.map(async (item) => {
       const title = await getArtworkTitle(item.artworkId);
@@ -149,9 +159,7 @@ export async function sendContactFormEmail(
   ]);
   const primaryContactEmail = contactEmails[0] ?? config.contactEmail;
   // FROM should be the studio mailbox (SMTP_FROM / contact), not the admin login email.
-  const from =
-    process.env.SMTP_FROM ??
-    `${config.siteName} <${primaryContactEmail}>`;
+  const from = resolveMailFrom(config.siteName, primaryContactEmail);
   const safeName = escapeHtml(payload.name);
   const safeEmail = escapeHtml(payload.email);
   const safeSubject = escapeHtml(payload.subject);
@@ -164,7 +172,7 @@ export async function sendContactFormEmail(
     subject: `[Contact] ${payload.subject}`,
     html: `
       <div style="font-family: Georgia, 'Times New Roman', serif; color: #171717; line-height: 1.6;">
-        <p style="font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #6b7280;">New Contact Inquiry</p>
+        <p style="font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #6b7280;">New Contact Enquiry</p>
         <h1 style="font-size: 24px; font-weight: 500; margin: 0 0 16px;">${safeSubject}</h1>
         <p style="margin: 0 0 8px;"><strong>Name:</strong> ${safeName}</p>
         <p style="margin: 0 0 24px;"><strong>Email:</strong> ${safeEmail}</p>
@@ -173,7 +181,7 @@ export async function sendContactFormEmail(
       </div>
     `,
     text: [
-      "New Contact Inquiry",
+      "New Contact Enquiry",
       `Name: ${payload.name}`,
       `Email: ${payload.email}`,
       `Subject: ${payload.subject}`,
@@ -183,7 +191,7 @@ export async function sendContactFormEmail(
   });
 }
 
-export interface TradeInquiryEmailPayload {
+export interface TradeEnquiryEmailPayload {
   name: string;
   email: string;
   company?: string;
@@ -192,8 +200,8 @@ export interface TradeInquiryEmailPayload {
   message: string;
 }
 
-export async function sendTradeInquiryEmail(
-  payload: TradeInquiryEmailPayload,
+export async function sendTradeEnquiryEmail(
+  payload: TradeEnquiryEmailPayload,
 ): Promise<void> {
   const transporter = createTransporter();
   const [contactEmails, config] = await Promise.all([
@@ -202,9 +210,7 @@ export async function sendTradeInquiryEmail(
   ]);
   const primaryContactEmail = contactEmails[0] ?? config.contactEmail;
   // FROM should be the studio mailbox (SMTP_FROM / contact), not the admin login email.
-  const from =
-    process.env.SMTP_FROM ??
-    `${config.siteName} <${primaryContactEmail}>`;
+  const from = resolveMailFrom(config.siteName, primaryContactEmail);
   const safeName = escapeHtml(payload.name);
   const safeEmail = escapeHtml(payload.email);
   const safeCompany = escapeHtml(payload.company ?? "");
@@ -216,7 +222,7 @@ export async function sendTradeInquiryEmail(
     from,
     to: formatEmailList(contactEmails),
     replyTo: payload.email,
-    subject: `[Trade Inquiry] ${payload.subject}`,
+    subject: `[Trade Enquiry] ${payload.subject}`,
     html: `
       <div style="font-family: Georgia, 'Times New Roman', serif; color: #171717; line-height: 1.6;">
         <p style="font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #6b7280;">For Interior Designers</p>
@@ -230,11 +236,103 @@ export async function sendTradeInquiryEmail(
       </div>
     `,
     text: [
-      "For Interior Designers — Trade Inquiry",
+      "For Interior Designers — Trade Enquiry",
       `Name: ${payload.name}`,
       `Email: ${payload.email}`,
       payload.company ? `Company / Studio: ${payload.company}` : "",
       payload.projectType ? `Project type: ${payload.projectType}` : "",
+      `Subject: ${payload.subject}`,
+      "",
+      payload.message,
+    ]
+      .filter(Boolean)
+      .join("\n"),
+  });
+}
+
+export interface SignatureEnquiryEmailPayload {
+  name: string;
+  email?: string;
+  mobile: string;
+  location: string;
+  spaceType: string;
+  subject: string;
+  message: string;
+  projectTitle?: string;
+  wallPhotoUrl?: string;
+  wallPhotoAttachment?: {
+    filename: string;
+    content: Buffer;
+    contentType: string;
+  };
+}
+
+export async function sendSignatureEnquiryEmail(
+  payload: SignatureEnquiryEmailPayload,
+): Promise<void> {
+  const transporter = createTransporter();
+  const [contactEmails, config] = await Promise.all([
+    getContactEmails(),
+    getSiteConfig(),
+  ]);
+  const primaryContactEmail = contactEmails[0] ?? config.contactEmail;
+  const from = resolveMailFrom(config.siteName, primaryContactEmail);
+  const appUrl = (process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXTAUTH_URL ?? "")
+    .trim()
+    .replace(/\/$/, "");
+
+  const safeName = escapeHtml(payload.name);
+  const emailLine = payload.email?.trim() ?? "";
+  const safeEmail = emailLine ? escapeHtml(emailLine) : "Not provided";
+  const safeMobile = escapeHtml(payload.mobile);
+  const safeLocation = escapeHtml(payload.location);
+  const safeSpaceType = escapeHtml(payload.spaceType);
+  const safeSubject = escapeHtml(payload.subject);
+  const safeMessage = escapeHtml(payload.message);
+  const safeProject = escapeHtml(payload.projectTitle ?? "");
+  const photoLink =
+    payload.wallPhotoUrl && appUrl
+      ? `${appUrl}${payload.wallPhotoUrl.startsWith("/") ? "" : "/"}${payload.wallPhotoUrl}`
+      : payload.wallPhotoUrl ?? "";
+
+  await transporter.sendMail({
+    from,
+    to: formatEmailList(contactEmails),
+    ...(emailLine ? { replyTo: emailLine } : {}),
+    subject: `[Signature Wall] ${payload.subject}`,
+    attachments: payload.wallPhotoAttachment
+      ? [
+          {
+            filename: payload.wallPhotoAttachment.filename,
+            content: payload.wallPhotoAttachment.content,
+            contentType: payload.wallPhotoAttachment.contentType,
+          },
+        ]
+      : undefined,
+    html: `
+      <div style="font-family: Georgia, 'Times New Roman', serif; color: #171717; line-height: 1.6;">
+        <p style="font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #6b7280;">Signature Wall Art Enquiry</p>
+        <h1 style="font-size: 24px; font-weight: 500; margin: 0 0 16px;">${safeSubject}</h1>
+        ${safeProject ? `<p style="margin: 0 0 8px;"><strong>Project:</strong> ${safeProject}</p>` : ""}
+        <p style="margin: 0 0 8px;"><strong>Name:</strong> ${safeName}</p>
+        <p style="margin: 0 0 8px;"><strong>Email:</strong> ${safeEmail}</p>
+        <p style="margin: 0 0 8px;"><strong>Mobile:</strong> ${safeMobile}</p>
+        <p style="margin: 0 0 8px;"><strong>Location:</strong> ${safeLocation}</p>
+        <p style="margin: 0 0 8px;"><strong>Space / project type:</strong> ${safeSpaceType}</p>
+        ${photoLink ? `<p style="margin: 0 0 24px;"><strong>Wall photo:</strong> <a href="${escapeHtml(photoLink)}">${escapeHtml(photoLink)}</a></p>` : `<p style="margin: 0 0 24px;"></p>`}
+        <p style="margin: 0 0 8px; color: #6b7280; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;">Message</p>
+        <p style="margin: 0; white-space: pre-wrap;">${safeMessage}</p>
+      </div>
+    `,
+    text: [
+      "Signature Wall Art Enquiry",
+      payload.projectTitle ? `Project: ${payload.projectTitle}` : "",
+      `Name: ${payload.name}`,
+      `Email: ${emailLine || "Not provided"}`,
+      `Mobile: ${payload.mobile}`,
+      `Location: ${payload.location}`,
+      `Space / project type: ${payload.spaceType}`,
+      photoLink ? `Wall photo: ${photoLink}` : "",
       `Subject: ${payload.subject}`,
       "",
       payload.message,

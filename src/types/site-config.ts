@@ -163,7 +163,7 @@ export type SignaturePageSectionId =
   | "projects"
   | "process"
   | "faq"
-  | "inquiry";
+  | "enquiry";
 
 /** CMS config for the dedicated Signature Wall Art showcase page. */
 export interface SignatureWallArtPageConfig {
@@ -195,7 +195,7 @@ export interface SignatureWallArtPageConfig {
     subtitle: string;
     items: SignatureFaqItem[];
   };
-  inquiry: {
+  enquiry: {
     eyebrow: string;
     title: string;
     subtitle: string;
@@ -254,7 +254,7 @@ export interface ForInteriorDesignersConfig {
   };
   /** Trade imagery for the homepage Trade Partners section (not shop artworks). */
   homepageImages: TradeHomepageImage[];
-  inquiryForm: {
+  enquiryForm: {
     eyebrow: string;
     title: string;
     subtitle: string;

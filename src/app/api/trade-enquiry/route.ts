@@ -1,10 +1,10 @@
-import { sendTradeInquiryEmail } from "@/lib/mailer";
+import { sendTradeEnquiryEmail } from "@/lib/mailer";
 import { enforceRateLimit } from "@/lib/rate-limit";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-interface TradeInquiryBody {
+interface TradeEnquiryBody {
   name?: string;
   email?: string;
   company?: string;
@@ -39,16 +39,16 @@ function sanitizeField(value: unknown, maxLength: number, required = true): stri
 }
 
 export async function POST(request: Request) {
-  const rateLimitResponse = await enforceRateLimit(request, "trade-inquiry");
+  const rateLimitResponse = await enforceRateLimit(request, "trade-enquiry");
 
   if (rateLimitResponse) {
     return rateLimitResponse;
   }
 
-  let body: TradeInquiryBody;
+  let body: TradeEnquiryBody;
 
   try {
-    body = (await request.json()) as TradeInquiryBody;
+    body = (await request.json()) as TradeEnquiryBody;
   } catch {
     return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
@@ -73,7 +73,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    await sendTradeInquiryEmail({
+    await sendTradeEnquiryEmail({
       name,
       email,
       company: company || undefined,
@@ -84,9 +84,9 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Trade inquiry submission failed:", error);
+    console.error("Trade enquiry submission failed:", error);
     return NextResponse.json(
-      { error: "Unable to send your inquiry right now. Please try again later." },
+      { error: "Unable to send your enquiry right now. Please try again later." },
       { status: 500 },
     );
   }

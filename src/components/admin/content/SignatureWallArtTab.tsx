@@ -99,7 +99,7 @@ const PAGE_STEP_TITLES: Record<
   grid: { title: "Projects grid copy", lead: "Heading above the showcase cards.", previewRegion: "projects" },
   process: { title: "Process", lead: "Steps for custom wall art.", previewRegion: "process" },
   faq: { title: "FAQ", lead: "Common questions.", previewRegion: "faq" },
-  inquiry: { title: "Inquiry", lead: "Form and WhatsApp CTAs.", previewRegion: "inquiry" },
+  enquiry: { title: "Enquiry", lead: "Form and WhatsApp CTAs.", previewRegion: "enquiry" },
   homepage: { title: "Homepage teaser", lead: "Signature Collection block on the homepage.", previewRegion: "homepage" },
 };
 
@@ -199,7 +199,7 @@ export function SignatureWallArtTab({
           className={`studio-signature-mode-btn${studioMode === "page" ? " studio-signature-mode-btn--active" : ""}`}
           onClick={() => setStudioMode("page")}
         >
-          Page & inquiry
+          Page & enquiry
         </button>
       </div>
 

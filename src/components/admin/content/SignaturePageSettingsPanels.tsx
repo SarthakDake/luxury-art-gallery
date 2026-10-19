@@ -23,7 +23,7 @@ const SECTION_LABELS: Record<SignaturePageSectionId, string> = {
   projects: "Projects grid",
   process: "Our process",
   faq: "FAQ",
-  inquiry: "Inquiry form",
+  enquiry: "Enquiry form",
 };
 
 function moveItem<T>(items: T[], index: number, direction: -1 | 1): T[] {
@@ -57,7 +57,7 @@ export function SignaturePageSettingsPanels({
       <StudioGroup
         eyebrow="Layout"
         title="Section order"
-        description="Hero and intro stay at the top. Reorder Projects, Process, FAQ, and Inquiry below."
+        description="Hero and intro stay at the top. Reorder Projects, Process, FAQ, and Enquiry below."
       >
         <div className="studio-repeater-list">
           {page.sectionOrder.map((sectionId, index) => (
@@ -416,57 +416,57 @@ export function SignaturePageSettingsPanels({
     );
   }
 
-  if (step === "inquiry") {
+  if (step === "enquiry") {
     return (
-      <StudioGroup eyebrow="Inquiry" title="Inquiry form & WhatsApp">
+      <StudioGroup eyebrow="Enquiry" title="Enquiry form & WhatsApp">
         <StudioFormGrid>
           <StudioField label="Eyebrow">
             <StudioInput
-              value={page.inquiry.eyebrow}
+              value={page.enquiry.eyebrow}
               onChange={(event) =>
                 updatePage({
-                  inquiry: { ...page.inquiry, eyebrow: event.target.value },
+                  enquiry: { ...page.enquiry, eyebrow: event.target.value },
                 })
               }
             />
           </StudioField>
           <StudioField label="Title">
             <StudioInput
-              value={page.inquiry.title}
+              value={page.enquiry.title}
               onChange={(event) =>
                 updatePage({
-                  inquiry: { ...page.inquiry, title: event.target.value },
+                  enquiry: { ...page.enquiry, title: event.target.value },
                 })
               }
             />
           </StudioField>
           <StudioField label="Form button label">
             <StudioInput
-              value={page.inquiry.formCtaLabel}
+              value={page.enquiry.formCtaLabel}
               onChange={(event) =>
                 updatePage({
-                  inquiry: { ...page.inquiry, formCtaLabel: event.target.value },
+                  enquiry: { ...page.enquiry, formCtaLabel: event.target.value },
                 })
               }
             />
           </StudioField>
-          <StudioField label="Form link" hint="Use #inquiry on this page, or /contact.">
+          <StudioField label="Form link" hint="Use #enquiry on this page, or /contact.">
             <StudioInput
-              value={page.inquiry.formHref}
+              value={page.enquiry.formHref}
               onChange={(event) =>
                 updatePage({
-                  inquiry: { ...page.inquiry, formHref: event.target.value },
+                  enquiry: { ...page.enquiry, formHref: event.target.value },
                 })
               }
             />
           </StudioField>
           <StudioField label="WhatsApp button label">
             <StudioInput
-              value={page.inquiry.whatsappLabel}
+              value={page.enquiry.whatsappLabel}
               onChange={(event) =>
                 updatePage({
-                  inquiry: {
-                    ...page.inquiry,
+                  enquiry: {
+                    ...page.enquiry,
                     whatsappLabel: event.target.value,
                   },
                 })
@@ -475,21 +475,21 @@ export function SignaturePageSettingsPanels({
           </StudioField>
           <StudioField label="Submit button label">
             <StudioInput
-              value={page.inquiry.submitLabel}
+              value={page.enquiry.submitLabel}
               onChange={(event) =>
                 updatePage({
-                  inquiry: { ...page.inquiry, submitLabel: event.target.value },
+                  enquiry: { ...page.enquiry, submitLabel: event.target.value },
                 })
               }
             />
           </StudioField>
           <StudioField label="Default email subject">
             <StudioInput
-              value={page.inquiry.defaultSubject}
+              value={page.enquiry.defaultSubject}
               onChange={(event) =>
                 updatePage({
-                  inquiry: {
-                    ...page.inquiry,
+                  enquiry: {
+                    ...page.enquiry,
                     defaultSubject: event.target.value,
                   },
                 })
@@ -499,10 +499,10 @@ export function SignaturePageSettingsPanels({
         </StudioFormGrid>
         <StudioField label="Subtitle" fullWidth>
           <RichTextEditor
-            value={page.inquiry.subtitle}
+            value={page.enquiry.subtitle}
             onChange={(subtitle) =>
               updatePage({
-                inquiry: { ...page.inquiry, subtitle },
+                enquiry: { ...page.enquiry, subtitle },
               })
             }
             rows={2}
@@ -512,11 +512,11 @@ export function SignaturePageSettingsPanels({
         </StudioField>
         <StudioField label="Success message" fullWidth>
           <RichTextEditor
-            value={page.inquiry.successMessage}
+            value={page.enquiry.successMessage}
             onChange={(successMessage) =>
               updatePage({
-                inquiry: {
-                  ...page.inquiry,
+                enquiry: {
+                  ...page.enquiry,
                   successMessage,
                 },
               })

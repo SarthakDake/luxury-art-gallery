@@ -1,22 +1,18 @@
 "use client";
 
 import { RichText } from "@/components/ui/RichText";
-import type { SignatureWallArtPageConfig } from "@/types/site-config";
+import type { ForInteriorDesignersConfig } from "@/types/site-config";
 import { useState } from "react";
 
-export function SignatureInquiryForm({
+export function TradeEnquiryForm({
   copy,
-  projectTitle,
-  idPrefix = "signature-inquiry",
 }: {
-  copy: SignatureWallArtPageConfig["inquiry"];
-  /** When set, included in the email subject/body for project enquiries. */
-  projectTitle?: string;
-  idPrefix?: string;
+  copy: ForInteriorDesignersConfig["enquiryForm"];
 }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [spaceType, setSpaceType] = useState("");
+  const [company, setCompany] = useState("");
+  const [projectType, setProjectType] = useState("");
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,53 +24,46 @@ export function SignatureInquiryForm({
     setError(null);
     setSuccess(false);
 
-    const subject = projectTitle
-      ? `${copy.defaultSubject}: ${projectTitle}`
-      : copy.defaultSubject;
-
     try {
-      const response = await fetch("/api/contact", {
+      const response = await fetch("/api/trade-enquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
           email,
-          subject,
-          message: [
-            projectTitle ? `Project: ${projectTitle}` : "",
-            spaceType ? `Space / project type: ${spaceType}` : "",
-            message,
-          ]
-            .filter(Boolean)
-            .join("\n\n"),
+          company,
+          projectType,
+          subject: copy.defaultSubject,
+          message,
         }),
       });
 
       const data = (await response.json()) as { success?: boolean; error?: string };
 
       if (!response.ok || !data.success) {
-        setError(data.error ?? "Unable to send your inquiry. Please try again.");
+        setError(data.error ?? "Unable to send your enquiry. Please try again.");
         return;
       }
 
       setSuccess(true);
       setName("");
       setEmail("");
-      setSpaceType("");
+      setCompany("");
+      setProjectType("");
       setMessage("");
     } catch {
-      setError("Unable to send your inquiry. Please try again.");
+      setError("Unable to send your enquiry. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   }
 
   return (
-    <form className="form-stack signature-inquiry-form" onSubmit={handleSubmit}>
+    <form className="form-stack trade-enquiry-form" onSubmit={handleSubmit}>
       <div className="form-field">
-        <label htmlFor={`${idPrefix}-name`}>Name</label>
+        <label htmlFor="trade-name">Name</label>
         <input
-          id={`${idPrefix}-name`}
+          id="trade-name"
           className="input-field"
           value={name}
           onChange={(event) => setName(event.target.value)}
@@ -83,9 +72,9 @@ export function SignatureInquiryForm({
         />
       </div>
       <div className="form-field">
-        <label htmlFor={`${idPrefix}-email`}>Email</label>
+        <label htmlFor="trade-email">Email</label>
         <input
-          id={`${idPrefix}-email`}
+          id="trade-email"
           type="email"
           className="input-field"
           value={email}
@@ -95,21 +84,31 @@ export function SignatureInquiryForm({
         />
       </div>
       <div className="form-field">
-        <label htmlFor={`${idPrefix}-space`}>Space / project type</label>
+        <label htmlFor="trade-company">Company / Studio</label>
         <input
-          id={`${idPrefix}-space`}
+          id="trade-company"
           className="input-field"
-          value={spaceType}
-          onChange={(event) => setSpaceType(event.target.value)}
-          placeholder="Living room, bedroom, lobby…"
+          value={company}
+          onChange={(event) => setCompany(event.target.value)}
+          autoComplete="organization"
         />
       </div>
       <div className="form-field">
-        <label htmlFor={`${idPrefix}-message`}>Message</label>
-        <textarea
-          id={`${idPrefix}-message`}
+        <label htmlFor="trade-project-type">Project type</label>
+        <input
+          id="trade-project-type"
           className="input-field"
-          rows={4}
+          value={projectType}
+          onChange={(event) => setProjectType(event.target.value)}
+          placeholder="Residence, hospitality, lobby…"
+        />
+      </div>
+      <div className="form-field">
+        <label htmlFor="trade-message">Project notes</label>
+        <textarea
+          id="trade-message"
+          className="input-field"
+          rows={6}
           value={message}
           onChange={(event) => setMessage(event.target.value)}
           required
@@ -127,7 +126,11 @@ export function SignatureInquiryForm({
         </div>
       ) : null}
 
-      <button type="submit" className="btn-primary btn-responsive" disabled={isSubmitting}>
+      <button
+        type="submit"
+        className="btn-primary btn-responsive"
+        disabled={isSubmitting}
+      >
         {isSubmitting ? "Sending…" : copy.submitLabel}
       </button>
     </form>

@@ -26,7 +26,7 @@ A full-stack art gallery e-commerce platform built with Next.js (App Router), Po
 - **Cart & checkout** — persistent cart (Zustand + localStorage), promo codes, and three checkout paths: Razorpay, PhonePe, and a WhatsApp-based manual order flow.
 - **Accounts** — Google OAuth or email magic-link sign-in via NextAuth; customers see their order history on `/profile`.
 - **Admin dashboard** — order management (`/admin/orders`) and a full content management system (`/admin/content`) for editing artworks, site configuration, and the artist's profile without touching code.
-- **B2B / trade** — a dedicated page and inquiry flow for interior designers, plus a "Signature Wall Art" custom-commission collection.
+- **B2B / trade** — a dedicated page and enquiry flow for interior designers, plus a "Signature Wall Art" custom-commission collection.
 - **Operational tooling** — Sentry error tracking, Upstash-backed rate limiting, Vercel Analytics/Speed Insights, and automatic content mirroring to Vercel Blob and (optionally) GitHub.
 
 ## Tech stack

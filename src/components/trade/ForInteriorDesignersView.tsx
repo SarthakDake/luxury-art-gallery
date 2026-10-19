@@ -1,6 +1,6 @@
 import { SignatureShowcaseSection } from "@/components/home/SignatureShowcaseSection";
 import { Reveal } from "@/components/motion/Reveal";
-import { TradeInquiryForm } from "@/components/trade/TradeInquiryForm";
+import { TradeEnquiryForm } from "@/components/trade/TradeEnquiryForm";
 import { RichText } from "@/components/ui/RichText";
 import { SoftImage } from "@/components/ui/SoftImage";
 import { getArtworkImageSrc } from "@/lib/artwork-image";
@@ -238,20 +238,20 @@ export function ForInteriorDesignersView({
       <div className="site-container page-section-end">
         <Reveal
           as="section"
-          id="inquiry"
+          id="enquiry"
           variant="slide-up"
           className="trade-section section-divider-top"
-          aria-labelledby="inquiry-heading"
+          aria-labelledby="enquiry-heading"
         >
-          <div className="trade-inquiry-layout">
+          <div className="trade-enquiry-layout">
             <div className="section-header-copy">
-              <p className="eyebrow">{page.inquiryForm.eyebrow}</p>
-              <h2 id="inquiry-heading" className="section-title">
-                {page.inquiryForm.title}
+              <p className="eyebrow">{page.enquiryForm.eyebrow}</p>
+              <h2 id="enquiry-heading" className="section-title">
+                {page.enquiryForm.title}
               </h2>
-              <RichText content={page.inquiryForm.subtitle} className="body-text mt-3" />
+              <RichText content={page.enquiryForm.subtitle} className="body-text mt-3" />
             </div>
-            <TradeInquiryForm copy={page.inquiryForm} />
+            <TradeEnquiryForm copy={page.enquiryForm} />
           </div>
         </Reveal>
       </div>

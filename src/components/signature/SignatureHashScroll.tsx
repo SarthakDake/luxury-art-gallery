@@ -2,10 +2,13 @@
 
 import { useEffect } from "react";
 
-/** Scroll to a hash target after Next.js client navigations (e.g. #inquiry). */
+/** Scroll to a hash target after Next.js client navigations (e.g. #enquiry). */
 export function SignatureHashScroll() {
   useEffect(() => {
-    const hash = window.location.hash.replace(/^#/, "");
+    let hash = window.location.hash.replace(/^#/, "");
+    if (hash === "inquiry") {
+      hash = "enquiry";
+    }
     if (!hash) {
       return;
     }
