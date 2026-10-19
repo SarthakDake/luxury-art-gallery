@@ -6,7 +6,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Product context — Colors N Joy (always apply)
 
-This site belongs to an **artist** who uses it to **showcase her work** and run **shop options** (buy art, commissions, trade/designer inquiries). The artist is the primary operator: she **uploads content** and **customizes the site** through **Content Studio** (`/admin/content`), not by editing code or running CLI tools.
+This site belongs to an **artist** who uses it to **showcase her work** and run **shop options** (buy art, commissions, trade/designer enquiries). The artist is the primary operator: she **uploads content** and **customizes the site** through **Content Studio** (`/admin/content`), not by editing code or running CLI tools.
 
 When changing anything, optimize for:
 

@@ -450,6 +450,40 @@ function mergeSignatureProjects(
     .filter((project) => project.title && project.slug);
 }
 
+/** British spelling: rewrite legacy keys and copy in persisted CMS JSON. */
+export function migrateEnquiryCopyText(text: string): string {
+  return text
+    .replace(/#inquiry\b/g, "#enquiry")
+    .replace(/\bInquiries\b/g, "Enquiries")
+    .replace(/\binquiries\b/g, "enquiries")
+    .replace(/\bInquiry\b/g, "Enquiry")
+    .replace(/\binquiry\b/g, "enquiry")
+    .replace(/\bInquiring\b/g, "Enquiring")
+    .replace(/\binquiring\b/g, "enquiring");
+}
+
+export function migrateInquirySpellingDeep(value: unknown): unknown {
+  if (typeof value === "string") {
+    return migrateEnquiryCopyText(value);
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((entry) => migrateInquirySpellingDeep(entry));
+  }
+
+  if (isRecord(value)) {
+    const next: Record<string, unknown> = {};
+    for (const [key, child] of Object.entries(value)) {
+      const migratedKey =
+        key === "inquiry" ? "enquiry" : key === "inquiryForm" ? "enquiryForm" : key;
+      next[migratedKey] = migrateInquirySpellingDeep(child);
+    }
+    return next;
+  }
+
+  return value;
+}
+
 function migrateEnquiryHash(href: string): string {
   return href.replace(/#inquiry\b/g, "#enquiry");
 }
@@ -688,7 +722,8 @@ function mergeTestimonials(raw: unknown): SiteTestimonial[] {
  * after theme/homepage schema expansions.
  */
 export function normalizeSiteConfig(raw: unknown): SiteConfig {
-  const source = isRecord(raw) ? raw : {};
+  const migrated = migrateInquirySpellingDeep(raw);
+  const source = isRecord(migrated) ? migrated : {};
   const visitor = isRecord(source.visitorCounter) ? source.visitorCounter : {};
   const social = isRecord(source.socialLinks) ? source.socialLinks : {};
 
