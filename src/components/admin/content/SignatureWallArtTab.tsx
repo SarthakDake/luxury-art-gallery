@@ -203,25 +203,13 @@ export function SignatureWallArtTab({
         </button>
       </div>
 
-          <StudioRepeaterHeader
-            title="Projects"
-            addLabel="Add project"
-            onAdd={() => {
-              const items: SignatureProject[] = [
-                ...page.projects.items,
-                {
-                  slug: `project-${page.projects.items.length + 1}`,
-                  title: "New project",
-                  summary: "",
-                  coverImageUrl: "",
-                  coverOrientation: "portrait",
-                  designStyles: [],
-                  galleryImages: [],
-                  testimonials: [],
-                },
-              ];
-              updatePage({ projects: { ...page.projects, items } });
-            }}
+      {studioMode === "projects" ? (
+        projects.length === 0 ? (
+          <StudioEmptyState
+            title="Add your first showcase project"
+            description="Each project gets its own detail page on Signature Wall Art. Add as many walls as you like — there is no fixed limit."
+            actionLabel="Add first project"
+            onAction={addProject}
           />
         ) : (
           <div className="studio-artworks-layout">
@@ -242,91 +230,61 @@ export function SignatureWallArtTab({
                     project={selectedProject}
                     onDelete={() => removeProject(projectIndex)}
                   />
-                </StudioField>
-                <ImageUploadField
-                  label="Cover image"
-                  path={project.coverImageUrl}
-                  slug={`signature-project-${project.slug || index}`}
-                  kind="page"
-                  onUploaded={(path) =>
-                    updateProject(index, { coverImageUrl: path })
-                  }
-                />
-                <StudioField
-                  label="Cover shape on site"
-                  hint="Choose Vertical for tall photos (most common) or Horizontal for wide photos. This sets the frame on Signature Wall Art and the homepage showcase."
-                  fullWidth
-                >
-                  <StudioSelect
-                    value={project.coverOrientation ?? "portrait"}
-                    onChange={(event) =>
-                      updateProject(index, {
-                        coverOrientation:
-                          event.target.value === "landscape"
-                            ? "landscape"
-                            : "portrait",
-                      })
-                    }
-                  >
-                    <option value="portrait">Vertical (tall frame)</option>
-                    <option value="landscape">Horizontal (wide frame)</option>
-                  </StudioSelect>
-                </StudioField>
 
                   <SignatureProjectStepNav activeStep={projectStep} onChange={setProjectStep} />
 
                   {PROJECT_STEP_ORDER.map((step, stepIndex) => {
-                      const meta = PROJECT_STEP_TITLES[step];
-                      const prevStep = PROJECT_STEP_ORDER[stepIndex - 1];
-                      const nextStep = PROJECT_STEP_ORDER[stepIndex + 1];
-                      return (
-                        <SignatureStepPanel
-                          key={step}
+                    const meta = PROJECT_STEP_TITLES[step];
+                    const prevStep = PROJECT_STEP_ORDER[stepIndex - 1];
+                    const nextStep = PROJECT_STEP_ORDER[stepIndex + 1];
+                    return (
+                      <SignatureStepPanel
+                        key={step}
+                        step={step}
+                        activeStep={projectStep}
+                        title={meta.title}
+                        lead={meta.lead}
+                        onPreview={() =>
+                          preview(meta.previewRegion, `Signature project — ${meta.title}`)
+                        }
+                      >
+                        <SignatureProjectStepPanels
                           step={step}
-                          activeStep={projectStep}
-                          title={meta.title}
-                          lead={meta.lead}
-                          onPreview={() =>
-                            preview(meta.previewRegion, `Signature project — ${meta.title}`)
+                          project={selectedProject}
+                          index={projectIndex}
+                          updateProject={updateProject}
+                        />
+                        <StudioStepFooter
+                          back={
+                            prevStep
+                              ? {
+                                  label: "Back",
+                                  onClick: () => setProjectStep(prevStep),
+                                }
+                              : undefined
                           }
-                        >
-                          <SignatureProjectStepPanels
-                            step={step}
-                            project={selectedProject}
-                            index={projectIndex}
-                            updateProject={updateProject}
-                          />
-                          <StudioStepFooter
-                            back={
-                              prevStep
-                                ? {
-                                    label: "Back",
-                                    onClick: () => setProjectStep(prevStep),
-                                  }
-                                : undefined
-                            }
-                            primary={
-                              nextStep
-                                ? {
-                                    label:
-                                      nextStep === "cover"
-                                        ? "Continue to cover"
-                                        : nextStep === "styles"
-                                          ? "Continue to styles"
-                                          : nextStep === "gallery"
-                                            ? "Continue to gallery"
-                                            : "Continue to quotes",
-                                    onClick: () => setProjectStep(nextStep),
-                                  }
-                                : {
-                                    label: "Finish editing",
-                                    onClick: () => setProjectStep("details"),
-                                  }
-                            }
-                          />
-                        </SignatureStepPanel>
-                      );
-                    })}
+                          primary={
+                            nextStep
+                              ? {
+                                  label:
+                                    nextStep === "cover"
+                                      ? "Continue to cover"
+                                      : nextStep === "styles"
+                                        ? "Continue to styles"
+                                        : nextStep === "gallery"
+                                          ? "Continue to gallery"
+                                          : "Continue to quotes",
+                                  onClick: () => setProjectStep(nextStep),
+                                }
+                              : {
+                                  label: "Finish editing",
+                                  onClick: () => setProjectStep("details"),
+                                }
+                          }
+                        />
+                      </SignatureStepPanel>
+                    );
+                  })}
                 </>
               ) : null}
             </div>
