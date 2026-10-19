@@ -57,10 +57,11 @@ export async function POST(request: Request) {
   const emailRaw = sanitizeField(formData.get("email"), MAX_EMAIL_LENGTH, false) ?? "";
   const mobile = sanitizeField(formData.get("mobile"), MAX_MOBILE_LENGTH);
   const location = sanitizeField(formData.get("location"), MAX_LOCATION_LENGTH);
-  const spaceType = sanitizeField(formData.get("spaceType"), MAX_SPACE_TYPE_LENGTH);
+  const spaceType =
+    sanitizeField(formData.get("spaceType"), MAX_SPACE_TYPE_LENGTH, false) ?? "";
   const message = sanitizeField(formData.get("message"), MAX_MESSAGE_LENGTH);
 
-  if (!name || !mobile || !location || !spaceType || !message) {
+  if (!name || !mobile || !location || !message) {
     return NextResponse.json(
       { error: "Please complete all required fields with valid values." },
       { status: 400 },
@@ -72,27 +73,25 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Enter a valid email address or leave it blank." }, { status: 400 });
   }
 
-  const wallPhotoEntry = formData.get("wallPhoto");
-  if (!(wallPhotoEntry instanceof File) || wallPhotoEntry.size <= 0) {
-    return NextResponse.json({ error: "Please upload a wall photo." }, { status: 400 });
-  }
-
   let wallPhotoUrl: string | undefined;
   let wallPhotoAttachment:
     | { filename: string; content: Buffer; contentType: string }
     | undefined;
 
-  try {
-    const saved = await saveSignatureEnquiryWallPhoto(wallPhotoEntry);
-    wallPhotoUrl = saved.publicPath;
-    wallPhotoAttachment = {
-      filename: saved.filename,
-      content: saved.buffer,
-      contentType: saved.contentType,
-    };
-  } catch (error) {
-    const detail = error instanceof Error ? error.message : "Could not upload wall photo.";
-    return NextResponse.json({ error: detail }, { status: 400 });
+  const wallPhotoEntry = formData.get("wallPhoto");
+  if (wallPhotoEntry instanceof File && wallPhotoEntry.size > 0) {
+    try {
+      const saved = await saveSignatureEnquiryWallPhoto(wallPhotoEntry);
+      wallPhotoUrl = saved.publicPath;
+      wallPhotoAttachment = {
+        filename: saved.filename,
+        content: saved.buffer,
+        contentType: saved.contentType,
+      };
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : "Could not upload wall photo.";
+      return NextResponse.json({ error: detail }, { status: 400 });
+    }
   }
 
   try {
@@ -101,7 +100,7 @@ export async function POST(request: Request) {
       email: email || undefined,
       mobile,
       location,
-      spaceType,
+      spaceType: spaceType || undefined,
       subject: DEFAULT_SUBJECT,
       message,
       wallPhotoUrl,

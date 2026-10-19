@@ -75,14 +75,13 @@ export function TradeEnquiryForm({
         />
       </div>
       <div className="form-field">
-        <label htmlFor="trade-email">Email</label>
+        <label htmlFor="trade-email">Email (optional)</label>
         <input
           id="trade-email"
           type="email"
           className="input-field"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          required
           autoComplete="email"
         />
       </div>
@@ -110,7 +109,7 @@ export function TradeEnquiryForm({
         />
       </div>
       <div className="form-field">
-        <label htmlFor="trade-project-type">Project type</label>
+        <label htmlFor="trade-project-type">Space / project type (optional)</label>
         <input
           id="trade-project-type"
           className="input-field"

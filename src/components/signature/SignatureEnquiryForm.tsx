@@ -47,12 +47,9 @@ export function SignatureEnquiryForm({
     }
 
     const wallPhoto = wallPhotoRef.current?.files?.[0];
-    if (!wallPhoto || wallPhoto.size <= 0) {
-      setError("Please upload a wall photo.");
-      setIsSubmitting(false);
-      return;
+    if (wallPhoto && wallPhoto.size > 0) {
+      formData.set("wallPhoto", wallPhoto);
     }
-    formData.set("wallPhoto", wallPhoto);
 
     try {
       const response = await fetch("/api/signature-enquiry", {
@@ -133,25 +130,23 @@ export function SignatureEnquiryForm({
         />
       </div>
       <div className="form-field">
-        <label htmlFor={`${idPrefix}-space`}>Space / project type</label>
+        <label htmlFor={`${idPrefix}-space`}>Space / project type (optional)</label>
         <input
           id={`${idPrefix}-space`}
           className="input-field"
           value={spaceType}
           onChange={(event) => setSpaceType(event.target.value)}
-          required
           placeholder="Living room, bedroom, lobby…"
         />
       </div>
       <div className="form-field">
-        <label htmlFor={`${idPrefix}-wall-photo`}>Wall photo</label>
+        <label htmlFor={`${idPrefix}-wall-photo`}>Wall photo (optional)</label>
         <input
           ref={wallPhotoRef}
           id={`${idPrefix}-wall-photo`}
           type="file"
           className="input-field signature-enquiry-file"
           accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif"
-          required
         />
         <p className="studio-field-hint">Share a phone photo of the wall — JPG, PNG, WebP, or HEIC up to 4 MB.</p>
       </div>

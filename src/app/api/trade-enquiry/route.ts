@@ -56,7 +56,7 @@ export async function POST(request: Request) {
   }
 
   const name = sanitizeField(body.name, MAX_NAME_LENGTH);
-  const email = sanitizeField(body.email, MAX_EMAIL_LENGTH);
+  const emailRaw = sanitizeField(body.email, MAX_EMAIL_LENGTH, false) ?? "";
   const mobile = sanitizeField(body.mobile, MAX_MOBILE_LENGTH);
   const company = sanitizeField(body.company, MAX_COMPANY_LENGTH, false) ?? "";
   const projectType =
@@ -64,21 +64,22 @@ export async function POST(request: Request) {
   const subject = sanitizeField(body.subject, MAX_SUBJECT_LENGTH);
   const message = sanitizeField(body.message, MAX_MESSAGE_LENGTH);
 
-  if (!name || !email || !mobile || !subject || !message) {
+  if (!name || !mobile || !subject || !message) {
     return NextResponse.json(
       { error: "Please complete all required fields with valid values." },
       { status: 400 },
     );
   }
 
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return NextResponse.json({ error: "Enter a valid email address." }, { status: 400 });
+  const email = emailRaw.trim();
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return NextResponse.json({ error: "Enter a valid email address or leave it blank." }, { status: 400 });
   }
 
   try {
     await sendTradeEnquiryEmail({
       name,
-      email,
+      email: email || undefined,
       mobile,
       company: company || undefined,
       projectType: projectType || undefined,

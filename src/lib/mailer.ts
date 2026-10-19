@@ -147,7 +147,7 @@ export interface ContactEmailPayload {
   email?: string;
   mobile: string;
   location: string;
-  spaceType: string;
+  spaceType?: string;
   subject: string;
   message: string;
   wallPhotoUrl?: string;
@@ -178,7 +178,8 @@ export async function sendContactFormEmail(
   const safeEmail = emailLine ? escapeHtml(emailLine) : "Not provided";
   const safeMobile = escapeHtml(payload.mobile);
   const safeLocation = escapeHtml(payload.location);
-  const safeSpaceType = escapeHtml(payload.spaceType);
+  const spaceTypeLine = payload.spaceType?.trim() ?? "";
+  const safeSpaceType = spaceTypeLine ? escapeHtml(spaceTypeLine) : "Not provided";
   const safeSubject = escapeHtml(payload.subject);
   const safeMessage = escapeHtml(payload.message);
   const photoLink =
@@ -220,7 +221,7 @@ export async function sendContactFormEmail(
       `Email: ${emailLine || "Not provided"}`,
       `Mobile: ${payload.mobile}`,
       `Location: ${payload.location}`,
-      `Space / project type: ${payload.spaceType}`,
+      `Space / project type: ${spaceTypeLine || "Not provided"}`,
       photoLink ? `Wall photo: ${photoLink}` : "",
       `Subject: ${payload.subject}`,
       "",
@@ -233,7 +234,7 @@ export async function sendContactFormEmail(
 
 export interface TradeEnquiryEmailPayload {
   name: string;
-  email: string;
+  email?: string;
   mobile: string;
   company?: string;
   projectType?: string;
@@ -253,17 +254,19 @@ export async function sendTradeEnquiryEmail(
   // FROM should be the studio mailbox (SMTP_FROM / contact), not the admin login email.
   const from = resolveMailFrom(config.siteName, primaryContactEmail);
   const safeName = escapeHtml(payload.name);
-  const safeEmail = escapeHtml(payload.email);
+  const emailLine = payload.email?.trim() ?? "";
+  const safeEmail = emailLine ? escapeHtml(emailLine) : "Not provided";
   const safeMobile = escapeHtml(payload.mobile);
   const safeCompany = escapeHtml(payload.company ?? "");
-  const safeProjectType = escapeHtml(payload.projectType ?? "");
+  const projectTypeLine = payload.projectType?.trim() ?? "";
+  const safeProjectType = projectTypeLine ? escapeHtml(projectTypeLine) : "Not provided";
   const safeSubject = escapeHtml(payload.subject);
   const safeMessage = escapeHtml(payload.message);
 
   await transporter.sendMail({
     from,
     to: formatEmailList(contactEmails),
-    replyTo: payload.email,
+    ...(emailLine ? { replyTo: emailLine } : {}),
     subject: `[Trade Enquiry] ${payload.subject}`,
     html: `
       <div style="font-family: Georgia, 'Times New Roman', serif; color: #171717; line-height: 1.6;">
@@ -273,7 +276,7 @@ export async function sendTradeEnquiryEmail(
         <p style="margin: 0 0 8px;"><strong>Email:</strong> ${safeEmail}</p>
         <p style="margin: 0 0 8px;"><strong>Mobile:</strong> ${safeMobile}</p>
         ${safeCompany ? `<p style="margin: 0 0 8px;"><strong>Company / Studio:</strong> ${safeCompany}</p>` : ""}
-        ${safeProjectType ? `<p style="margin: 0 0 24px;"><strong>Project type:</strong> ${safeProjectType}</p>` : `<p style="margin: 0 0 24px;"></p>`}
+        <p style="margin: 0 0 24px;"><strong>Space / project type:</strong> ${safeProjectType}</p>
         <p style="margin: 0 0 8px; color: #6b7280; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;">Project notes</p>
         <p style="margin: 0; white-space: pre-wrap;">${safeMessage}</p>
       </div>
@@ -281,10 +284,10 @@ export async function sendTradeEnquiryEmail(
     text: [
       "For Interior Designers — Trade Enquiry",
       `Name: ${payload.name}`,
-      `Email: ${payload.email}`,
+      `Email: ${emailLine || "Not provided"}`,
       `Mobile: ${payload.mobile}`,
       payload.company ? `Company / Studio: ${payload.company}` : "",
-      payload.projectType ? `Project type: ${payload.projectType}` : "",
+      `Space / project type: ${projectTypeLine || "Not provided"}`,
       `Subject: ${payload.subject}`,
       "",
       payload.message,
@@ -299,7 +302,7 @@ export interface SignatureEnquiryEmailPayload {
   email?: string;
   mobile: string;
   location: string;
-  spaceType: string;
+  spaceType?: string;
   subject: string;
   message: string;
   projectTitle?: string;
@@ -330,7 +333,8 @@ export async function sendSignatureEnquiryEmail(
   const safeEmail = emailLine ? escapeHtml(emailLine) : "Not provided";
   const safeMobile = escapeHtml(payload.mobile);
   const safeLocation = escapeHtml(payload.location);
-  const safeSpaceType = escapeHtml(payload.spaceType);
+  const spaceTypeLine = payload.spaceType?.trim() ?? "";
+  const safeSpaceType = spaceTypeLine ? escapeHtml(spaceTypeLine) : "Not provided";
   const safeSubject = escapeHtml(payload.subject);
   const safeMessage = escapeHtml(payload.message);
   const safeProject = escapeHtml(payload.projectTitle ?? "");
@@ -375,7 +379,7 @@ export async function sendSignatureEnquiryEmail(
       `Email: ${emailLine || "Not provided"}`,
       `Mobile: ${payload.mobile}`,
       `Location: ${payload.location}`,
-      `Space / project type: ${payload.spaceType}`,
+      `Space / project type: ${spaceTypeLine || "Not provided"}`,
       photoLink ? `Wall photo: ${photoLink}` : "",
       `Subject: ${payload.subject}`,
       "",
