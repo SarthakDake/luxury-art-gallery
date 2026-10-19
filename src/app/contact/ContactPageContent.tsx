@@ -40,12 +40,9 @@ export function ContactPageContent() {
     formData.set("message", message);
 
     const wallPhoto = wallPhotoRef.current?.files?.[0];
-    if (!wallPhoto || wallPhoto.size <= 0) {
-      setError("Please upload a wall photo.");
-      setIsSubmitting(false);
-      return;
+    if (wallPhoto && wallPhoto.size > 0) {
+      formData.set("wallPhoto", wallPhoto);
     }
-    formData.set("wallPhoto", wallPhoto);
 
     try {
       const response = await fetch("/api/contact", {
@@ -234,14 +231,13 @@ export function ContactPageContent() {
 
             <div className="form-field">
               <label htmlFor="contact-space" className="field-label">
-                Space / project type
+                Space / project type (optional)
               </label>
               <input
                 id="contact-space"
                 type="text"
                 name="spaceType"
                 autoComplete="off"
-                required
                 value={spaceType}
                 onChange={(event) => setSpaceType(event.target.value)}
                 className="input-field"
@@ -252,7 +248,7 @@ export function ContactPageContent() {
 
             <div className="form-field">
               <label htmlFor="contact-wall-photo" className="field-label">
-                Wall photo
+                Wall photo (optional)
               </label>
               <input
                 ref={wallPhotoRef}
@@ -261,7 +257,6 @@ export function ContactPageContent() {
                 name="wallPhoto"
                 className="input-field signature-enquiry-file"
                 accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif"
-                required
                 disabled={isSubmitting}
               />
               <p className="studio-field-hint">
