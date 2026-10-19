@@ -523,7 +523,12 @@ function mergeSignatureWallArtPage(raw: unknown): SignatureWallArtPageConfig {
       eyebrow: asString(inquiry.eyebrow, defaults.inquiry.eyebrow),
       title: asString(inquiry.title, defaults.inquiry.title),
       subtitle: asString(inquiry.subtitle, defaults.inquiry.subtitle),
-      formCtaLabel: asString(inquiry.formCtaLabel, defaults.inquiry.formCtaLabel),
+      formCtaLabel: (() => {
+        const raw = asString(inquiry.formCtaLabel, defaults.inquiry.formCtaLabel);
+        return /^fill inquiry form$/i.test(raw.trim())
+          ? defaults.inquiry.formCtaLabel
+          : raw;
+      })(),
       formHref: asString(inquiry.formHref, defaults.inquiry.formHref),
       whatsappLabel: asString(
         inquiry.whatsappLabel,

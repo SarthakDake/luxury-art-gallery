@@ -2,7 +2,7 @@
 
 import { RichText } from "@/components/ui/RichText";
 import type { SignatureWallArtPageConfig } from "@/types/site-config";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export function SignatureInquiryForm({
   copy,
@@ -16,11 +16,14 @@ export function SignatureInquiryForm({
 }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [location, setLocation] = useState("");
   const [spaceType, setSpaceType] = useState("");
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const wallPhotoRef = useRef<HTMLInputElement>(null);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -32,22 +35,27 @@ export function SignatureInquiryForm({
       ? `${copy.defaultSubject}: ${projectTitle}`
       : copy.defaultSubject;
 
+    const formData = new FormData();
+    formData.set("name", name);
+    formData.set("email", email);
+    formData.set("mobile", mobile);
+    formData.set("location", location);
+    formData.set("spaceType", spaceType);
+    formData.set("subject", subject);
+    formData.set("message", message);
+    if (projectTitle) {
+      formData.set("projectTitle", projectTitle);
+    }
+
+    const wallPhoto = wallPhotoRef.current?.files?.[0];
+    if (wallPhoto && wallPhoto.size > 0) {
+      formData.set("wallPhoto", wallPhoto);
+    }
+
     try {
-      const response = await fetch("/api/contact", {
+      const response = await fetch("/api/signature-inquiry", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email,
-          subject,
-          message: [
-            projectTitle ? `Project: ${projectTitle}` : "",
-            spaceType ? `Space / project type: ${spaceType}` : "",
-            message,
-          ]
-            .filter(Boolean)
-            .join("\n\n"),
-        }),
+        body: formData,
       });
 
       const data = (await response.json()) as { success?: boolean; error?: string };
@@ -60,8 +68,13 @@ export function SignatureInquiryForm({
       setSuccess(true);
       setName("");
       setEmail("");
+      setMobile("");
+      setLocation("");
       setSpaceType("");
       setMessage("");
+      if (wallPhotoRef.current) {
+        wallPhotoRef.current.value = "";
+      }
     } catch {
       setError("Unable to send your inquiry. Please try again.");
     } finally {
@@ -95,6 +108,28 @@ export function SignatureInquiryForm({
         />
       </div>
       <div className="form-field">
+        <label htmlFor={`${idPrefix}-mobile`}>Mobile number</label>
+        <input
+          id={`${idPrefix}-mobile`}
+          type="tel"
+          className="input-field"
+          value={mobile}
+          onChange={(event) => setMobile(event.target.value)}
+          autoComplete="tel"
+          placeholder="+91 …"
+        />
+      </div>
+      <div className="form-field">
+        <label htmlFor={`${idPrefix}-location`}>Location</label>
+        <input
+          id={`${idPrefix}-location`}
+          className="input-field"
+          value={location}
+          onChange={(event) => setLocation(event.target.value)}
+          placeholder="City, area, or project site"
+        />
+      </div>
+      <div className="form-field">
         <label htmlFor={`${idPrefix}-space`}>Space / project type</label>
         <input
           id={`${idPrefix}-space`}
@@ -103,6 +138,17 @@ export function SignatureInquiryForm({
           onChange={(event) => setSpaceType(event.target.value)}
           placeholder="Living room, bedroom, lobby…"
         />
+      </div>
+      <div className="form-field">
+        <label htmlFor={`${idPrefix}-wall-photo`}>Wall photo (optional)</label>
+        <input
+          ref={wallPhotoRef}
+          id={`${idPrefix}-wall-photo`}
+          type="file"
+          className="input-field signature-inquiry-file"
+          accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif"
+        />
+        <p className="studio-field-hint">Share a phone photo of the wall — JPG, PNG, WebP, or HEIC up to 4 MB.</p>
       </div>
       <div className="form-field">
         <label htmlFor={`${idPrefix}-message`}>Message</label>

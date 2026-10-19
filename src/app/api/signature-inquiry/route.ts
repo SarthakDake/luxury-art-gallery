@@ -1,0 +1,116 @@
+import { sendSignatureInquiryEmail } from "@/lib/mailer";
+import { enforceRateLimit } from "@/lib/rate-limit";
+import { saveSignatureInquiryWallPhoto } from "@/lib/signature-inquiry-upload";
+import { NextResponse } from "next/server";
+
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+export const maxDuration = 60;
+
+const MAX_NAME_LENGTH = 120;
+const MAX_EMAIL_LENGTH = 254;
+const MAX_MOBILE_LENGTH = 24;
+const MAX_LOCATION_LENGTH = 200;
+const MAX_SPACE_TYPE_LENGTH = 120;
+const MAX_SUBJECT_LENGTH = 160;
+const MAX_MESSAGE_LENGTH = 4000;
+const MAX_PROJECT_TITLE_LENGTH = 160;
+
+function sanitizeField(value: FormDataEntryValue | null, maxLength: number, required = true): string | null {
+  if (typeof value !== "string") {
+    return required ? null : "";
+  }
+
+  const trimmed = value.trim();
+
+  if (required && !trimmed) {
+    return null;
+  }
+
+  if (trimmed.length > maxLength) {
+    return null;
+  }
+
+  return trimmed;
+}
+
+export async function POST(request: Request) {
+  const rateLimitResponse = await enforceRateLimit(request, "signature-inquiry");
+
+  if (rateLimitResponse) {
+    return rateLimitResponse;
+  }
+
+  let formData: FormData;
+
+  try {
+    formData = await request.formData();
+  } catch {
+    return NextResponse.json({ error: "Invalid form submission." }, { status: 400 });
+  }
+
+  const name = sanitizeField(formData.get("name"), MAX_NAME_LENGTH);
+  const email = sanitizeField(formData.get("email"), MAX_EMAIL_LENGTH);
+  const mobile = sanitizeField(formData.get("mobile"), MAX_MOBILE_LENGTH, false) ?? "";
+  const location = sanitizeField(formData.get("location"), MAX_LOCATION_LENGTH, false) ?? "";
+  const spaceType = sanitizeField(formData.get("spaceType"), MAX_SPACE_TYPE_LENGTH, false) ?? "";
+  const subject = sanitizeField(formData.get("subject"), MAX_SUBJECT_LENGTH);
+  const message = sanitizeField(formData.get("message"), MAX_MESSAGE_LENGTH);
+  const projectTitle =
+    sanitizeField(formData.get("projectTitle"), MAX_PROJECT_TITLE_LENGTH, false) ?? "";
+
+  if (!name || !email || !subject || !message) {
+    return NextResponse.json(
+      { error: "Please complete all required fields with valid values." },
+      { status: 400 },
+    );
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return NextResponse.json({ error: "Enter a valid email address." }, { status: 400 });
+  }
+
+  const wallPhotoEntry = formData.get("wallPhoto");
+  let wallPhotoUrl: string | undefined;
+  let wallPhotoAttachment:
+    | { filename: string; content: Buffer; contentType: string }
+    | undefined;
+
+  if (wallPhotoEntry instanceof File && wallPhotoEntry.size > 0) {
+    try {
+      const saved = await saveSignatureInquiryWallPhoto(wallPhotoEntry);
+      wallPhotoUrl = saved.publicPath;
+      wallPhotoAttachment = {
+        filename: saved.filename,
+        content: saved.buffer,
+        contentType: saved.contentType,
+      };
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : "Could not upload wall photo.";
+      return NextResponse.json({ error: detail }, { status: 400 });
+    }
+  }
+
+  try {
+    await sendSignatureInquiryEmail({
+      name,
+      email,
+      mobile: mobile || undefined,
+      location: location || undefined,
+      spaceType: spaceType || undefined,
+      subject,
+      message,
+      projectTitle: projectTitle || undefined,
+      wallPhotoUrl,
+      wallPhotoAttachment,
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Signature inquiry submission failed:", error);
+    return NextResponse.json(
+      { error: "Unable to send your message right now. Please try again later." },
+      { status: 500 },
+    );
+  }
+}
