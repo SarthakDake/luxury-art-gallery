@@ -212,6 +212,7 @@
           "title": "Relief Lotus",
           "summary": "Soft mineral textures and layered neutrals for a seaside living room that feels open and restful.",
           "coverImageUrl": "/site/signature-project-coastal-ca.jpg?v=1785339830068",
+          "coverOrientation": "portrait",
           "designStyles": [
             {
               "imageUrl": "/site/signature-style-coastal-ca-0.jpg?v=1786158396403",
@@ -253,6 +254,7 @@
           "title": "Lippan Art",
           "summary": "Warm clay and ochre reliefs that bring grounded warmth to a contemporary lounge.",
           "coverImageUrl": "/site/signature-project-desert-texture.jpg?v=1785343893099",
+          "coverOrientation": "portrait",
           "designStyles": [
             {
               "imageUrl": "/site/signature-style-desert-texture-0.jpg?v=1785324376811",
@@ -294,6 +296,7 @@
           "title": "Royal Peacock",
           "summary": "Botanical depth and layered greens for a dining space that feels immersive and alive.",
           "coverImageUrl": "/site/signature-project-forest-relief.png?v=1785334381750",
+          "coverOrientation": "portrait",
           "designStyles": [
             {
               "imageUrl": "/site/signature-style-forest-relief-0.heic?v=1785327122138",
@@ -341,6 +344,7 @@
           "title": "Botanical Harmony",
           "summary": "Architectural texture in charcoal and bone for a city apartment that wants calm structure.",
           "coverImageUrl": "/site/signature-project-urban-neutral.png?v=1785339205788",
+          "coverOrientation": "portrait",
           "designStyles": [
             {
               "imageUrl": "/site/signature-style-urban-neutral-0.jpg?v=1786159275453",
@@ -382,6 +386,7 @@
           "title": "Moon Wall",
           "summary": "Translucent layers and soft luminosity for a bedroom wall that feels private and serene.",
           "coverImageUrl": "/site/signature-project-luminous-veil.png?v=1785325894878",
+          "coverOrientation": "portrait",
           "designStyles": [
             {
               "imageUrl": "/site/signature-style-luminous-veil-0.jpg?v=1785325373458",
