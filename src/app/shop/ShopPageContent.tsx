@@ -18,6 +18,7 @@ import {
 } from "@/lib/catalog-filters";
 import type { Artwork } from "@/types/artwork";
 import { SlidersHorizontal } from "lucide-react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
 
@@ -468,6 +469,21 @@ function ShopFilters({
               )}
             </div>
           </div>
+
+          <Reveal variant="slide-up" className="shop-policy-footer">
+            <div className="card-panel shop-policy-footer-inner">
+              <h2 className="shop-policy-footer-title">Orders &amp; returns</h2>
+              <p className="body-text shop-policy-footer-text">
+                Handmade originals — please review sizing, materials, and care notes on
+                each artwork page before purchase. For damaged deliveries, satisfaction
+                concerns about quality or design, or refund questions, see our{" "}
+                <Link href="/return-policy" className="text-link">
+                  return &amp; refund policy
+                </Link>
+                .
+              </p>
+            </div>
+          </Reveal>
         </div>
       </div>
     </div>
