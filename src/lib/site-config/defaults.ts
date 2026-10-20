@@ -11,12 +11,6 @@ import type {
   SiteTestimonial,
 } from "@/types/site-config";
 
-const EMPTY_SEO_PAGE = {
-  title: "",
-  description: "",
-  keywords: "",
-} as const;
-
 const SEO_KEYWORDS =
   "custom wall art, texture art, relief murals, signature wall art, interior designer art, Mumbai wall art, Pune art studio, Navi Mumbai artist, hospitality wall art, handmade art India";
 
