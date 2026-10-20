@@ -428,7 +428,7 @@
           "title": "Test",
           "summary": "Validate",
           "coverImageUrl": "/artworks/sample1.jpg",
-          "coverOrientation": "landscape",
+          "coverOrientation": "portrait",
           "designStyles": [
             {
               "imageUrl": "/artworks/sample1.jpg",
