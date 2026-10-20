@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ArtworksTab } from "./ArtworksTab";
 import { ConfigTab } from "./ConfigTab";
+import { EnquiriesTab } from "./EnquiriesTab";
 import { ForInteriorDesignersTab } from "./ForInteriorDesignersTab";
 import { ProfileTab } from "./ProfileTab";
 import { SignatureWallArtTab } from "./SignatureWallArtTab";
@@ -40,6 +41,12 @@ const TABS = [
     id: "profile",
     label: "Artist Profile",
     description: "Edit your biography, portrait, exhibitions, and press.",
+  },
+  {
+    id: "enquiries",
+    label: "Enquiries",
+    description:
+      "Read contact, signature, and trade form submissions — including when email delivery failed.",
   },
 ] as const;
 
@@ -276,9 +283,11 @@ export function ContentStudio() {
                 onRequestPreview={setActivePreview}
               />
             ) : null}
+            {activeTab === "enquiries" ? <EnquiriesTab /> : null}
           </div>
         </div>
 
+        {activeTab === "enquiries" ? null : (
         <div className="studio-save-bar">
           <div className="studio-save-copy">
             <p className="studio-save-title">Ready to publish?</p>
@@ -302,6 +311,7 @@ export function ContentStudio() {
             </button>
           </div>
         </div>
+        )}
       </div>
 
       {/* Separate right-side preview — opens only when a section Preview is clicked */}
