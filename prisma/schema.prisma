@@ -143,3 +143,14 @@ model SiteContent {
   data      Json
   updatedAt DateTime @updatedAt
 }
+
+/// Contact, signature, and trade form submissions (backup when email delivery fails).
+model FormEnquiry {
+  id        String   @id @default(cuid())
+  kind      String
+  payload   Json
+  emailSent Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([kind, createdAt])
+}

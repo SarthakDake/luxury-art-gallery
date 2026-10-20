@@ -57,10 +57,26 @@ function createTransporter() {
 }
 
 function resolveMailFrom(siteName: string, primaryContactEmail: string): string {
-  return (
-    process.env.SMTP_FROM?.trim() ||
-    process.env.EMAIL_FROM?.trim() ||
-    `${siteName} <${primaryContactEmail}>`
+  const explicit =
+    process.env.SMTP_FROM?.trim() || process.env.EMAIL_FROM?.trim();
+  if (explicit) {
+    return explicit;
+  }
+
+  const email = primaryContactEmail.trim();
+  const displayName = siteName.trim().replace(/"/g, "'");
+  return `"${displayName}" <${email}>`;
+}
+
+export function isEmailTransportConfigured(): boolean {
+  if (process.env.EMAIL_SERVER?.trim()) {
+    return true;
+  }
+
+  return Boolean(
+    process.env.SMTP_HOST?.trim() &&
+      process.env.SMTP_USER?.trim() &&
+      process.env.SMTP_PASS?.trim(),
   );
 }
 

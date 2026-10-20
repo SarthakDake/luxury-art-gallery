@@ -1,3 +1,4 @@
+import { deliverFormEnquiry, FormEnquiryDeliveryError } from "@/lib/deliver-form-enquiry";
 import { sendSignatureEnquiryEmail } from "@/lib/mailer";
 import { enforceRateLimit } from "@/lib/rate-limit";
 import { saveSignatureEnquiryWallPhoto } from "@/lib/signature-enquiry-upload";
@@ -94,25 +95,41 @@ export async function POST(request: Request) {
   }
 
   try {
-    await sendSignatureEnquiryEmail({
-      name,
-      email: email || undefined,
-      mobile,
-      location,
-      spaceType: spaceType || undefined,
-      subject,
-      message,
-      projectTitle: projectTitle || undefined,
-      wallPhotoUrl,
-      wallPhotoAttachment,
+    await deliverFormEnquiry({
+      kind: "signature-enquiry",
+      payload: {
+        name,
+        email: email || null,
+        mobile,
+        location,
+        spaceType: spaceType || null,
+        subject,
+        message,
+        projectTitle: projectTitle || null,
+        wallPhotoUrl: wallPhotoUrl ?? null,
+      },
+      sendEmail: () =>
+        sendSignatureEnquiryEmail({
+          name,
+          email: email || undefined,
+          mobile,
+          location,
+          spaceType: spaceType || undefined,
+          subject,
+          message,
+          projectTitle: projectTitle || undefined,
+          wallPhotoUrl,
+          wallPhotoAttachment,
+        }),
     });
 
     return NextResponse.json({ success: true });
   } catch (error) {
+    const message =
+      error instanceof FormEnquiryDeliveryError
+        ? error.message
+        : "Unable to send your message right now. Please try again later.";
     console.error("Signature enquiry submission failed:", error);
-    return NextResponse.json(
-      { error: "Unable to send your message right now. Please try again later." },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
