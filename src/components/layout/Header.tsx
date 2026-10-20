@@ -1,11 +1,11 @@
-import { SiteBrandName } from "@/components/ui/SiteBrandName";
 import type { PublicSiteConfig } from "@/lib/site-config";
 import { PRIMARY_NAV_LINKS } from "@/lib/nav-links";
-import Link from "next/link";
 import { AuthActions } from "./AuthActions";
 import { GlobalSearch } from "./GlobalSearch";
 import { HeaderActions } from "./HeaderActions";
 import { MobileNav } from "./MobileNav";
+import { PrimaryNavLink } from "./PrimaryNavLink";
+import { SiteLogoLink } from "./SiteLogoLink";
 
 export function Header({ config }: { config: PublicSiteConfig }) {
   return (
@@ -14,16 +14,14 @@ export function Header({ config }: { config: PublicSiteConfig }) {
         <div className="header-leading">
           <div className="header-brand-group">
             <MobileNav />
-            <Link href="/" className="site-logo">
-              <SiteBrandName name={config.siteName} />
-            </Link>
+            <SiteLogoLink siteName={config.siteName} />
           </div>
 
           <nav aria-label="Primary" className="header-nav">
             {PRIMARY_NAV_LINKS.map((link) => (
-              <Link key={link.href} href={link.href} className="nav-link">
+              <PrimaryNavLink key={link.href} href={link.href} className="nav-link">
                 {link.label}
-              </Link>
+              </PrimaryNavLink>
             ))}
           </nav>
         </div>
