@@ -49,7 +49,7 @@ export default async function ArtworkDetailPage({ params }: ArtworkPageProps) {
 
   return (
     <>
-      <ArtworkJsonLd artwork={artwork} />
+      <ArtworkJsonLd artwork={artwork} siteName={siteConfig.siteName} />
       <ArtworkDetailClient
         artwork={artwork}
         artworks={artworks}

@@ -120,7 +120,8 @@ export type SiteSeoPageKey =
   | "about"
   | "contact"
   | "signatureWallArt"
-  | "forInteriorDesigners";
+  | "forInteriorDesigners"
+  | "returnPolicy";
 
 /** Per-route overrides for search & social previews (empty = use page defaults). */
 export interface SiteSeoPageSettings {

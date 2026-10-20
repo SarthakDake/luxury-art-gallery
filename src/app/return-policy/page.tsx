@@ -1,6 +1,6 @@
 import { Reveal } from "@/components/motion/Reveal";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
-import { buildRouteMetadata } from "@/lib/seo";
+import { buildPageMetadata } from "@/lib/seo";
 import { getSiteConfig } from "@/lib/site-data";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -10,7 +10,7 @@ export const revalidate = 3600;
 export async function generateMetadata(): Promise<Metadata> {
   const config = await getSiteConfig();
 
-  return buildRouteMetadata(config, "/return-policy", {
+  return buildPageMetadata(config, "returnPolicy", "/return-policy", {
     title: "Return & refund policy",
     description:
       "Return, refund, and shipping terms for Colors N Joy shop orders — including damaged deliveries and satisfaction returns.",

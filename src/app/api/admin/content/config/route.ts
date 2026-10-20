@@ -1,4 +1,4 @@
-import { assertAdminSession } from "@/lib/admin";
+import { authorizeAdminApi } from "@/lib/admin-api";
 import { normalizeSiteConfig } from "@/lib/site-config";
 import { getSiteConfig, summarizeMirrorResults, saveSiteConfig } from "@/lib/site-data";
 import type { SiteConfig } from "@/types/site-config";
@@ -6,20 +6,18 @@ import type { SiteConfig } from "@/types/site-config";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  try {
-    await assertAdminSession();
-  } catch {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  const auth = await authorizeAdminApi();
+  if (!auth.ok) {
+    return auth.response;
   }
 
   return Response.json({ config: await getSiteConfig() });
 }
 
 export async function PUT(request: Request) {
-  try {
-    await assertAdminSession();
-  } catch {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  const auth = await authorizeAdminApi();
+  if (!auth.ok) {
+    return auth.response;
   }
 
   let payload: { config?: SiteConfig };

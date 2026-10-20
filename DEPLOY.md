@@ -354,7 +354,7 @@ Add a **redirect** in Vercel so the non-canonical host (e.g. bare domain → `ww
 - **Default meta description** — plain text for Google (or leave empty to use the hero subtitle).
 - **Default keywords** — comma-separated topics (texture art, wall art, your city, hospitality art, etc.).
 - **Default share image** — Open Graph image for social link previews.
-- **Per-page overrides** — title, description, and keywords for Home, Shop, About, Contact, Signature Wall Art, and For Interior Designers.
+- **Per-page overrides** — title, description, and keywords for Home, Shop, About, Contact, Signature Wall Art, For Interior Designers, and Return & refund policy.
 - **Google Search Console verification** — paste the verification *content* string from Google, or set `GOOGLE_SITE_VERIFICATION` on Vercel.
 
 After editing, **Save** in Content Studio so production metadata revalidates.

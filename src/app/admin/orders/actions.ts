@@ -1,6 +1,6 @@
 "use server";
 
-import { assertAdminSession } from "@/lib/admin";
+import { authorizeAdminApi } from "@/lib/admin-api";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
@@ -9,7 +9,10 @@ function isValidOrderId(orderId: string) {
 }
 
 export async function markOrderShipped(orderId: string) {
-  await assertAdminSession();
+  const auth = await authorizeAdminApi();
+  if (!auth.ok) {
+    return { error: "Unauthorized" };
+  }
 
   if (!isValidOrderId(orderId)) {
     return { error: "Invalid order ID." };

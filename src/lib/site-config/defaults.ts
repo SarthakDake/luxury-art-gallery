@@ -66,6 +66,12 @@ export const DEFAULT_SEO: SiteSeoConfig = {
       keywords:
         "interior designer wall art, trade art program India, designer art partnership",
     },
+    returnPolicy: {
+      title: "Return & Refund Policy | Colors N Joy Shop",
+      description:
+        "Return, refund, and shipping terms for Colors N Joy shop orders — including damaged deliveries and satisfaction returns.",
+      keywords: "return policy, refund policy, Colors N Joy shop",
+    },
   },
 };
 
@@ -76,6 +82,7 @@ export const SITE_SEO_PAGE_KEYS: SiteSeoPageKey[] = [
   "contact",
   "signatureWallArt",
   "forInteriorDesigners",
+  "returnPolicy",
 ];
 
 export const DEFAULT_BRAND_TOKENS: SiteBrandTokens = {

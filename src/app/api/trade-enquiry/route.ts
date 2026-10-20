@@ -1,4 +1,9 @@
 import { deliverFormEnquiry, FormEnquiryDeliveryError } from "@/lib/deliver-form-enquiry";
+import {
+  ENQUIRY_LIMITS,
+  normalizeOptionalEnquiryEmail,
+  sanitizeEnquiryField,
+} from "@/lib/form-enquiry-fields";
 import { sendTradeEnquiryEmail } from "@/lib/mailer";
 import { enforceRateLimit } from "@/lib/rate-limit";
 import { NextResponse } from "next/server";
@@ -13,32 +18,6 @@ interface TradeEnquiryBody {
   projectType?: string;
   subject?: string;
   message?: string;
-}
-
-const MAX_NAME_LENGTH = 120;
-const MAX_EMAIL_LENGTH = 254;
-const MAX_MOBILE_LENGTH = 24;
-const MAX_COMPANY_LENGTH = 160;
-const MAX_PROJECT_TYPE_LENGTH = 120;
-const MAX_SUBJECT_LENGTH = 160;
-const MAX_MESSAGE_LENGTH = 4000;
-
-function sanitizeField(value: unknown, maxLength: number, required = true): string | null {
-  if (typeof value !== "string") {
-    return required ? null : "";
-  }
-
-  const trimmed = value.trim();
-
-  if (required && !trimmed) {
-    return null;
-  }
-
-  if (trimmed.length > maxLength) {
-    return null;
-  }
-
-  return trimmed;
 }
 
 export async function POST(request: Request) {
@@ -56,14 +35,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
 
-  const name = sanitizeField(body.name, MAX_NAME_LENGTH);
-  const emailRaw = sanitizeField(body.email, MAX_EMAIL_LENGTH, false) ?? "";
-  const mobile = sanitizeField(body.mobile, MAX_MOBILE_LENGTH);
-  const company = sanitizeField(body.company, MAX_COMPANY_LENGTH, false) ?? "";
+  const name = sanitizeEnquiryField(body.name, ENQUIRY_LIMITS.name);
+  const emailRaw = sanitizeEnquiryField(body.email, ENQUIRY_LIMITS.email, false) ?? "";
+  const mobile = sanitizeEnquiryField(body.mobile, ENQUIRY_LIMITS.mobile);
+  const company = sanitizeEnquiryField(body.company, ENQUIRY_LIMITS.company, false) ?? "";
   const projectType =
-    sanitizeField(body.projectType, MAX_PROJECT_TYPE_LENGTH, false) ?? "";
-  const subject = sanitizeField(body.subject, MAX_SUBJECT_LENGTH);
-  const message = sanitizeField(body.message, MAX_MESSAGE_LENGTH);
+    sanitizeEnquiryField(body.projectType, ENQUIRY_LIMITS.projectType, false) ?? "";
+  const subject = sanitizeEnquiryField(body.subject, ENQUIRY_LIMITS.subject);
+  const message = sanitizeEnquiryField(body.message, ENQUIRY_LIMITS.message);
 
   if (!name || !mobile || !subject || !message) {
     return NextResponse.json(
@@ -72,10 +51,11 @@ export async function POST(request: Request) {
     );
   }
 
-  const email = emailRaw.trim();
-  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return NextResponse.json({ error: "Enter a valid email address or leave it blank." }, { status: 400 });
+  const emailResult = normalizeOptionalEnquiryEmail(emailRaw);
+  if (!emailResult.ok) {
+    return NextResponse.json({ error: emailResult.message }, { status: 400 });
   }
+  const email = emailResult.email;
 
   try {
     await deliverFormEnquiry({
