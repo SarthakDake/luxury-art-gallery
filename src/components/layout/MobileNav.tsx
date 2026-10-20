@@ -2,17 +2,15 @@
 
 import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { PRIMARY_NAV_LINKS } from "@/lib/nav-links";
+import { PrimaryNavLink } from "./PrimaryNavLink";
 import { MobileAuthActions } from "./AuthActions";
 import { GlobalSearch } from "./GlobalSearch";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useMounted } from "@/hooks/use-mounted";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export function MobileNav() {
-  const pathname = usePathname();
   const { theme, setTheme, resolvedTheme } = useTheme();
   const mounted = useMounted();
   const [open, setOpen] = useState(false);
@@ -74,27 +72,18 @@ export function MobileNav() {
           >
             <div className="site-container mobile-nav-inner">
               <ul className="mobile-nav-list">
-                {PRIMARY_NAV_LINKS.map((link) => {
-                  const isActive =
-                    link.href === "/"
-                      ? pathname === "/"
-                      : pathname.startsWith(link.href);
-
-                  return (
-                    <li key={link.href}>
-                      <Link
-                        href={link.href}
-                        onClick={closeMenu}
-                        className={`mobile-nav-link ${
-                          isActive ? "mobile-nav-link--active" : ""
-                        }`}
-                        aria-current={isActive ? "page" : undefined}
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  );
-                })}
+                {PRIMARY_NAV_LINKS.map((link) => (
+                  <li key={link.href}>
+                    <PrimaryNavLink
+                      href={link.href}
+                      className="mobile-nav-link"
+                      activeClassName="mobile-nav-link--active"
+                      onNavigate={closeMenu}
+                    >
+                      {link.label}
+                    </PrimaryNavLink>
+                  </li>
+                ))}
                 <MobileAuthActions onNavigate={closeMenu} />
               </ul>
 
