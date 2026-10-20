@@ -1,5 +1,6 @@
 import { Reveal } from "@/components/motion/Reveal";
 import { ProductCard } from "@/components/shop/ProductCard";
+import { selectFeaturedArtworks } from "@/lib/featured-artworks";
 import { productGridSectionProps } from "@/lib/product-grid-layout";
 import type { Artwork } from "@/types/artwork";
 import type { SiteConfig } from "@/types/site-config";
@@ -13,7 +14,7 @@ export function FeaturedWorksSection({
   artworks: Artwork[];
 }) {
   const copy = config.homepage.featured;
-  const featuredArtworks = artworks.slice(0, copy.limit);
+  const featuredArtworks = selectFeaturedArtworks(artworks, copy.limit);
 
   if (featuredArtworks.length === 0) {
     return null;
