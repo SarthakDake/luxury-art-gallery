@@ -33,4 +33,5 @@ export const FOOTER_EXPLORE_LINKS = [
   { href: "/about", label: "About us" },
   { href: "/contact", label: "Contact us" },
   { href: "/cart", label: "Cart" },
+  { href: "/return-policy", label: "Return policy" },
 ] as const;

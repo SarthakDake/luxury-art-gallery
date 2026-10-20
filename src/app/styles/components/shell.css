@@ -191,6 +191,96 @@
     }
   }
 
+  .shop-policy-footer {
+    margin-top: 2.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .shop-policy-footer {
+      margin-top: 3rem;
+    }
+  }
+
+  .shop-policy-footer-inner {
+    padding: 1.5rem 1.25rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  @media (min-width: 768px) {
+    .shop-policy-footer-inner {
+      padding: 1.75rem 1.5rem;
+    }
+  }
+
+  .shop-policy-footer-title {
+    font-family: var(--font-serif), ui-serif, Georgia, serif;
+    font-size: 1.125rem;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    color: var(--foreground);
+  }
+
+  .shop-policy-footer-text {
+    margin: 0;
+    color: var(--muted);
+    max-width: 42rem;
+  }
+
+  .policy-page-intro {
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 768px) {
+    .policy-page-intro {
+      margin-bottom: 2.5rem;
+      gap: 1rem;
+    }
+  }
+
+  .policy-page-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .policy-page-sections {
+      gap: 1.25rem;
+    }
+  }
+
+  .policy-page-section {
+    padding: 1.25rem 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .policy-page-section {
+      padding: 1.5rem 1.75rem;
+    }
+  }
+
+  .policy-page-section-title {
+    font-size: 1.125rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .policy-page-section-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .policy-page-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
   .shop-catalog-block {
     padding-top: 2rem;
     padding-bottom: calc(3rem + var(--fab-clearance) + env(safe-area-inset-bottom, 0px));
