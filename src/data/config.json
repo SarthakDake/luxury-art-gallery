@@ -194,7 +194,7 @@
     "intro": {
       "eyebrow": "Signature Collection",
       "title": "Signature Wall Art",
-      "subtitle": "Signature wall art commissions — relief murals, texture installations & custom murals for luxury homes, hotels & designer projects across Mumbai, Pune & Pan India."
+      "subtitle": "Statement projects crafted for elevated interiors — explore the story, finishes, and design language behind each wall."
     },
     "sectionOrder": [
       "projects",
@@ -422,6 +422,32 @@
               "role": "Homeowner, Bengaluru"
             }
           ]
+        },
+        {
+          "slug": "project-6",
+          "title": "Test",
+          "summary": "Validate",
+          "coverImageUrl": "/artworks/sample1.jpg",
+          "coverOrientation": "landscape",
+          "designStyles": [
+            {
+              "imageUrl": "/artworks/sample1.jpg",
+              "title": "Tide Line Relief",
+              "description": "A low-relief wave rhythm in sand and chalk tones, designed to catch soft morning light across a long sofa wall."
+            },
+            {
+              "imageUrl": "/artworks/sample2.jpg",
+              "title": "Salt Mist Palette",
+              "description": "Muted greys and warm whites keep the composition quiet, so furniture and drapery stay the supporting cast."
+            },
+            {
+              "imageUrl": "/artworks/green_leaf_1.jpg",
+              "title": "Organic Edge Detail",
+              "description": "Hand-finished edges and subtle pigment washes add depth without competing with ocean views."
+            }
+          ],
+          "galleryImages": [],
+          "testimonials": []
         }
       ]
     },
@@ -487,7 +513,7 @@
     "hero": {
       "eyebrow": "For Interior Designers",
       "title": "Art Partnerships for Elevated Interiors",
-      "subtitle": "Interior designers & architects — collaborate on custom texture art, signature wall pieces & trade-friendly timelines for Mumbai, Pune & Pan India projects.",
+      "subtitle": "Collaborate with Colors N Joy for custom texture art, signature wall pieces, and a trade process built around your project timeline.",
       "imageUrl": "/site/trade-hero.jpg",
       "primaryCtaLabel": "Start a Trade Enquiry",
       "primaryCtaHref": "#enquiry",
