@@ -1,14 +1,19 @@
-import { getArtworks } from "@/lib/site-data";
+import { buildPageMetadata } from "@/lib/seo";
+import { getArtworks, getSiteConfig } from "@/lib/site-data";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import ShopPageContent from "./ShopPageContent";
 
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
-  title: "Shop",
-  description: "Browse the full collection of original artworks.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const config = await getSiteConfig();
+
+  return buildPageMetadata(config, "shop", "/shop", {
+    title: "Shop",
+    description: "Browse the full collection of original artworks.",
+  });
+}
 
 export default async function ShopPage() {
   const artworks = await getArtworks();

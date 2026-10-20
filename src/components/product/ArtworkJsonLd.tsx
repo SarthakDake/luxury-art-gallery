@@ -15,6 +15,7 @@ export function ArtworkJsonLd({ artwork }: { artwork: Artwork }) {
     name: artwork.title,
     description: stripRichTextToPlain(artwork.description),
     image,
+    url: `${baseUrl}/art/${artwork.slug}`,
     category: artwork.category,
     material: artwork.material,
   ...(isShowcaseOnly(artwork)
