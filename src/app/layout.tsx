@@ -11,6 +11,7 @@ import { ArtworksProvider } from "@/components/providers/artworks-provider";
 import { SessionProvider } from "@/components/providers/session-provider";
 import { SiteConfigProvider } from "@/components/providers/site-config-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { parseEmailList } from "@/lib/email-list";
 import { brandTokensToCssVars, toPublicSiteConfig } from "@/lib/site-config";
 import { getArtworks, getSiteConfig } from "@/lib/site-data";
 import { SiteJsonLd } from "@/components/seo/SiteJsonLd";
@@ -48,6 +49,7 @@ export default async function RootLayout({
     getArtistProfile(),
   ]);
   const publicConfig = toPublicSiteConfig(config);
+  const contactEmails = parseEmailList(config.contactEmail);
 
   return (
     <html
@@ -66,7 +68,7 @@ export default async function RootLayout({
           Skip to content
         </a>
         <SessionProvider>
-          <SiteConfigProvider config={publicConfig}>
+          <SiteConfigProvider config={publicConfig} contactEmails={contactEmails}>
             <ArtworksProvider artworks={artworks}>
               <ThemeProvider attribute="class" defaultTheme="light">
                 <ScrollRevealProvider>

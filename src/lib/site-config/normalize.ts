@@ -877,7 +877,6 @@ export function getEnabledHomepageSections(config: SiteConfig): HomepageSectionI
 export function toPublicSiteConfig(config: SiteConfig) {
   return {
     siteName: config.siteName,
-    contactEmail: config.contactEmail,
     whatsappNumber: config.whatsappNumber,
     studioAddress: config.studioAddress,
     heroTitle: config.heroTitle,

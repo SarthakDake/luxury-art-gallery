@@ -1,3 +1,4 @@
+import { SignatureProjectJsonLd } from "@/components/seo/SignatureProjectJsonLd";
 import { SignatureProjectView } from "@/components/signature/SignatureProjectView";
 import { DEFAULT_SIGNATURE_WALL_ART_PAGE } from "@/lib/site-config/defaults";
 import { buildRouteMetadata } from "@/lib/seo";
@@ -48,5 +49,12 @@ export default async function SignatureProjectPage({
     notFound();
   }
 
-  return <SignatureProjectView project={project} siteConfig={config} />;
+  const providerName = config.siteName.split("|")[0]?.trim() || config.siteName;
+
+  return (
+    <>
+      <SignatureProjectJsonLd project={project} providerName={providerName} />
+      <SignatureProjectView project={project} siteConfig={config} />
+    </>
+  );
 }

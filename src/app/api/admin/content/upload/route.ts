@@ -1,4 +1,4 @@
-import { assertAdminSession } from "@/lib/admin";
+import { authorizeAdminApi } from "@/lib/admin-api";
 import { uploadContentDocument, uploadContentImage } from "@/lib/content-upload";
 import { toSafeBuffer } from "@/lib/buffer-utils";
 import { resolveUploadImageExtension } from "@/lib/image-format";
@@ -18,10 +18,9 @@ export const maxDuration = 300;
 const MAX_UPLOAD_BYTES = 40 * 1024 * 1024;
 
 export async function POST(request: Request) {
-  try {
-    await assertAdminSession();
-  } catch {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  const auth = await authorizeAdminApi();
+  if (!auth.ok) {
+    return auth.response;
   }
 
   let formData: FormData;

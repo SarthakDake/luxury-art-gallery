@@ -105,6 +105,11 @@ export async function saveSiteConfig(config: SiteConfig) {
   revalidatePath("/for-interior-designers");
   revalidatePath("/portfolio");
   revalidatePath("/about");
+  revalidatePath("/contact");
+  revalidatePath("/return-policy");
+  revalidatePath("/cart");
+  revalidatePath("/api/site/config");
+  revalidatePath("/sitemap.xml");
   return mirrors;
 }
 

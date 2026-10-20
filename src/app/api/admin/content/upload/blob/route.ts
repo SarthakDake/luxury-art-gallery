@@ -1,5 +1,5 @@
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
-import { assertAdminSession } from "@/lib/admin";
+import { authorizeAdminApi } from "@/lib/admin-api";
 import { isBlobStorageEnabled } from "@/lib/blob-storage";
 import { isAllowedUploadPathname } from "@/lib/upload-path";
 
@@ -15,10 +15,9 @@ export const maxDuration = 300;
  * when the pathname extension is valid. Pathname validation is enough here.
  */
 export async function POST(request: Request): Promise<Response> {
-  try {
-    await assertAdminSession();
-  } catch {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  const auth = await authorizeAdminApi();
+  if (!auth.ok) {
+    return auth.response;
   }
 
   if (!isBlobStorageEnabled()) {

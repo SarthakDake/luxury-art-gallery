@@ -26,6 +26,27 @@ const FILTER_OPTIONS: Array<{ id: FormEnquiryFilter; label: string }> = [
   { id: "trade-enquiry", label: FORM_ENQUIRY_KIND_LABELS["trade-enquiry"] },
 ];
 
+async function fetchEnquiriesFromApi(): Promise<{
+  enquiries: AdminFormEnquiry[];
+  migrationRequired: boolean;
+}> {
+  const response = await fetch("/api/admin/content/enquiries");
+  const payload = (await response.json()) as {
+    enquiries?: AdminFormEnquiry[];
+    migrationRequired?: boolean;
+    error?: string;
+  };
+
+  if (!response.ok) {
+    throw new Error(payload.error ?? "Could not load enquiries.");
+  }
+
+  return {
+    enquiries: payload.enquiries ?? [],
+    migrationRequired: Boolean(payload.migrationRequired),
+  };
+}
+
 export function EnquiriesTab() {
   const [enquiries, setEnquiries] = useState<AdminFormEnquiry[]>([]);
   const [filter, setFilter] = useState<FormEnquiryFilter>("all");
@@ -39,19 +60,9 @@ export function EnquiriesTab() {
     setMigrationRequired(false);
 
     try {
-      const response = await fetch("/api/admin/content/enquiries");
-      const payload = (await response.json()) as {
-        enquiries?: AdminFormEnquiry[];
-        migrationRequired?: boolean;
-        error?: string;
-      };
-
-      if (!response.ok) {
-        throw new Error(payload.error ?? "Could not load enquiries.");
-      }
-
-      setEnquiries(payload.enquiries ?? []);
-      setMigrationRequired(Boolean(payload.migrationRequired));
+      const result = await fetchEnquiriesFromApi();
+      setEnquiries(result.enquiries);
+      setMigrationRequired(result.migrationRequired);
     } catch (loadError) {
       setError(
         loadError instanceof Error ? loadError.message : "Could not load enquiries.",
@@ -62,8 +73,34 @@ export function EnquiriesTab() {
   }, []);
 
   useEffect(() => {
-    void loadEnquiries();
-  }, [loadEnquiries]);
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const result = await fetchEnquiriesFromApi();
+        if (cancelled) {
+          return;
+        }
+        setEnquiries(result.enquiries);
+        setMigrationRequired(result.migrationRequired);
+      } catch (loadError) {
+        if (cancelled) {
+          return;
+        }
+        setError(
+          loadError instanceof Error ? loadError.message : "Could not load enquiries.",
+        );
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const filtered = useMemo(() => {
     if (filter === "all") {

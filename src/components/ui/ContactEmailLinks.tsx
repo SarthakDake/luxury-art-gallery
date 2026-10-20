@@ -1,6 +1,6 @@
 "use client";
 
-import { useSiteConfig } from "@/components/providers/site-config-provider";
+import { useContactEmails } from "@/components/providers/site-config-provider";
 import { DEFAULT_CONTACT_EMAIL, parseEmailList } from "@/lib/email-list";
 import { Mail } from "lucide-react";
 
@@ -17,18 +17,18 @@ export function ContactEmailLinks({
   showIcon?: boolean;
   asItems?: boolean;
 }) {
-  const config = useSiteConfig();
+  const contactEmails = useContactEmails();
   const emails =
     [
       ...new Set([
         ...parseEmailList(process.env.NEXT_PUBLIC_CONTACT_EMAIL),
-        ...parseEmailList(config.contactEmail),
+        ...contactEmails,
       ]),
     ].length > 0
       ? [
           ...new Set([
             ...parseEmailList(process.env.NEXT_PUBLIC_CONTACT_EMAIL),
-            ...parseEmailList(config.contactEmail),
+            ...contactEmails,
           ]),
         ]
       : [DEFAULT_CONTACT_EMAIL];

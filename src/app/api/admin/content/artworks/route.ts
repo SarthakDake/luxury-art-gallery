@@ -1,4 +1,4 @@
-import { assertAdminSession } from "@/lib/admin";
+import { authorizeAdminApi } from "@/lib/admin-api";
 import { getArtworks, summarizeMirrorResults, saveArtworks } from "@/lib/site-data";
 import { nextArtworkId, slugify } from "@/lib/site-data/slug";
 import type { Artwork, ArtworkSize, ArtworkVideo } from "@/types/artwork";
@@ -72,20 +72,18 @@ function normalizeArtwork(raw: Artwork, existing: Artwork[]): Artwork {
 }
 
 export async function GET() {
-  try {
-    await assertAdminSession();
-  } catch {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  const auth = await authorizeAdminApi();
+  if (!auth.ok) {
+    return auth.response;
   }
 
   return Response.json({ artworks: await getArtworks() });
 }
 
 export async function PUT(request: Request) {
-  try {
-    await assertAdminSession();
-  } catch {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  const auth = await authorizeAdminApi();
+  if (!auth.ok) {
+    return auth.response;
   }
 
   let payload: { artworks?: Artwork[] };

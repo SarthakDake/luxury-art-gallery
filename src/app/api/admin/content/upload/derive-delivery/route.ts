@@ -1,5 +1,5 @@
 import { get, put } from "@vercel/blob";
-import { assertAdminSession } from "@/lib/admin";
+import { authorizeAdminApi } from "@/lib/admin-api";
 import { needsBrowserRasterization } from "@/lib/artwork-image";
 import {
   getBlobAccess,
@@ -13,10 +13,9 @@ export const maxDuration = 120;
 
 /** Build a verified WebP delivery copy for an existing Blob HEIC/TIFF upload. */
 export async function POST(request: Request) {
-  try {
-    await assertAdminSession();
-  } catch {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  const auth = await authorizeAdminApi();
+  if (!auth.ok) {
+    return auth.response;
   }
 
   if (!isBlobStorageEnabled()) {

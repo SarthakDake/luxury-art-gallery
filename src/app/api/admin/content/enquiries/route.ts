@@ -1,4 +1,4 @@
-import { assertAdminSession } from "@/lib/admin";
+import { authorizeAdminApi } from "@/lib/admin-api";
 import type { AdminFormEnquiry } from "@/lib/form-enquiry-display";
 import { prisma } from "@/lib/prisma";
 
@@ -16,10 +16,9 @@ function isMissingFormEnquiryTable(error: unknown): boolean {
 }
 
 export async function GET() {
-  try {
-    await assertAdminSession();
-  } catch {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  const auth = await authorizeAdminApi();
+  if (!auth.ok) {
+    return auth.response;
   }
 
   try {

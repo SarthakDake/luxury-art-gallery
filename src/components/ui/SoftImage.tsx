@@ -7,24 +7,20 @@ function mergeClassName(...parts: Array<string | undefined>) {
   return parts.filter(Boolean).join(" ");
 }
 
-/**
- * Next/Image with the site’s reveal-matched fade-in once the bitmap is ready.
- */
-export function SoftImage({
+function SoftImageFrame({
   className,
   onLoad,
   onLoadingComplete,
+  alt = "",
   src,
   ...props
 }: ImageProps) {
   const [loaded, setLoaded] = useState(false);
-  const srcKey = typeof src === "string" ? src : JSON.stringify(src);
 
   useEffect(() => {
-    setLoaded(false);
     const fallbackId = window.setTimeout(() => setLoaded(true), 2500);
     return () => window.clearTimeout(fallbackId);
-  }, [srcKey]);
+  }, []);
 
   function markLoaded() {
     setLoaded(true);
@@ -33,6 +29,7 @@ export function SoftImage({
   return (
     <Image
       src={src}
+      alt={alt}
       className={mergeClassName(
         "media-fade",
         loaded ? "is-loaded" : undefined,
@@ -49,4 +46,14 @@ export function SoftImage({
       {...props}
     />
   );
+}
+
+/**
+ * Next/Image with the site’s reveal-matched fade-in once the bitmap is ready.
+ */
+export function SoftImage(props: ImageProps) {
+  const srcKey =
+    typeof props.src === "string" ? props.src : JSON.stringify(props.src);
+
+  return <SoftImageFrame key={srcKey} {...props} />;
 }
