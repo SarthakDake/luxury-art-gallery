@@ -194,7 +194,7 @@
     "intro": {
       "eyebrow": "Signature Collection",
       "title": "Signature Wall Art",
-      "subtitle": "Statement projects crafted for elevated interiors — explore the story, finishes, and design language behind each wall."
+      "subtitle": "Signature wall art commissions — relief murals, texture installations & custom murals for luxury homes, hotels & designer projects across Mumbai, Pune & Pan India."
     },
     "sectionOrder": [
       "projects",
@@ -487,7 +487,7 @@
     "hero": {
       "eyebrow": "For Interior Designers",
       "title": "Art Partnerships for Elevated Interiors",
-      "subtitle": "Collaborate with Colors N Joy for custom texture art, signature wall pieces, and a trade process built around your project timeline.",
+      "subtitle": "Interior designers & architects — collaborate on custom texture art, signature wall pieces & trade-friendly timelines for Mumbai, Pune & Pan India projects.",
       "imageUrl": "/site/trade-hero.jpg",
       "primaryCtaLabel": "Start a Trade Enquiry",
       "primaryCtaHref": "#enquiry",
@@ -606,5 +606,43 @@
     "homepageOffers": false,
     "homepageFeatures": true,
     "homepageTestimonials": true
+  },
+  "seo": {
+    "defaultDescription": "Colors N Joy creates custom texture art, relief murals & signature wall art for luxury homes, hotels & designer projects — Mumbai, Pune & Pan India.",
+    "defaultKeywords": "custom wall art, texture art, relief murals, signature wall art, interior designer art, Mumbai wall art, Pune art studio, Navi Mumbai artist, hospitality wall art, handmade art India",
+    "ogImageUrl": "",
+    "googleSiteVerification": "",
+    "pages": {
+      "home": {
+        "title": "Custom Wall Art & Texture Art Studio | Colors N Joy",
+        "description": "Artist-led studio for custom murals, relief & texture wall art — for homeowners, interior designers & architects across Mumbai, Pune & India.",
+        "keywords": "custom wall art Mumbai, texture art studio, relief murals, luxury wall art India"
+      },
+      "shop": {
+        "title": "Shop Original Wall Art & Canvas | Colors N Joy",
+        "description": "Shop handcrafted canvas art, texture pieces & designer art clocks — original wall art made to order from Colors N Joy studio.",
+        "keywords": "buy wall art online India, canvas art, texture art shop, art clocks"
+      },
+      "about": {
+        "title": "About Aishwarya Dake | Colors N Joy Studio",
+        "description": "Meet the artist behind Colors N Joy — custom murals, relief art & texture installations for distinctive interiors across India.",
+        "keywords": "Aishwarya Dake artist, texture art studio India, about Colors N Joy"
+      },
+      "contact": {
+        "title": "Contact Colors N Joy | Wall Art Enquiries",
+        "description": "Enquire about custom wall art, commissions & trade projects. Studio based in Navi Mumbai — serving Mumbai, Pune & Pan India.",
+        "keywords": "wall art enquiry Mumbai, art commission contact, Colors N Joy studio"
+      },
+      "signatureWallArt": {
+        "title": "Signature Wall Art Commissions | Colors N Joy",
+        "description": "Explore signature wall art projects — large-scale relief, texture & mural installations for luxury homes, lobbies & designer spaces.",
+        "keywords": "signature wall art, custom mural commission, hotel lobby art, relief wall art"
+      },
+      "forInteriorDesigners": {
+        "title": "Wall Art for Interior Designers | Trade Program",
+        "description": "Trade partnerships for interior designers & architects — custom texture art, project timelines, portfolio PDF & studio support.",
+        "keywords": "interior designer wall art, trade art program India, designer art partnership"
+      }
+    }
   }
 }

@@ -16,6 +16,7 @@
     "db:baseline": "node scripts/db-baseline.mjs",
     "db:seed-content": "node scripts/seed-site-content.mjs",
     "db:migrate-enquiry-spelling": "npx --yes tsx scripts/migrate-enquiry-spelling.ts",
+    "db:migrate-seo-content": "npx --yes tsx scripts/migrate-seo-content.ts",
     "db:sync-content": "node scripts/sync-site-content.mjs",
     "db:sync-content:blob": "node scripts/sync-site-content.mjs --from-blob",
     "blob:audit-images": "node scripts/audit-blob-images.mjs",

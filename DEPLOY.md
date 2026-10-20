@@ -359,10 +359,20 @@ Add a **redirect** in Vercel so the non-canonical host (e.g. bare domain → `ww
 
 After editing, **Save** in Content Studio so production metadata revalidates.
 
+Bundled keyword copy lives in `src/data/config.json` under `seo`. Production CMS rows are **not** overwritten on deploy; to apply bundled SEO into an existing database once (only fills **empty** SEO fields):
+
+```bash
+DATABASE_URL="postgresql://…" npm run db:migrate-seo-content
+```
+
+Then trigger revalidation (Content Studio → Save) or wait for ISR.
+
 ### Google Search Console
 
 1. [Google Search Console](https://search.google.com/search-console) → add property for your domain.
-2. Verify via the HTML tag (Content Studio field or `GOOGLE_SITE_VERIFICATION` env).
+2. **Verify ownership** — either:
+   - **HTML file:** place Google’s file in `public/` (e.g. `public/googled0f274d0338c5676.html`), deploy, open `https://www.colorsnjoy.com/<filename>.html`, then Verify; keep the file permanently, or
+   - **HTML meta tag:** Content Studio SEO field or `GOOGLE_SITE_VERIFICATION` on Vercel.
 3. Submit sitemap: `https://www.colorsnjoy.com/sitemap.xml`
 4. Review **Pages** and **Performance** after a few days; fix any indexing errors.
 
