@@ -1,3 +1,4 @@
+import { getArtworkImageSrc } from "@/lib/artwork-image";
 import type { FormEnquiryKind } from "@/lib/form-enquiry-store";
 
 export interface AdminFormEnquiry {
@@ -109,6 +110,17 @@ export function listFormEnquiryFields(
   }
 
   return rows;
+}
+
+/** Browser-safe URL for enquiry wall photos (Blob / HEIC via artwork-image API). */
+export function resolveEnquiryWallPhotoHref(storedPath: string): string {
+  const trimmed = storedPath.trim();
+  if (!trimmed) {
+    return trimmed;
+  }
+
+  const normalized = trimmed.startsWith("/") ? trimmed : `/${trimmed.replace(/^\/+/, "")}`;
+  return getArtworkImageSrc(normalized);
 }
 
 export function enquirySummaryLine(payload: Record<string, unknown>): string {

@@ -144,19 +144,6 @@ export function ContactPageContent() {
             Send a Message
           </h2>
 
-          {success ? (
-            <p className="contact-form-success" role="status">
-              Thank you. Your message has been sent and we will get back to you
-              soon.
-            </p>
-          ) : null}
-
-          {error ? (
-            <p className="contact-form-error" role="alert">
-              {error}
-            </p>
-          ) : null}
-
           <form onSubmit={handleSubmit} className="form-stack">
             <div className="form-field">
               <label htmlFor="contact-name" className="field-label">
@@ -281,6 +268,18 @@ export function ContactPageContent() {
                 disabled={isSubmitting}
               />
             </div>
+
+            {error ? (
+              <p className="contact-form-error" role="alert">
+                {error}
+              </p>
+            ) : null}
+            {success ? (
+              <p className="contact-form-success" role="status">
+                Thank you. Your message has been sent and we will get back to you
+                soon.
+              </p>
+            ) : null}
 
             <button
               type="submit"

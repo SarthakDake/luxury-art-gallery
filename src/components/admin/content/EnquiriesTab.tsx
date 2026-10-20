@@ -7,11 +7,13 @@ import {
   StudioShell,
 } from "./shared";
 import type { FormEnquiryKind } from "@/lib/form-enquiry-store";
+import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import {
   FORM_ENQUIRY_KIND_LABELS,
   formatFormEnquiryWhen,
   enquirySummaryLine,
   listFormEnquiryFields,
+  resolveEnquiryWallPhotoHref,
   type AdminFormEnquiry,
   type FormEnquiryFilter,
 } from "@/lib/form-enquiry-display";
@@ -23,14 +25,6 @@ const FILTER_OPTIONS: Array<{ id: FormEnquiryFilter; label: string }> = [
   { id: "signature-enquiry", label: FORM_ENQUIRY_KIND_LABELS["signature-enquiry"] },
   { id: "trade-enquiry", label: FORM_ENQUIRY_KIND_LABELS["trade-enquiry"] },
 ];
-
-function resolveWallPhotoHref(value: string): string {
-  if (value.startsWith("http://") || value.startsWith("https://")) {
-    return value;
-  }
-
-  return value.startsWith("/") ? value : `/${value}`;
-}
 
 export function EnquiriesTab() {
   const [enquiries, setEnquiries] = useState<AdminFormEnquiry[]>([]);
@@ -177,14 +171,35 @@ export function EnquiriesTab() {
                           <dt>{field.label}</dt>
                           <dd>
                             {field.isUrl ? (
-                              <a
-                                href={resolveWallPhotoHref(field.value)}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-link"
-                              >
-                                View wall photo
-                              </a>
+                              <div className="studio-enquiry-photo-block">
+                                <div className="studio-enquiry-photo-preview">
+                                  <ArtworkImage
+                                    src={field.value}
+                                    alt="Visitor wall photo"
+                                    width={480}
+                                    height={320}
+                                    className="studio-enquiry-photo-image"
+                                    sizes="(max-width: 768px) 100vw, 320px"
+                                  />
+                                </div>
+                                <div className="studio-enquiry-photo-actions">
+                                  <a
+                                    href={resolveEnquiryWallPhotoHref(field.value)}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-link"
+                                  >
+                                    View wall photo
+                                  </a>
+                                  <a
+                                    href={resolveEnquiryWallPhotoHref(field.value)}
+                                    download
+                                    className="text-link"
+                                  >
+                                    Download
+                                  </a>
+                                </div>
+                              </div>
                             ) : field.key === "message" ? (
                               <span className="studio-enquiry-message">{field.value}</span>
                             ) : (
