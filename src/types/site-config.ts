@@ -114,6 +114,33 @@ export interface SiteTestimonial {
 }
 
 /** Progressive ship toggles for new storefront capabilities. */
+export type SiteSeoPageKey =
+  | "home"
+  | "shop"
+  | "about"
+  | "contact"
+  | "signatureWallArt"
+  | "forInteriorDesigners";
+
+/** Per-route overrides for search & social previews (empty = use page defaults). */
+export interface SiteSeoPageSettings {
+  title: string;
+  description: string;
+  keywords: string;
+}
+
+/** CMS-managed search metadata; merged with defaults in normalizeSiteConfig. */
+export interface SiteSeoConfig {
+  /** Plain meta description when hero subtitle is not ideal (empty = hero subtitle). */
+  defaultDescription: string;
+  defaultKeywords: string;
+  /** Public path or absolute URL for default Open Graph / Twitter image. */
+  ogImageUrl: string;
+  /** Google Search Console HTML tag verification content value. */
+  googleSiteVerification: string;
+  pages: Record<SiteSeoPageKey, SiteSeoPageSettings>;
+}
+
 export interface SiteFeatureFlags {
   homepageOffers: boolean;
   homepageFeatures: boolean;
@@ -288,6 +315,7 @@ export interface SiteConfig {
   forInteriorDesigners: ForInteriorDesignersConfig;
   testimonials: SiteTestimonial[];
   features: SiteFeatureFlags;
+  seo: SiteSeoConfig;
 }
 
 export interface ArtistExhibition {

@@ -1,5 +1,6 @@
 import { SignatureProjectView } from "@/components/signature/SignatureProjectView";
 import { DEFAULT_SIGNATURE_WALL_ART_PAGE } from "@/lib/site-config/defaults";
+import { buildRouteMetadata } from "@/lib/seo";
 import { getSiteConfig } from "@/lib/site-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -29,10 +30,10 @@ export async function generateMetadata({
     return { title: "Project not found" };
   }
 
-  return {
+  return buildRouteMetadata(config, `/signature-wall-art/${slug}`, {
     title: `${project.title} | Signature Wall Art`,
     description: project.summary || page.intro.subtitle,
-  };
+  });
 }
 
 export default async function SignatureProjectPage({

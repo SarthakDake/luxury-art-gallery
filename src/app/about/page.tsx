@@ -3,6 +3,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { RichText } from "@/components/ui/RichText";
+import { buildPageMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -14,10 +15,20 @@ interface PressFeature {
 
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
-  title: "About us",
-  description: "Biography, exhibitions, and press for the studio.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const [config, profile] = await Promise.all([
+    getSiteConfig(),
+    getArtistProfile(),
+  ]);
+  const fallbackDescription =
+    profile.artistTagline.trim() ||
+    "Biography, exhibitions, and press for the studio.";
+
+  return buildPageMetadata(config, "about", "/about", {
+    title: "About us",
+    description: fallbackDescription,
+  });
+}
 
 export default async function AboutPage() {
   const config = await getSiteConfig();

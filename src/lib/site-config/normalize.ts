@@ -5,8 +5,10 @@ import {
   DEFAULT_HOMEPAGE,
   DEFAULT_HOMEPAGE_SECTION_ORDER,
   DEFAULT_SIGNATURE_PAGE_SECTION_ORDER,
+  DEFAULT_SEO,
   DEFAULT_SIGNATURE_WALL_ART_PAGE,
   DEFAULT_TESTIMONIALS,
+  SITE_SEO_PAGE_KEYS,
 } from "@/lib/site-config/defaults";
 import { normalizeWhatsAppNumber } from "@/lib/whatsapp";
 import type {
@@ -21,6 +23,8 @@ import type {
   SiteConfig,
   SiteFeatureFlags,
   SiteHomepageConfig,
+  SiteSeoConfig,
+  SiteSeoPageKey,
   SiteTestimonial,
   TradeHomepageImage,
   TradePoint,
@@ -702,6 +706,45 @@ function mergeForInteriorDesigners(raw: unknown): ForInteriorDesignersConfig {
   };
 }
 
+function mergeSeoPageSettings(
+  raw: unknown,
+  fallback: SiteSeoConfig["pages"][SiteSeoPageKey],
+) {
+  const source = isRecord(raw) ? raw : {};
+  return {
+    title: asString(source.title, fallback.title).trim(),
+    description: asString(source.description, fallback.description).trim(),
+    keywords: asString(source.keywords, fallback.keywords).trim(),
+  };
+}
+
+function mergeSeo(raw: unknown): SiteSeoConfig {
+  const source = isRecord(raw) ? raw : {};
+  const pagesRaw = isRecord(source.pages) ? source.pages : {};
+  const pages = {} as SiteSeoConfig["pages"];
+
+  for (const key of SITE_SEO_PAGE_KEYS) {
+    pages[key] = mergeSeoPageSettings(pagesRaw[key], DEFAULT_SEO.pages[key]);
+  }
+
+  return {
+    defaultDescription: asString(
+      source.defaultDescription,
+      DEFAULT_SEO.defaultDescription,
+    ).trim(),
+    defaultKeywords: asString(
+      source.defaultKeywords,
+      DEFAULT_SEO.defaultKeywords,
+    ).trim(),
+    ogImageUrl: asString(source.ogImageUrl, DEFAULT_SEO.ogImageUrl).trim(),
+    googleSiteVerification: asString(
+      source.googleSiteVerification,
+      DEFAULT_SEO.googleSiteVerification,
+    ).trim(),
+    pages,
+  };
+}
+
 function mergeTestimonials(raw: unknown): SiteTestimonial[] {
   if (!Array.isArray(raw)) {
     return structuredClone(DEFAULT_TESTIMONIALS);
@@ -792,6 +835,7 @@ export function normalizeSiteConfig(raw: unknown): SiteConfig {
     forInteriorDesigners: mergeForInteriorDesigners(source.forInteriorDesigners),
     testimonials: mergeTestimonials(source.testimonials),
     features: mergeFeatureFlags(source.features),
+    seo: mergeSeo(source.seo),
   };
 }
 

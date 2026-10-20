@@ -6,8 +6,53 @@ import type {
   SiteConfig,
   SiteFeatureFlags,
   SiteHomepageConfig,
+  SiteSeoConfig,
+  SiteSeoPageKey,
   SiteTestimonial,
 } from "@/types/site-config";
+
+const EMPTY_SEO_PAGE = {
+  title: "",
+  description: "",
+  keywords: "",
+} as const;
+
+export const DEFAULT_SEO: SiteSeoConfig = {
+  defaultDescription: "",
+  defaultKeywords: "",
+  ogImageUrl: "",
+  googleSiteVerification: "",
+  pages: {
+    home: { ...EMPTY_SEO_PAGE },
+    shop: {
+      title: "Shop",
+      description: "Browse the full collection of original artworks.",
+      keywords: "",
+    },
+    about: {
+      title: "About us",
+      description: "Biography, exhibitions, and press for the studio.",
+      keywords: "",
+    },
+    contact: {
+      title: "Contact us",
+      description:
+        "Reach the studio for acquisitions, commissions, and private viewings.",
+      keywords: "",
+    },
+    signatureWallArt: { ...EMPTY_SEO_PAGE },
+    forInteriorDesigners: { ...EMPTY_SEO_PAGE },
+  },
+};
+
+export const SITE_SEO_PAGE_KEYS: SiteSeoPageKey[] = [
+  "home",
+  "shop",
+  "about",
+  "contact",
+  "signatureWallArt",
+  "forInteriorDesigners",
+];
 
 export const DEFAULT_BRAND_TOKENS: SiteBrandTokens = {
   accent: "#c9a227",
@@ -587,6 +632,7 @@ export function createDefaultSiteConfig(partial?: Partial<SiteConfig>): SiteConf
     forInteriorDesigners: structuredClone(DEFAULT_FOR_INTERIOR_DESIGNERS),
     testimonials: structuredClone(DEFAULT_TESTIMONIALS),
     features: { ...DEFAULT_FEATURE_FLAGS },
+    seo: structuredClone(DEFAULT_SEO),
     ...partial,
   };
 }

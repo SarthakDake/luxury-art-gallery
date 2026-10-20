@@ -13,7 +13,9 @@ import { SiteConfigProvider } from "@/components/providers/site-config-provider"
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { brandTokensToCssVars, toPublicSiteConfig } from "@/lib/site-config";
 import { getArtworks, getSiteConfig } from "@/lib/site-data";
+import { SiteJsonLd } from "@/components/seo/SiteJsonLd";
 import { buildSiteMetadata } from "@/lib/seo";
+import { getArtistProfile } from "@/lib/site-data";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -40,7 +42,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [config, artworks] = await Promise.all([getSiteConfig(), getArtworks()]);
+  const [config, artworks, artist] = await Promise.all([
+    getSiteConfig(),
+    getArtworks(),
+    getArtistProfile(),
+  ]);
   const publicConfig = toPublicSiteConfig(config);
 
   return (
@@ -55,6 +61,7 @@ export default async function RootLayout({
         suppressHydrationWarning
         className="flex min-h-full flex-col font-[family-name:var(--font-sans)]"
       >
+        <SiteJsonLd config={config} artist={artist} />
         <a href="#main-content" className="skip-link">
           Skip to content
         </a>

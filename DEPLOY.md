@@ -333,3 +333,46 @@ DATABASE_URL="postgresql://…" npm run db:seed-content
 cp .env.example .env   # fill in values
 npm run dev            # runs db push + prisma generate + next dev on :3001
 ```
+
+## Search engine optimization (SEO)
+
+Technical SEO is built into the storefront (sitemap, canonical URLs, Open Graph, JSON-LD). Rankings still depend on content, backlinks, and competition — use this checklist after deploy.
+
+### Canonical domain
+
+Set **Production** env vars to the URL visitors use (with or without `www`, but pick one):
+
+```bash
+NEXTAUTH_URL=https://www.colorsnjoy.com
+NEXT_PUBLIC_APP_URL=https://www.colorsnjoy.com
+```
+
+Add a **redirect** in Vercel so the non-canonical host (e.g. bare domain → `www`) always resolves to one URL.
+
+### Content Studio → Site settings → Search & social (SEO)
+
+- **Default meta description** — plain text for Google (or leave empty to use the hero subtitle).
+- **Default keywords** — comma-separated topics (texture art, wall art, your city, hospitality art, etc.).
+- **Default share image** — Open Graph image for social link previews.
+- **Per-page overrides** — title, description, and keywords for Home, Shop, About, Contact, Signature Wall Art, and For Interior Designers.
+- **Google Search Console verification** — paste the verification *content* string from Google, or set `GOOGLE_SITE_VERIFICATION` on Vercel.
+
+After editing, **Save** in Content Studio so production metadata revalidates.
+
+### Google Search Console
+
+1. [Google Search Console](https://search.google.com/search-console) → add property for your domain.
+2. Verify via the HTML tag (Content Studio field or `GOOGLE_SITE_VERIFICATION` env).
+3. Submit sitemap: `https://www.colorsnjoy.com/sitemap.xml`
+4. Review **Pages** and **Performance** after a few days; fix any indexing errors.
+
+### Google Business Profile (local discovery)
+
+If you serve clients in a region, maintain a complete **Google Business Profile** (name, address matching `studioAddress`, phone/WhatsApp, photos, services, website link).
+
+### What the site emits automatically
+
+- `/robots.txt` — allows public pages; blocks `/admin/` and `/api/`.
+- `/sitemap.xml` — static routes, every shop artwork, and every Signature Wall Art project slug.
+- **JSON-LD** — `WebSite`, `Organization` / `ArtGallery`, `Person` (artist), `Product` (shop items), `Service` (signature + trade pages).
+- **Canonical URLs** on main routes and product pages.
