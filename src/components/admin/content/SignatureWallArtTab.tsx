@@ -57,33 +57,39 @@ const PROJECT_STEP_ORDER: SignatureProjectEditorStep[] = [
 
 const PROJECT_STEP_TITLES: Record<
   SignatureProjectEditorStep,
-  { title: string; lead: string; previewRegion: "projects" | "page" }
+  { title: string; lead: string }
 > = {
   details: {
     title: "Project details",
     lead: "Title, URL, and summary for this showcase wall.",
-    previewRegion: "projects",
   },
   cover: {
     title: "Cover photo",
     lead: "Main image and vertical or horizontal framing.",
-    previewRegion: "projects",
   },
   styles: {
     title: "Design styles",
     lead: "Finishes and design language on the project page.",
-    previewRegion: "projects",
   },
   gallery: {
     title: "Gallery photos",
     lead: "Extra process and detail shots.",
-    previewRegion: "projects",
   },
   testimonials: {
     title: "Client quotes",
     lead: "Optional testimonials for this project.",
-    previewRegion: "projects",
   },
+};
+
+const PROJECT_STEP_PREVIEW_FOCUS: Record<
+  SignatureProjectEditorStep,
+  Extract<StudioPreviewTarget, { scope: "signatureProject" }>["focus"]
+> = {
+  details: "hero",
+  cover: "cover",
+  styles: "styles",
+  gallery: "gallery",
+  testimonials: "testimonials",
 };
 
 const PAGE_STEP_TITLES: Record<
@@ -126,11 +132,20 @@ export function SignatureWallArtTab({
     projects.length === 0 ? 0 : Math.min(selectedIndex, projects.length - 1);
   const selectedProject = projects[projectIndex] ?? null;
 
-  function preview(
+  function previewPage(
     region: Extract<StudioPreviewTarget, { scope: "signature" }>["region"],
     label: string,
   ) {
     onRequestPreview?.({ scope: "signature", region, label });
+  }
+
+  function previewProject(step: SignatureProjectEditorStep, label: string) {
+    onRequestPreview?.({
+      scope: "signatureProject",
+      projectIndex,
+      focus: PROJECT_STEP_PREVIEW_FOCUS[step],
+      label,
+    });
   }
 
   function commitPage(next: SignatureWallArtPageConfig) {
@@ -245,7 +260,7 @@ export function SignatureWallArtTab({
                         title={meta.title}
                         lead={meta.lead}
                         onPreview={() =>
-                          preview(meta.previewRegion, `Signature project — ${meta.title}`)
+                          previewProject(step, `Signature project — ${meta.title}`)
                         }
                       >
                         <SignatureProjectStepPanels
@@ -303,7 +318,9 @@ export function SignatureWallArtTab({
                 activeStep={pageStep}
                 title={meta.title}
                 lead={meta.lead}
-                onPreview={() => preview(meta.previewRegion, `Signature Wall Art — ${meta.title}`)}
+                onPreview={() =>
+                  previewPage(meta.previewRegion, `Signature Wall Art — ${meta.title}`)
+                }
               >
                 <SignaturePageSettingsPanels
                   step={step}
