@@ -1297,7 +1297,7 @@
   }
 
   .product-gallery-stage--landscape {
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 4 / 5;
   }
 
   .product-gallery-stage:hover {
@@ -3121,7 +3121,7 @@
     }
 
     .signature-project-cover {
-      aspect-ratio: 4 / 3;
+      aspect-ratio: 4 / 5;
     }
 
     .signature-style-row {
@@ -3375,7 +3375,7 @@
   .signature-project-cover {
     position: relative;
     width: 100%;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 4 / 5;
     margin-bottom: clamp(2.5rem, 5vw, 4rem);
     overflow: hidden;
     background: var(--surface);
@@ -3416,7 +3416,7 @@
 
   .signature-style-media {
     position: relative;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 4 / 5;
     overflow: hidden;
     background: var(--surface);
   }
@@ -3452,7 +3452,7 @@
 
   .signature-gallery-item {
     position: relative;
-    aspect-ratio: 1;
+    aspect-ratio: 4 / 5;
     overflow: hidden;
     background: var(--surface);
   }

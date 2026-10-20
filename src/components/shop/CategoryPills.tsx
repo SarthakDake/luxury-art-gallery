@@ -1,6 +1,8 @@
 "use client";
 
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
+import { resolveArtworkCoverOrientation } from "@/lib/artwork-cover";
+import { coverImageObjectFitClass } from "@/lib/cover-image-display";
 import type { Artwork } from "@/types/artwork";
 import Link from "next/link";
 
@@ -19,10 +21,10 @@ export function CategoryPills({
 }: CategoryPillsProps) {
   const categories = [...new Set(artworks.map((artwork) => artwork.category))];
 
-  const categoryImages = categories.reduce<Record<string, string>>(
+  const categoryCovers = categories.reduce<Record<string, Artwork>>(
     (accumulator, category) => {
       const artwork = artworks.find((item) => item.category === category);
-      if (artwork) accumulator[category] = artwork.imageUrl;
+      if (artwork) accumulator[category] = artwork;
       return accumulator;
     },
     {},
@@ -60,7 +62,8 @@ export function CategoryPills({
 
       {categories.map((category) => {
         const isActive = activeCategory === category;
-        const imageUrl = categoryImages[category];
+        const coverArtwork = categoryCovers[category];
+        const imageUrl = coverArtwork?.imageUrl;
 
         const frame = (
           <span
@@ -68,15 +71,15 @@ export function CategoryPills({
               isActive ? "category-pill-frame-active" : ""
             }`}
           >
-            {imageUrl && (
+            {imageUrl && coverArtwork ? (
               <ArtworkImage
                 src={imageUrl}
                 alt=""
                 fill
                 sizes="112px"
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                className={`${coverImageObjectFitClass(resolveArtworkCoverOrientation(coverArtwork))} transition-transform duration-500 group-hover:scale-105`}
               />
-            )}
+            ) : null}
           </span>
         );
 

@@ -4,6 +4,7 @@ import { SoftImage } from "@/components/ui/SoftImage";
 import { getArtworkImageSrc } from "@/lib/artwork-image";
 import { DEFAULT_HOMEPAGE, DEFAULT_SIGNATURE_WALL_ART_PAGE } from "@/lib/site-config/defaults";
 import type { CuratedWorksCopy, SignatureWallArtPageConfig } from "@/types/site-config";
+import { coverImageObjectFitClass } from "@/lib/cover-image-display";
 import { resolveSignatureCoverOrientation } from "@/lib/signature-cover";
 import Link from "next/link";
 
@@ -51,10 +52,7 @@ export function SignatureShowcaseSection({
         {items.map((project, index) => {
           const orientation = resolveSignatureCoverOrientation(project);
           return (
-          <li
-            key={project.slug}
-            className={`home-signature-showcase-item home-signature-showcase-item--${orientation}`}
-          >
+          <li key={project.slug} className="home-signature-showcase-item">
             <Link
               href={`/signature-wall-art/${project.slug}`}
               className="home-signature-showcase-link"
@@ -66,11 +64,7 @@ export function SignatureShowcaseSection({
                     alt=""
                     fill
                     sizes="(max-width: 768px) 100vw, 40vw"
-                    className={
-                      orientation === "landscape"
-                        ? "object-contain object-center"
-                        : "object-cover object-center"
-                    }
+                    className={coverImageObjectFitClass(orientation)}
                   />
                 ) : (
                   <div className="home-signature-showcase-placeholder" aria-hidden />
