@@ -403,13 +403,21 @@ export function ArtworksTab({
               path={artwork.imageUrl}
               slug={slug}
               kind="cover"
-              onUploaded={(path) =>
-                onChange(updateArtwork(artworks, artworkIndex, { imageUrl: path }))
+              detectCoverOrientation
+              onUploaded={(path, meta) =>
+                onChange(
+                  updateArtwork(artworks, artworkIndex, {
+                    imageUrl: path,
+                    ...(meta?.coverOrientation
+                      ? { coverOrientation: meta.coverOrientation }
+                      : {}),
+                  }),
+                )
               }
             />
             <StudioField
               label="Cover shape on site"
-              hint="Vertical fits most paintings; choose Horizontal for wide photos. This sets the frame in the shop grid and on the product page."
+              hint="The site uses a vertical frame everywhere. Wide photos are detected on upload and letterbox automatically; override here if needed."
               fullWidth
             >
               <StudioSelect
@@ -423,8 +431,8 @@ export function ArtworksTab({
                   )
                 }
               >
-                <option value="portrait">Vertical (tall frame)</option>
-                <option value="landscape">Horizontal (wide frame)</option>
+                <option value="portrait">Vertical photo (fills frame)</option>
+                <option value="landscape">Horizontal photo (letterboxed)</option>
               </StudioSelect>
             </StudioField>
           </StudioGroup>

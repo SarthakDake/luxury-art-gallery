@@ -1,4 +1,8 @@
-import { artworkCoverFrameClass } from "@/lib/artwork-cover";
+import {
+  artworkCoverFrameClass,
+  resolveArtworkCoverOrientation,
+} from "@/lib/artwork-cover";
+import { coverImageObjectFitClass } from "@/lib/cover-image-display";
 import { formatPriceFrom, isShowcaseOnly, type Artwork } from "@/types/artwork";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import Link from "next/link";
@@ -10,6 +14,7 @@ interface ProductCardProps {
 
 export function ProductCard({ artwork, reveal = false }: ProductCardProps) {
   const showcaseOnly = isShowcaseOnly(artwork);
+  const coverOrientation = resolveArtworkCoverOrientation(artwork);
 
   return (
     <Link
@@ -19,13 +24,13 @@ export function ProductCard({ artwork, reveal = false }: ProductCardProps) {
       {...(reveal ? { "data-reveal": "scale-in" } : {})}
     >
       <article className="space-y-4">
-        <div className={artworkCoverFrameClass(artwork)}>
+        <div className={artworkCoverFrameClass()}>
           <ArtworkImage
             src={artwork.imageUrl}
             alt={artwork.title}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+            className={`${coverImageObjectFitClass(coverOrientation)} transition-transform duration-500 ease-out group-hover:scale-[1.03]`}
           />
             {!artwork.inStock && !showcaseOnly && (
               <span className="sold-out-badge">Sold Out</span>

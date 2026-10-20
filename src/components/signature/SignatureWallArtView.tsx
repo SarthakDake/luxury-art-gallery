@@ -16,6 +16,7 @@ import type {
   SignatureWallArtPageConfig,
   SiteConfig,
 } from "@/types/site-config";
+import { coverImageObjectFitClass } from "@/lib/cover-image-display";
 import { resolveSignatureCoverOrientation } from "@/lib/signature-cover";
 import Link from "next/link";
 
@@ -29,9 +30,7 @@ function ProjectCard({
   const orientation = resolveSignatureCoverOrientation(project);
 
   return (
-    <li
-      className={`signature-project-tile signature-project-tile--${orientation}`}
-    >
+    <li className="signature-project-tile">
       <Link
         href={`/signature-wall-art/${project.slug}`}
         className="signature-project-tile-link"
@@ -43,11 +42,7 @@ function ProjectCard({
               alt=""
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className={
-                orientation === "landscape"
-                  ? "object-contain object-center"
-                  : "object-cover object-center"
-              }
+              className={coverImageObjectFitClass(orientation)}
             />
           ) : (
             <div className="signature-project-card-placeholder" aria-hidden />

@@ -104,11 +104,19 @@ export function SignatureProjectStepPanels({
           path={project.coverImageUrl}
           slug={`signature-project-${project.slug || index}`}
           kind="page"
-          onUploaded={(path) => updateProject(index, { coverImageUrl: path })}
+          detectCoverOrientation
+          onUploaded={(path, meta) =>
+            updateProject(index, {
+              coverImageUrl: path,
+              ...(meta?.coverOrientation
+                ? { coverOrientation: meta.coverOrientation }
+                : {}),
+            })
+          }
         />
         <StudioField
           label="Cover shape on site"
-          hint="Vertical fits most paintings; choose Horizontal for wide photos."
+          hint="Vertical frame by default. Wide covers are detected on upload; override if the preview looks wrong."
           fullWidth
         >
           <StudioSelect
@@ -120,8 +128,8 @@ export function SignatureProjectStepPanels({
               })
             }
           >
-            <option value="portrait">Vertical (tall frame)</option>
-            <option value="landscape">Horizontal (wide frame)</option>
+            <option value="portrait">Vertical photo (fills frame)</option>
+            <option value="landscape">Horizontal photo (letterboxed)</option>
           </StudioSelect>
         </StudioField>
       </StudioGroup>

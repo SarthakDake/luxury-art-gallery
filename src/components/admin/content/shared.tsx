@@ -13,6 +13,10 @@ import {
 } from "lucide-react";
 import { useState, type ReactNode, type SelectHTMLAttributes } from "react";
 import { needsBrowserRasterization } from "@/lib/artwork-image";
+import {
+  detectCoverOrientationFromFile,
+  type CoverOrientation,
+} from "@/lib/cover-image-display";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import { toColorInputValue } from "@/lib/color-input";
 import {
@@ -437,6 +441,7 @@ export function ImageUploadField({
   onUploaded,
   hint,
   compact = false,
+  detectCoverOrientation = false,
 }: {
   label: string;
   path?: string;
@@ -444,9 +449,14 @@ export function ImageUploadField({
   kind: "cover" | "gallery" | "portrait" | "hero" | "page" | "video-poster";
   galleryIndex?: number;
   videoIndex?: number;
-  onUploaded: (path: string) => void;
+  onUploaded: (
+    path: string,
+    meta?: { coverOrientation: CoverOrientation },
+  ) => void;
   hint?: string;
   compact?: boolean;
+  /** When true, sets coverOrientation from image dimensions after upload (shop/signature covers). */
+  detectCoverOrientation?: boolean;
 }) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
@@ -567,6 +577,10 @@ export function ImageUploadField({
     setSuccess("");
 
     try {
+      const orientationPromise = detectCoverOrientation
+        ? detectCoverOrientationFromFile(file)
+        : null;
+
       // Prefer server FormData for typical CMS images (incl. ~2MB iPhone HEIC).
       // Direct Blob multipart often hangs when File.type is empty.
       const preferServer = file.size <= SERVER_UPLOAD_PREFERRED_MAX_BYTES;
@@ -596,7 +610,13 @@ export function ImageUploadField({
         }
       }
 
-      onUploaded(uploadedPath);
+      const coverOrientation = orientationPromise
+        ? await orientationPromise
+        : undefined;
+      onUploaded(
+        uploadedPath,
+        coverOrientation ? { coverOrientation } : undefined,
+      );
       setSuccess(`Successfully uploaded ${file.name}`);
     } catch (uploadError) {
       console.error("[ImageUploadField] upload failed:", uploadError);

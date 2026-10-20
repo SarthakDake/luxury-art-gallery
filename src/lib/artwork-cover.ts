@@ -6,11 +6,7 @@ export function resolveArtworkCoverOrientation(
   return artwork.coverOrientation === "landscape" ? "landscape" : "portrait";
 }
 
-export function artworkCoverFrameClass(
-  artwork: Pick<Artwork, "coverOrientation">,
-): string {
-  const orientation = resolveArtworkCoverOrientation(artwork);
-  return orientation === "landscape"
-    ? "art-image-frame art-image-frame--landscape"
-    : "art-image-frame art-image-frame--portrait";
+/** Vertical 4:5 frame for all shop cards; use {@link coverImageObjectFitClass} for wide photos. */
+export function artworkCoverFrameClass(): string {
+  return "art-image-frame art-image-frame--portrait";
 }

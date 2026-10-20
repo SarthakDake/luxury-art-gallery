@@ -2,6 +2,7 @@
 
 import { useIsClient } from "@/hooks/use-is-client";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
+import { coverImageObjectFitClass } from "@/lib/cover-image-display";
 import type { ArtworkCoverOrientation } from "@/types/artwork";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
 import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
@@ -19,10 +20,7 @@ export function ProductGallery({
   title,
   coverOrientation = "portrait",
 }: ProductGalleryProps) {
-  const stageOrientationClass =
-    coverOrientation === "landscape"
-      ? "product-gallery-stage--landscape"
-      : "product-gallery-stage--portrait";
+  const stageImageFitClass = coverImageObjectFitClass(coverOrientation);
   const isClient = useIsClient();
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -183,7 +181,7 @@ export function ProductGallery({
         <button
           ref={stageRef}
           type="button"
-          className={`product-gallery-stage ${stageOrientationClass} ${isZooming ? "product-gallery-stage--zooming" : ""}`}
+          className={`product-gallery-stage product-gallery-stage--portrait ${isZooming ? "product-gallery-stage--zooming" : ""}`}
           onClick={openLightbox}
           onMouseEnter={() => setIsZooming(true)}
           onMouseLeave={() => setIsZooming(false)}
@@ -196,7 +194,7 @@ export function ProductGallery({
             fill
             priority
             sizes="(max-width: 1024px) 100vw, 50vw"
-            className="product-gallery-stage-image media-cover"
+            className={`product-gallery-stage-image ${stageImageFitClass}`}
             style={{
               transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%`,
             }}
@@ -227,7 +225,7 @@ export function ProductGallery({
                   alt={`${title} — thumbnail ${index + 1}`}
                   fill
                   sizes="80px"
-                  className="media-cover"
+                  className={stageImageFitClass}
                 />
               </button>
             ))}

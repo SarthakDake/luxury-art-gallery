@@ -2,6 +2,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { RichText } from "@/components/ui/RichText";
 import { SoftImage } from "@/components/ui/SoftImage";
 import { getArtworkImageSrc } from "@/lib/artwork-image";
+import { coverImageObjectFitClass } from "@/lib/cover-image-display";
 import { resolveSignatureCoverOrientation } from "@/lib/signature-cover";
 import { DEFAULT_SIGNATURE_WALL_ART_PAGE } from "@/lib/site-config/defaults";
 import { buildWhatsAppHref } from "@/lib/whatsapp";
@@ -72,11 +73,7 @@ export function SignatureProjectView({
             fill
             priority
             sizes="100vw"
-            className={
-              coverOrientation === "landscape"
-                ? "object-contain object-center"
-                : "object-cover object-center"
-            }
+            className={coverImageObjectFitClass(coverOrientation)}
           />
         </Reveal>
       ) : null}
@@ -110,7 +107,7 @@ export function SignatureProjectView({
                         alt=""
                         fill
                         sizes="(max-width: 900px) 100vw, 50vw"
-                        className="object-cover"
+                        className="object-contain object-center"
                       />
                     ) : (
                       <div className="signature-style-placeholder" aria-hidden />
@@ -144,7 +141,7 @@ export function SignatureProjectView({
                   alt=""
                   fill
                   sizes="(max-width: 768px) 50vw, 25vw"
-                  className="object-cover"
+                  className="object-contain object-center"
                 />
               </li>
             ))}
