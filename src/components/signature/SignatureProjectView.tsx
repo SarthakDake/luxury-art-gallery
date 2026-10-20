@@ -2,6 +2,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { RichText } from "@/components/ui/RichText";
 import { SoftImage } from "@/components/ui/SoftImage";
 import { getArtworkImageSrc } from "@/lib/artwork-image";
+import { resolveSignatureCoverOrientation } from "@/lib/signature-cover";
 import { DEFAULT_SIGNATURE_WALL_ART_PAGE } from "@/lib/site-config/defaults";
 import { buildWhatsAppHref } from "@/lib/whatsapp";
 import type { SignatureProject, SiteConfig } from "@/types/site-config";
@@ -26,6 +27,7 @@ export function SignatureProjectView({
     enquiry.formHref?.startsWith("#")
       ? `/signature-wall-art${enquiry.formHref}`
       : enquiry.formHref || "/signature-wall-art#enquiry";
+  const coverOrientation = resolveSignatureCoverOrientation(project);
 
   return (
     <div className="site-container page-shell page-section-end">
@@ -70,7 +72,11 @@ export function SignatureProjectView({
             fill
             priority
             sizes="100vw"
-            className="object-cover"
+            className={
+              coverOrientation === "landscape"
+                ? "object-contain object-center"
+                : "object-cover object-center"
+            }
           />
         </Reveal>
       ) : null}
@@ -191,7 +197,7 @@ export function SignatureProjectView({
             {enquiry.formCtaLabel}
           </Link>
           <Link href="/signature-wall-art" className="btn-secondary btn-responsive">
-            Back to all projects
+            Explore other projects
           </Link>
         </div>
       </Reveal>

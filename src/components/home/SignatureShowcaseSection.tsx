@@ -66,7 +66,11 @@ export function SignatureShowcaseSection({
                     alt=""
                     fill
                     sizes="(max-width: 768px) 100vw, 40vw"
-                    className="object-cover object-center"
+                    className={
+                      orientation === "landscape"
+                        ? "object-contain object-center"
+                        : "object-cover object-center"
+                    }
                   />
                 ) : (
                   <div className="home-signature-showcase-placeholder" aria-hidden />

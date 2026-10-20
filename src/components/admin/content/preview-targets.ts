@@ -30,6 +30,12 @@ export type StudioPreviewTarget =
       label: string;
     }
   | {
+      scope: "signatureProject";
+      projectIndex: number;
+      focus: "hero" | "cover" | "styles" | "gallery" | "testimonials";
+      label: string;
+    }
+  | {
       scope: "trade";
       region:
         | "page"

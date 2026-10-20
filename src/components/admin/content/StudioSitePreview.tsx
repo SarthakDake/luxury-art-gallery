@@ -11,6 +11,7 @@ import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { TradePartnersSection } from "@/components/home/TradePartnersSection";
 import { TrustBadgesSection } from "@/components/home/TrustBadgesSection";
 import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
+import { SignatureProjectView } from "@/components/signature/SignatureProjectView";
 import { SignatureWallArtView } from "@/components/signature/SignatureWallArtView";
 import { ForInteriorDesignersView } from "@/components/trade/ForInteriorDesignersView";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
@@ -197,6 +198,17 @@ const SIGNATURE_FOCUS_SELECTORS: Record<
   enquiry: ".signature-enquiry-section, #enquiry.signature-enquiry-section",
 };
 
+const SIGNATURE_PROJECT_FOCUS_SELECTORS: Record<
+  Extract<StudioPreviewTarget, { scope: "signatureProject" }>["focus"],
+  string
+> = {
+  hero: ".signature-project-hero-copy",
+  cover: ".signature-project-cover",
+  styles: ".signature-styles-section",
+  gallery: ".signature-gallery-section",
+  testimonials: ".signature-project-testimonials",
+};
+
 const TRADE_FOCUS_SELECTORS: Record<
   Exclude<Extract<StudioPreviewTarget, { scope: "trade" }>["region"], "homepage">,
   string
@@ -209,6 +221,36 @@ const TRADE_FOCUS_SELECTORS: Record<
   pdf: "#portfolio-pdf",
   enquiry: "#enquiry",
 };
+
+function SignatureProjectPreview({
+  config,
+  projectIndex,
+  focus,
+}: {
+  config: SiteConfig;
+  projectIndex: number;
+  focus: Extract<StudioPreviewTarget, { scope: "signatureProject" }>["focus"];
+}) {
+  const project = config.signatureWallArtPage?.projects.items[projectIndex];
+
+  if (!project) {
+    return (
+      <div className="studio-preview-empty">
+        <p className="body-text">Select a project to preview its live page layout.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="studio-preview-signature-project"
+      data-preview-focus={focus}
+      data-preview-focus-selector={SIGNATURE_PROJECT_FOCUS_SELECTORS[focus]}
+    >
+      <SignatureProjectView project={project} siteConfig={config} />
+    </div>
+  );
+}
 
 function SignaturePagePreview({
   config,
@@ -552,6 +594,14 @@ export function StudioSitePreview({
               <SignaturePagePreview
                 config={deferredConfig}
                 region={activePreview.region}
+              />
+            ) : null}
+
+            {activePreview.scope === "signatureProject" ? (
+              <SignatureProjectPreview
+                config={deferredConfig}
+                projectIndex={activePreview.projectIndex}
+                focus={activePreview.focus}
               />
             ) : null}
 

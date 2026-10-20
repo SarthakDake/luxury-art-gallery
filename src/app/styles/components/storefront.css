@@ -1966,6 +1966,12 @@
     color: rgb(134 239 172);
   }
 
+  .contact-form-success.rich-text .rich-text-paragraph,
+  .contact-form-success.rich-text .rich-text-heading,
+  .contact-form-success.rich-text .rich-text-list-item {
+    color: inherit;
+  }
+
   .feature-section-header {
     display: flex;
     flex-direction: column;
@@ -2975,17 +2981,9 @@
 
   .home-signature-showcase-media {
     position: relative;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 4 / 5;
     overflow: hidden;
     background: var(--surface);
-  }
-
-  .home-signature-showcase-item--portrait .home-signature-showcase-media {
-    aspect-ratio: 4 / 5;
-  }
-
-  .home-signature-showcase-item--landscape .home-signature-showcase-media {
-    aspect-ratio: 16 / 10;
   }
 
   .home-signature-showcase-placeholder {
@@ -3215,17 +3213,9 @@
 
   .signature-project-tile-media {
     position: relative;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 4 / 5;
     overflow: hidden;
     background: var(--surface);
-  }
-
-  .signature-project-tile--landscape .signature-project-tile-media {
-    aspect-ratio: 16 / 10;
-  }
-
-  .signature-project-tile--portrait .signature-project-tile-media {
-    aspect-ratio: 4 / 5;
   }
 
   .signature-project-tile-index {
