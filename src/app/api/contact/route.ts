@@ -1,3 +1,4 @@
+import { deliverFormEnquiry, FormEnquiryDeliveryError } from "@/lib/deliver-form-enquiry";
 import { sendContactFormEmail } from "@/lib/mailer";
 import { enforceRateLimit } from "@/lib/rate-limit";
 import { saveSignatureEnquiryWallPhoto } from "@/lib/signature-enquiry-upload";
@@ -95,24 +96,39 @@ export async function POST(request: Request) {
   }
 
   try {
-    await sendContactFormEmail({
-      name,
-      email: email || undefined,
-      mobile,
-      location,
-      spaceType: spaceType || undefined,
-      subject: DEFAULT_SUBJECT,
-      message,
-      wallPhotoUrl,
-      wallPhotoAttachment,
+    await deliverFormEnquiry({
+      kind: "contact",
+      payload: {
+        name,
+        email: email || null,
+        mobile,
+        location,
+        spaceType: spaceType || null,
+        subject: DEFAULT_SUBJECT,
+        message,
+        wallPhotoUrl: wallPhotoUrl ?? null,
+      },
+      sendEmail: () =>
+        sendContactFormEmail({
+          name,
+          email: email || undefined,
+          mobile,
+          location,
+          spaceType: spaceType || undefined,
+          subject: DEFAULT_SUBJECT,
+          message,
+          wallPhotoUrl,
+          wallPhotoAttachment,
+        }),
     });
 
     return NextResponse.json({ success: true });
   } catch (error) {
+    const message =
+      error instanceof FormEnquiryDeliveryError
+        ? error.message
+        : "Unable to send your message right now. Please try again later.";
     console.error("Contact form submission failed:", error);
-    return NextResponse.json(
-      { error: "Unable to send your message right now. Please try again later." },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

@@ -1,3 +1,4 @@
+import { deliverFormEnquiry, FormEnquiryDeliveryError } from "@/lib/deliver-form-enquiry";
 import { sendTradeEnquiryEmail } from "@/lib/mailer";
 import { enforceRateLimit } from "@/lib/rate-limit";
 import { NextResponse } from "next/server";
@@ -77,22 +78,36 @@ export async function POST(request: Request) {
   }
 
   try {
-    await sendTradeEnquiryEmail({
-      name,
-      email: email || undefined,
-      mobile,
-      company: company || undefined,
-      projectType: projectType || undefined,
-      subject,
-      message,
+    await deliverFormEnquiry({
+      kind: "trade-enquiry",
+      payload: {
+        name,
+        email: email || null,
+        mobile,
+        company: company || null,
+        projectType: projectType || null,
+        subject,
+        message,
+      },
+      sendEmail: () =>
+        sendTradeEnquiryEmail({
+          name,
+          email: email || undefined,
+          mobile,
+          company: company || undefined,
+          projectType: projectType || undefined,
+          subject,
+          message,
+        }),
     });
 
     return NextResponse.json({ success: true });
   } catch (error) {
+    const message =
+      error instanceof FormEnquiryDeliveryError
+        ? error.message
+        : "Unable to send your enquiry right now. Please try again later.";
     console.error("Trade enquiry submission failed:", error);
-    return NextResponse.json(
-      { error: "Unable to send your enquiry right now. Please try again later." },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
