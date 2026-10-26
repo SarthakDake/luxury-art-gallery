@@ -3,7 +3,11 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/generated/prisma/client";
 
-export type FormEnquiryKind = "contact" | "signature-enquiry" | "trade-enquiry";
+export type FormEnquiryKind =
+  | "contact"
+  | "signature-enquiry"
+  | "trade-enquiry"
+  | "portfolio-download";
 
 export async function persistFormEnquiry(
   kind: FormEnquiryKind,

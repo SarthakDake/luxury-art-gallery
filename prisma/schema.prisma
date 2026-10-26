@@ -144,7 +144,7 @@ model SiteContent {
   updatedAt DateTime @updatedAt
 }
 
-/// Contact, signature, and trade form submissions (backup when email delivery fails).
+/// Contact, signature, trade, and portfolio-download form submissions (backup when email fails).
 model FormEnquiry {
   id        String   @id @default(cuid())
   kind      String

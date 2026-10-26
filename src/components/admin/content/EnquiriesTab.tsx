@@ -24,6 +24,10 @@ const FILTER_OPTIONS: Array<{ id: FormEnquiryFilter; label: string }> = [
   { id: "contact", label: FORM_ENQUIRY_KIND_LABELS.contact },
   { id: "signature-enquiry", label: FORM_ENQUIRY_KIND_LABELS["signature-enquiry"] },
   { id: "trade-enquiry", label: FORM_ENQUIRY_KIND_LABELS["trade-enquiry"] },
+  {
+    id: "portfolio-download",
+    label: FORM_ENQUIRY_KIND_LABELS["portfolio-download"],
+  },
 ];
 
 async function fetchEnquiriesFromApi(): Promise<{
@@ -160,7 +164,7 @@ export function EnquiriesTab() {
           {!loading && !error && filtered.length === 0 ? (
             <p className="body-text studio-enquiries-empty">
               {enquiries.length === 0
-                ? "No enquiries yet. Submissions from Contact, Signature Wall Art, and For Interior Designers will appear here."
+                ? "No enquiries yet. Submissions from Contact, Signature Wall Art, For Interior Designers, and portfolio downloads will appear here."
                 : "No enquiries match this filter."}
             </p>
           ) : null}
