@@ -1,5 +1,6 @@
 import { SignatureShowcaseSection } from "@/components/home/SignatureShowcaseSection";
 import { Reveal } from "@/components/motion/Reveal";
+import { PortfolioPdfSection } from "@/components/trade/PortfolioPdfSection";
 import { TradeEnquiryForm } from "@/components/trade/TradeEnquiryForm";
 import { RichText } from "@/components/ui/RichText";
 import { SoftImage } from "@/components/ui/SoftImage";
@@ -7,13 +8,15 @@ import { getArtworkImageSrc } from "@/lib/artwork-image";
 import { DEFAULT_FOR_INTERIOR_DESIGNERS } from "@/lib/site-config/defaults";
 import { getSiteDocumentSrc } from "@/lib/site-document";
 import type { SiteConfig } from "@/types/site-config";
-import { Download, FileText } from "lucide-react";
 import Link from "next/link";
 
 export function ForInteriorDesignersView({
   config,
+  portfolioGateBypass = false,
 }: {
   config: SiteConfig;
+  /** Content Studio preview: show PDF without the download gate. */
+  portfolioGateBypass?: boolean;
 }) {
   const page = config.forInteriorDesigners ?? DEFAULT_FOR_INTERIOR_DESIGNERS;
   const heroImage =
@@ -161,72 +164,14 @@ export function ForInteriorDesignersView({
           </ol>
         </Reveal>
 
-        <Reveal
-          as="section"
-          id="portfolio-pdf"
-          variant="slide-up"
-          className="trade-section section-divider-top"
-          aria-labelledby="portfolio-pdf-heading"
-        >
-          <div className="section-header mb-8">
-            <div className="section-header-copy max-w-2xl">
-              <p className="eyebrow">{page.portfolioPdf.eyebrow}</p>
-              <h2 id="portfolio-pdf-heading" className="section-title">
-                {page.portfolioPdf.title}
-              </h2>
-              <RichText content={page.portfolioPdf.subtitle} className="body-text mt-3" />
-            </div>
-            {pdfDownloadSrc ? (
-              <a
-                href={pdfDownloadSrc}
-                className="btn-primary btn-responsive section-header-action"
-                download={page.portfolioPdf.filename || undefined}
-              >
-                <Download className="h-4 w-4" strokeWidth={1.5} aria-hidden />
-                {page.portfolioPdf.downloadLabel}
-              </a>
-            ) : null}
-          </div>
-
-          {pdfViewSrc ? (
-            <div className="trade-pdf-frame">
-              <object
-                data={pdfViewSrc}
-                type="application/pdf"
-                className="trade-pdf-embed"
-                aria-label={page.portfolioPdf.title}
-              >
-                <iframe
-                  title={page.portfolioPdf.title}
-                  src={pdfViewSrc}
-                  className="trade-pdf-embed"
-                />
-              </object>
-              <p className="trade-pdf-fallback-note">
-                If the preview does not appear,{" "}
-                <a href={pdfViewSrc} target="_blank" rel="noopener noreferrer">
-                  open the portfolio PDF
-                </a>
-                {pdfDownloadSrc ? (
-                  <>
-                    {" "}
-                    or{" "}
-                    <a href={pdfDownloadSrc} download={page.portfolioPdf.filename || undefined}>
-                      download it
-                    </a>
-                  </>
-                ) : null}
-                .
-              </p>
-            </div>
-          ) : (
-            <div className="trade-pdf-empty">
-              <FileText className="h-8 w-8 text-[var(--muted)]" strokeWidth={1.25} />
-              <p className="body-text text-[var(--muted)]">
-                Portfolio PDF will appear here once uploaded in Content Studio.
-              </p>
-            </div>
-          )}
+        <Reveal as="div" variant="slide-up">
+          <PortfolioPdfSection
+            copy={page.portfolioPdf}
+            pdfUrl={pdfUrl}
+            pdfViewSrc={pdfViewSrc}
+            pdfDownloadSrc={pdfDownloadSrc}
+            bypassGate={portfolioGateBypass}
+          />
         </Reveal>
       </div>
 

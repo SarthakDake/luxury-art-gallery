@@ -7,6 +7,7 @@ type RateLimitBucket =
   | "artwork-image"
   | "contact"
   | "trade-enquiry"
+  | "portfolio-download"
   | "signature-enquiry"
   | "site-document";
 
@@ -32,6 +33,7 @@ const BUCKET_CONFIG: Record<
   "artwork-image": { requests: 120, window: "10 m", windowMs: 10 * 60 * 1000 },
   contact: { requests: 5, window: "1 h", windowMs: 60 * 60 * 1000 },
   "trade-enquiry": { requests: 5, window: "1 h", windowMs: 60 * 60 * 1000 },
+  "portfolio-download": { requests: 8, window: "1 h", windowMs: 60 * 60 * 1000 },
   "signature-enquiry": { requests: 5, window: "1 h", windowMs: 60 * 60 * 1000 },
   "site-document": { requests: 60, window: "10 m", windowMs: 10 * 60 * 1000 },
 };

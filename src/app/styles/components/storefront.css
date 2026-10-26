@@ -2899,6 +2899,20 @@
     }
   }
 
+  .trade-portfolio-gate {
+    max-width: 32rem;
+    padding: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  .trade-portfolio-gate-lead {
+    margin: 0 0 0.25rem;
+    color: var(--muted);
+  }
+
+  .trade-portfolio-gate-form {
+    margin-top: 0.5rem;
+  }
+
   .trade-pdf-empty {
     display: flex;
     min-height: 14rem;

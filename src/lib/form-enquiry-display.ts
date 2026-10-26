@@ -13,6 +13,7 @@ export const FORM_ENQUIRY_KIND_LABELS: Record<FormEnquiryKind, string> = {
   contact: "Contact us",
   "signature-enquiry": "Signature Wall Art",
   "trade-enquiry": "For Interior Designers",
+  "portfolio-download": "Portfolio download",
 };
 
 export type FormEnquiryFilter = "all" | FormEnquiryKind;

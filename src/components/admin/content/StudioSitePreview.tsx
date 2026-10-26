@@ -305,7 +305,7 @@ function TradePagePreview({
       data-preview-focus={region}
       data-preview-focus-selector={TRADE_FOCUS_SELECTORS[region]}
     >
-      <ForInteriorDesignersView config={config} />
+      <ForInteriorDesignersView config={config} portfolioGateBypass />
     </div>
   );
 }

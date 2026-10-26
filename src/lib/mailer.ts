@@ -258,6 +258,53 @@ export interface TradeEnquiryEmailPayload {
   message: string;
 }
 
+export interface PortfolioDownloadEnquiryEmailPayload {
+  name: string;
+  email: string;
+  mobile: string;
+  location: string;
+}
+
+export async function sendPortfolioDownloadEnquiryEmail(
+  payload: PortfolioDownloadEnquiryEmailPayload,
+): Promise<void> {
+  const transporter = createTransporter();
+  const [contactEmails, config] = await Promise.all([
+    getContactEmails(),
+    getSiteConfig(),
+  ]);
+  const primaryContactEmail = contactEmails[0] ?? config.contactEmail;
+  const from = resolveMailFrom(config.siteName, primaryContactEmail);
+  const safeName = escapeHtml(payload.name);
+  const safeEmail = escapeHtml(payload.email);
+  const safeMobile = escapeHtml(payload.mobile);
+  const safeLocation = escapeHtml(payload.location);
+
+  await transporter.sendMail({
+    from,
+    to: formatEmailList(contactEmails),
+    replyTo: payload.email,
+    subject: "[Portfolio Download] Designer portfolio access",
+    html: `
+      <div style="font-family: Georgia, 'Times New Roman', serif; color: #171717; line-height: 1.6;">
+        <p style="font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #6b7280;">Portfolio download</p>
+        <h1 style="font-size: 24px; font-weight: 500; margin: 0 0 16px;">Designer requested the portfolio PDF</h1>
+        <p style="margin: 0 0 8px;"><strong>Name or organisation:</strong> ${safeName}</p>
+        <p style="margin: 0 0 8px;"><strong>Email:</strong> ${safeEmail}</p>
+        <p style="margin: 0 0 8px;"><strong>Mobile:</strong> ${safeMobile}</p>
+        <p style="margin: 0 0 8px;"><strong>Location:</strong> ${safeLocation}</p>
+      </div>
+    `,
+    text: [
+      "Portfolio download — designer details",
+      `Name or organisation: ${payload.name}`,
+      `Email: ${payload.email}`,
+      `Mobile: ${payload.mobile}`,
+      `Location: ${payload.location}`,
+    ].join("\n"),
+  });
+}
+
 export async function sendTradeEnquiryEmail(
   payload: TradeEnquiryEmailPayload,
 ): Promise<void> {
