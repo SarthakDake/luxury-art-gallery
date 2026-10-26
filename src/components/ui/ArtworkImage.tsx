@@ -4,6 +4,7 @@ import {
   getArtworkImageSrc,
   isGifImage,
   needsBrowserRasterization,
+  shouldBypassNextImageOptimizer,
 } from "@/lib/artwork-image";
 import Image, { type ImageProps } from "next/image";
 import { useEffect, useState } from "react";
@@ -74,7 +75,10 @@ function ArtworkImageFrame({
  */
 export function ArtworkImage({ src, alt, ...props }: ArtworkImageProps) {
   const resolvedSrc = getArtworkImageSrc(src);
-  const useUnoptimized = isGifImage(src) || needsBrowserRasterization(src);
+  const useUnoptimized =
+    shouldBypassNextImageOptimizer(resolvedSrc) ||
+    isGifImage(src) ||
+    needsBrowserRasterization(src);
 
   return (
     <ArtworkImageFrame

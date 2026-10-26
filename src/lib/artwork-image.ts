@@ -95,6 +95,12 @@ function shouldProxyImagePath(pathname: string): boolean {
   );
 }
 
+/** CMS / Blob images are served from `/api/artwork-image`; skip `/_next/image` in production. */
+export function shouldBypassNextImageOptimizer(resolvedSrc: string): boolean {
+  const { pathname } = splitImagePathAndSearch(resolvedSrc);
+  return pathname.startsWith("/api/artwork-image/");
+}
+
 export function getArtworkImageSrc(src: string): string {
   const { pathname, search } = splitImagePathAndSearch(src);
   const blobPath = isRemoteImageUrl(pathname) ? getBlobPathnameFromUrl(pathname) : null;

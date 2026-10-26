@@ -1,5 +1,6 @@
 "use client";
 
+import { shouldBypassNextImageOptimizer } from "@/lib/artwork-image";
 import Image, { type ImageProps } from "next/image";
 import { useEffect, useState } from "react";
 
@@ -13,8 +14,12 @@ function SoftImageFrame({
   onLoadingComplete,
   alt = "",
   src,
+  unoptimized: unoptimizedProp,
   ...props
 }: ImageProps) {
+  const resolvedSrc = typeof src === "string" ? src : "";
+  const unoptimized =
+    unoptimizedProp ?? (resolvedSrc ? shouldBypassNextImageOptimizer(resolvedSrc) : false);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -30,6 +35,7 @@ function SoftImageFrame({
     <Image
       src={src}
       alt={alt}
+      unoptimized={unoptimized}
       className={mergeClassName(
         "media-fade",
         loaded ? "is-loaded" : undefined,
