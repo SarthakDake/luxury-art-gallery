@@ -201,7 +201,8 @@ Quick version for Vercel:
 | Google sign-in redirects to an error page | See the OAuth section in [DEPLOY.md](DEPLOY.md) — `NEXTAUTH_URL` must exactly match the domain used in the browser |
 | Prisma migration fails with `P3005` | Run `npm run db:baseline` once against that database |
 | Uploaded images don't appear in production | Connect Vercel Blob and redeploy — serverless functions can't write to `public/` |
-| Homepage/shop images broken (`/_next/image` 400, `/api/artwork-image` 500) | Redeploy latest `main` — the artwork image API must run on the Node.js runtime (see `src/app/api/artwork-image`) |
+| Homepage/shop images broken (`/_next/image` errors, `/api/artwork-image` 500) | Redeploy latest `main` — CMS images use `/api/artwork-image` directly (not `/_next/image`). Confirm Node runtime on that route and Vercel Blob env vars. |
+| Form email logs **535 BadCredentials** | Fix Gmail SMTP app password in Vercel env; submissions are still stored under Content Studio → Enquiries. |
 | Rate limiting behaves inconsistently in production | Configure `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` |
 
 For more, see the [Troubleshooting table in DEPLOY.md](DEPLOY.md#troubleshooting).
